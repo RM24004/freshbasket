@@ -26,7 +26,7 @@ Este es la base para el projecto de materia desarrollo de aplicaciones web, para
 | 2 |Alexander Alonso Zeceña Martinez    |ZM24004 |
 | 3 |José Alfredo López Rivera           |LR24003 |
 | 4 | Irvin Adonay Ramirez linares   | RL22020 |
-| 5 |                                    |        |
+| 5 |Claudia Melissa Hernandez Ceren     |HC24020 |
 |---|------------------------------------|--------|
 
 primer paso:
