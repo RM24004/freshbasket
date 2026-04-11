@@ -1,16 +1,15 @@
 package com.group1.proyect.freshbasket.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import jakarta.validation.constraints.Min;
-@Data
+import java.math.BigDecimal;
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "DTO para recibir datos de un producto (sin ID)")
-
 public class ProductRequestDTO {
 
     @Schema(description = "Nombre del producto", example = "Manzana Roja")
@@ -19,8 +18,8 @@ public class ProductRequestDTO {
 
     @Schema(description = "Precio del producto", example = "0.50")
     @NotNull(message = "El precio es obligatorio")
-    @Min(value = 0, message = "El precio debe ser mayor o igual a 0")
-    private Double price;
+    @DecimalMin(value = "0.0", message = "El precio debe ser mayor o igual a 0")
+    private BigDecimal price;
 
     @Schema(description = "Stock disponible", example = "150")
     @NotNull(message = "El stock es obligatorio")
@@ -29,6 +28,10 @@ public class ProductRequestDTO {
 
     @Schema(description = "Descripción del producto", example = "Manzana fresca importada")
     private String description;
+
+    //URL de la imagen
+    @Schema(description = "URL de la imagen del producto", example = "https://miapp.com/img/manzana.jpg")
+    private String imageUrl;
 
     @Schema(description = "ID de la categoría", example = "1")
     @NotNull(message = "El ID de la categoría es obligatorio")

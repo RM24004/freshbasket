@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,8 +67,9 @@ public class ProductController {
     })
     @PostMapping
     public ResponseEntity<ProductResponseDTO> createProduct(
-            @Parameter(description = "Datos del producto a crear", required = true)
-            @Valid @RequestBody ProductRequestDTO requestDTO) {  // ✅ @Valid agregado
+            @Parameter(description = "Datos del producto a crear (incluye imageUrl)", required = true)
+            @Valid @RequestBody ProductRequestDTO requestDTO) {
+
         ProductResponseDTO newProduct = productService.createProduct(requestDTO);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
@@ -85,8 +87,9 @@ public class ProductController {
     public ResponseEntity<ProductResponseDTO> updateProduct(
             @Parameter(description = "ID del producto a actualizar", example = "1", required = true)
             @PathVariable Long id,
-            @Parameter(description = "Datos actualizados del producto", required = true)
-            @Valid @RequestBody ProductRequestDTO requestDTO) {  // ✅ @Valid agregado
+            @Parameter(description = "Datos actualizados del producto (incluye imageUrl)", required = true)
+            @Valid @RequestBody ProductRequestDTO requestDTO) {
+
         return ResponseEntity.ok(productService.updateProduct(id, requestDTO));
     }
 
@@ -102,6 +105,7 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(
             @Parameter(description = "ID del producto a eliminar", example = "1", required = true)
             @PathVariable Long id) {
+
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
@@ -110,10 +114,15 @@ public class ProductController {
         summary = "Buscar productos por nombre",
         description = "Retorna productos que coincidan con el nombre especificado (búsqueda parcial)"
     )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Productos encontrados"),
+        @ApiResponse(responseCode = "404", description = "No se encontraron productos")
+    })
     @GetMapping("/search")
     public ResponseEntity<List<ProductResponseDTO>> searchProductsByName(
             @Parameter(description = "Nombre o parte del nombre a buscar", example = "Manzana", required = true)
             @RequestParam String name) {
+
         return ResponseEntity.ok(productService.searchProductsByName(name));
     }
 }

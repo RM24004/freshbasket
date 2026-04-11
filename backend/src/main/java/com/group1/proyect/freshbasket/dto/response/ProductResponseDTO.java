@@ -2,7 +2,9 @@ package com.group1.proyect.freshbasket.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-@Data
+import java.math.BigDecimal;
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +18,7 @@ public class ProductResponseDTO {
     private String name;
 
     @Schema(description = "Precio del producto", example = "0.50")
-    private Double price;
+    private BigDecimal price;
 
     @Schema(description = "Stock disponible", example = "150")
     private Integer stock;
@@ -24,8 +26,18 @@ public class ProductResponseDTO {
     @Schema(description = "Descripción del producto", example = "Manzana fresca importada")
     private String description;
 
+    // URL de la imagen del producto
+    @Schema(description = "URL de la imagen del producto", example = "https://miapp.com/img/manzana.jpg")
+    private String imageUrl;
+
+    @Schema(description = "ID de la categoría", example = "1")
+    private Long categoryId;
+
     @Schema(description = "Nombre de la categoría", example = "Frutas")
     private String categoryName;
+
+    @Schema(description = "ID del proveedor", example = "1")
+    private Long supplierId;
 
     @Schema(description = "Nombre del proveedor", example = "Distribuidora El Campo")
     private String supplierName;
