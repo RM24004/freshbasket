@@ -1,4 +1,4 @@
-niversidad de El Salvador 
+Universidad de El Salvador 
 Facultad Multidisciplinaria de Occidente – Ingeniería en Desarrollo de Software .
 
 
