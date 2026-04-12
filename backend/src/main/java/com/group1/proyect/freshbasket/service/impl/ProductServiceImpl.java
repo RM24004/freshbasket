@@ -125,13 +125,19 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
     }
 
-    @Override
-    public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Producto no encontrado con ID: " + id);
-        }
-        productRepository.deleteById(id);
-    }
+   @Override
+@Transactional // Importante: org.springframework.transaction.annotation.Transactional
+public void deleteProduct(Long id) {
+    // Buscamos el producto primero
+    Product product = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+    
+    // Borramos la entidad encontrada
+    productRepository.delete(product);
+    
+    //sincronización inmediata
+    productRepository.flush(); 
+}
 
     @Override
     public List<ProductResponseDTO> searchProductsByName(String name) {
