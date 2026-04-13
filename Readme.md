@@ -29,8 +29,29 @@ Este es la base para el projecto de materia desarrollo de aplicaciones web, para
 | 5 |Claudia Melissa Hernandez Ceren     |HC24020 |
 |---|------------------------------------|--------|
 
-primer paso:
-Laboratorio 1: Gestión de Código y Colaboración Git
+Segundo paso:
+Laboratorio 2: Backend Funciona
 
-Establecer la base del proyecto final mediante un flujo de trabajo profesional, asegurando 
-que los 5 integrantes dominen los comandos esenciales y la colaboración con git.
+Objetivo:
+
+Demostrar la capacidad de implementar un sistema persistente bajo una
+arquitectura de N-Capas, asegurando el desacoplamiento de datos mediante DTOs y
+la exposición profesional de servicios a través de OpenAPI
+
+-- Descripción del Trabajo Realizado
+
+Este proyecto implementa una arquitectura de N-Capas con las siguientes fases:
+
+**Fase A - Persistencia con PostgreSQL:**
+Se mapeó la entidad principal con @Entity, se implementó el repositorio
+con JpaRepository y se generó el script SQL del schema de la base de datos.
+
+**Fase B - Arquitectura y Mapeo:**
+Se implementó la capa de servicio con conversión de objetos Entity a DTO
+y viceversa, organizando el proyecto en paquetes: controller, service,
+repository, entity y dto.
+
+**Fase C - Swagger y OpenAPI:**
+Se configuró la documentación con título, descripción y versión del proyecto,
+y se documentaron los 4 métodos CRUD (GET, POST, PUT, DELETE)
+usando @Operation y @Tag.
