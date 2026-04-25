@@ -16,7 +16,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_product")
+    @Column(name = "id_product") //en la base de datos es product_id
     private Long id;
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -31,7 +31,7 @@ public class Product {
     @Min(0)
     @NotNull(message = "La cantidad es obligatorio")
     @Column(nullable = false)
-    private Integer stock;
+    private Integer currentStock;
 
     @Size(max = 500)
     @NotBlank(message = "La descripcion es obligatoria")

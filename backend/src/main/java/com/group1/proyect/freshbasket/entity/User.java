@@ -17,7 +17,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
+    @Column(name = "user_id")
     private Long id;
     
     @NotBlank(message = "El nombre es obligatorio")
@@ -43,6 +43,10 @@ public class User {
     @JsonIgnore
     @Column(nullable = false)
     private String password;
+
+    @NotNull(message = "El ID es obligatorio")
+    @Column(name = "country_id", nullable = false)
+    private Long countryId;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY) 
     @JsonIgnore

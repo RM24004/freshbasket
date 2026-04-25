@@ -17,7 +17,7 @@ public class Exit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_exit")
+    @Column(name = "id_exit") //en la base de datos yo lo deje como exit_id
     private Long id;
 
     @Min(1)

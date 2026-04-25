@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-        product.setStock(dto.getStock());
+        product.setCurrentStock(dto.getCurrentStock());
         product.setDescription(dto.getDescription());
         product.setImageUrl(dto.getImageUrl()); //
 
@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
-        dto.setStock(product.getStock());
+        dto.setCurrentStock(product.getCurrentStock());
         dto.setDescription(product.getDescription());
         dto.setImageUrl(product.getImageUrl()); 
 
@@ -106,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
 
                     existingProduct.setName(requestDTO.getName());
                     existingProduct.setPrice(requestDTO.getPrice());
-                    existingProduct.setStock(requestDTO.getStock());
+                    existingProduct.setCurrentStock(requestDTO.getCurrentStock());
                     existingProduct.setDescription(requestDTO.getDescription());
                     existingProduct.setImageUrl(requestDTO.getImageUrl()); // 
 

@@ -24,6 +24,8 @@ public class Entry {
     @Column(name = "entry_date", nullable = false, updatable = false)
     private LocalDateTime entryDate;
 
+    //falta agregar unit_cost
+
     @Min(1)
     @NotBlank(message = "El valor es obligatorio")
     @Column(nullable = false)

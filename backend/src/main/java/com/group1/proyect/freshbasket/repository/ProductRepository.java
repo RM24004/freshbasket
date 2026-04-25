@@ -11,5 +11,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // esta parte retorna ENTIDAD, no DTO
     List<Product> findByNameContainingIgnoreCase(String name);
     
-    List<Product> findByStockLessThan(Integer stock);
+    List<Product> findByCurrentStockLessThan(Integer currentStock);
 }

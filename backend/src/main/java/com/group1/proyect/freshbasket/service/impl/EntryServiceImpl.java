@@ -96,7 +96,7 @@ public class EntryServiceImpl implements EntryService {
                 .orElseThrow(() -> new RuntimeException("Entrada no encontrada con ID: " + id));
     }
 
-    /* 
+
     @Override
     public EntryResponseDTO updateEntry(Long id, EntryRequestDTO request) {
 
@@ -120,12 +120,12 @@ public class EntryServiceImpl implements EntryService {
         Entry updated = entryRepository.save(entry);
 
         return toResponse(updated);
-    }*/
+    }
 
-    /* 
+
     @Override
     public void deleteEntry(Long id) {
         entryRepository.deleteById(id);
-    }*/
+    }
 
 }

@@ -17,7 +17,7 @@ public class Country {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_country")
+    @Column(name = "id_country") //en la base de datos lo deje como country_id
     private Long id;
 
     @NotBlank(message = "El nombre del país es obligatorio")

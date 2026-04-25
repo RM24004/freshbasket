@@ -24,7 +24,7 @@ public class ProductRequestDTO {
     @Schema(description = "Stock disponible", example = "150")
     @NotNull(message = "El stock es obligatorio")
     @Min(value = 0, message = "El stock debe ser mayor o igual a 0")
-    private Integer stock;
+    private Integer currentStock;
 
     @Schema(description = "Descripción del producto", example = "Manzana fresca importada")
     private String description;
