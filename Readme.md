@@ -1,10 +1,12 @@
+![img.png](img.png)
+
+
 Universidad de El Salvador 
-Facultad Multidisciplinaria de Occidente – Ingeniería en Desarrollo de Software .
+Facultad Multidisciplinaria de Occidente – Ingeniería en Desarrollo de Software.
 
 
-# Projecto FreshBasket
-Este es la base para el projecto de materia desarrollo de aplicaciones web, para el año 2026 de la Universidad de El Salvador, posteriror mente se haran mas modificacion basados en JavaScript y otras technologias aplicadas a esta materia.
-
+# Proyecto FreshBasket
+Esta es la base para el proyecto de la materia Desarrollo de Aplicaciones Web (DAW), para el año 2026 de la Universidad de El Salvador, posteriormente se harán más modificaciones basadas en JavaScript y otras tecnologías aplicadas a esta materia.
 
 
 ## Estructura del Proyecto
@@ -20,14 +22,14 @@ Este es la base para el projecto de materia desarrollo de aplicaciones web, para
 
 
 ## Integrantes -- nombre y carnet
-| # | Nombre                             | carnet |
-|---|------------------------------------|--------|
-| 1 |Victor Alberto Rodriguez Monterrosa |RM24004 |
-| 2 |Alexander Alonso Zeceña Martinez    |ZM24004 |
-| 3 |José Alfredo López Rivera           |LR24003 |
-| 4 | Irvin Adonay Ramirez linares   | RL22020 |
-| 5 |Claudia Melissa Hernandez Ceren     |HC24020 |
-|---|------------------------------------|--------|
+| # | Nombre                               | carnet |
+|---|--------------------------------------|--------|
+| 1 | Victor Alberto Rodriguez Monterrosa  |RM24004 |
+| 2 | Alexander Alonso Zeceña Martinez     |ZM24004 |
+| 3 | José Alfredo López Rivera            |LR24003 |
+| 4 | Irvin Adonay Ramirez linares         |RL22020 |
+| 5 | Claudia Melissa Hernandez Ceren      |HC24020 |
+|---| ------------------------------------ |--------|
 
 Segundo paso:
 Laboratorio 2: Backend Funciona
@@ -38,7 +40,7 @@ Demostrar la capacidad de implementar un sistema persistente bajo una
 arquitectura de N-Capas, asegurando el desacoplamiento de datos mediante DTOs y
 la exposición profesional de servicios a través de OpenAPI
 
--- Descripción del Trabajo Realizado
+-- Descripción del trabajo realizado
 
 Este proyecto implementa una arquitectura de N-Capas con las siguientes fases:
 
