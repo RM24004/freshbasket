@@ -25,7 +25,7 @@ function Login() {
             localStorage.setItem("userId", decoded.userId);
 
             alert("Login exitoso");
-            navigate("/products");
+            navigate("/index");
         } catch (error) {
             console.error(error);
             alert("Error en login. Verifique sus credenciales.");
