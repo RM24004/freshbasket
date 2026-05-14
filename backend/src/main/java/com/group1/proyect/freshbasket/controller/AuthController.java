@@ -4,7 +4,7 @@ import com.group1.proyect.freshbasket.dto.response.AuthResponseDTO;
 import com.group1.proyect.freshbasket.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
 private final AuthService authService;

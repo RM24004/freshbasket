@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/entries")
-@Tag(name = "Entries", description = "API para la gestión de entradas del inventario FreshBasket")
+@Tag(name = "Entries", description = "API para la gestión de entradas del inventario de FreshBasket")
 public class EntryController {
 
     private final EntryService entryService;

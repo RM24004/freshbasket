@@ -1,11 +1,14 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-//import React from 'react';
+import React from "react";
 import ReactDOM from "react-dom/client";
-import App from './App.jsx'
-import { BrowserRouter } from "react-router-dom";
+import App from "./App.jsx";
+import "bootstrap/dist/css/bootstrap.min.css"; // para estilos de Bootstrap
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import "./index.css";// tus estilos personalizados
 
-  ReactDOM.createRoot(document.getElementById("root")).render(
-    <BrowserRouter>
+
+// Montar la aplicación en el div con id="root" de index.html
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <App />
-    </BrowserRouter>
+  </React.StrictMode>
 );
