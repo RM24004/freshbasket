@@ -1,4 +1,4 @@
-import "../styles/login.css"
+import "../styles/login.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +19,7 @@ function Login() {
        body: JSON.stringify({ email, password }),
      });
 
-     const data = await response.json(); // Movemos esto arriba para leer el error si lo hay
+     const data = await response.json(); 
 
      if (response.ok) {
        localStorage.setItem("token", data.token);
@@ -39,12 +39,12 @@ function Login() {
   return (
 <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light position-relative p-3">
 
-  {/* Botón Inicio: Separado de los bordes y de la caja */}
+  {/* Botón Inicio */}
   <div
     className="position-absolute"
     style={{
-      top: '10px',   // Más espacio desde arriba
-      left: '5px',  // Más espacio desde la izquierda
+      top: '10px',   
+      left: '5px',  
       zIndex: 1000
     }}
   >
@@ -62,7 +62,7 @@ function Login() {
     <div className="row justify-content-center">
       <div className="col-md-10 col-lg-8 col-xl-7">
 
-        {/* Card Principal con bordes redondeados y sombra suave */}
+        {/* Card Principal */}
         <div className="card shadow-lg border-0 overflow-hidden" style={{ borderRadius: '45px' }}>
           <div className="row g-0">
 
@@ -131,9 +131,22 @@ function Login() {
                       )}
                     </button>
                   </div>
+                  
+                  {/* --- NUEVO ENLACE DE RECUPERAR CONTRASEÑA --- */}
+                  <div className="text-end mt-3 mb-2">
+                    <a 
+                      href="#" 
+                      onClick={(e) => { e.preventDefault(); navigate("/forgot-password"); }}
+                      className="text-primary text-decoration-none"
+                      style={{ fontSize: '0.85rem' }}
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </a>
+                  </div>
+
                 </form>
 
-                <div className="text-center mt-4">
+                <div className="text-center mt-3">
                   <p className="text-muted small mb-0">
                     ¿No tienes cuenta?{" "}
                     <a
