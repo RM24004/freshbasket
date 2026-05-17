@@ -31,7 +31,20 @@ Esta es la base para el proyecto de la materia Desarrollo de Aplicaciones Web (D
 | 5 | Claudia Melissa Hernandez Ceren      |HC24020 |
 |---| ------------------------------------ |--------|
 
-Segundo paso:
+--Primer paso:
+
+Objetivo:
+Establecer la base del proyecto final mediante un flujo de trabajo profesional, 
+asegurando que los 5 integrantes dominen los comandos esenciales y la colaboración 
+con git.
+
+Fase 1: Configuración del Líder (Solo 1 persona)
+
+Fase 2: Trabajo Individual (Los 5 integrantes)
+
+Fase 3: Integración (Pull Request)
+
+--Segundo paso:
 Laboratorio 2: Backend Funciona
 
 Objetivo:
@@ -57,3 +70,23 @@ repository, entity y dto.
 Se configuró la documentación con título, descripción y versión del proyecto,
 y se documentaron los 4 métodos CRUD (GET, POST, PUT, DELETE)
 usando @Operation y @Tag.
+
+--Tercer paso:
+Laboratorio 3: Diseño de Interfaz y Simulación de Consumo de API
+
+Objetivo:
+Diseñar y representar una interfaz de usuario funcional basada en el sistema
+desarrollado en el laboratorio anterior, evidenciando la comprensión de las
+operaciones CRUD desde el frontend mediante un enfoque Mobile First y una
+simulación visual del consumo de API.
+
+-- Descripción del trabajo realizado
+
+Este proyecto implementa una arquitectura de N-Capas con las siguientes fases:
+
+**Fase A: Diseño de Interfaz (Mobile First)
+
+**Fase B: Implementación Básica
+
+
+**Fase C: Simulación de Operaciones CRUD

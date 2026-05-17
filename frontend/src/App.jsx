@@ -16,8 +16,8 @@ function App() {
     <Router>
       <div className="app-container">
         {/* Menú de navegación */}
-        <nav className="menu-grid">
-        </nav>
+        
+        
 
         {/* Definición de rutas */}
         <Routes>
