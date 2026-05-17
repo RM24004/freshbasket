@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUser } from "../services/userService.js";
+import "../styles/register.css"
 
 function RegisterScreen() {
   const navigate = useNavigate();
@@ -91,7 +92,7 @@ function RegisterScreen() {
               <Field label="ID de País" icon="bi-globe" name="countryId" type="number" placeholder="Ej: 1" value={form.countryId} onChange={handleChange} />
             </div>
             <Field label="Correo Electrónico" icon="bi-envelope" name="email" type="email" placeholder="correo@ejemplo.com" value={form.email} onChange={handleChange} full />
-            
+
             {/* Password with toggle */}
             <div style={s.field}>
               <label style={s.label}>Contraseña</label>

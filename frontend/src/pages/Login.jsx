@@ -102,7 +102,7 @@ function Login() {
             <span>FreshBasket</span>
           </div>
           <h1 className="fb-form-title">Bienvenido</h1>
-          <p className="fb-form-sub">Inicia sesion para continuar</p>
+          <p className="fb-form-sub">Inicia sesión para continuar</p>
           <form onSubmit={handleLogin} className="fb-form">
             <div className="fb-field">
               <label className="fb-label">Correo Electronico</label>
@@ -119,7 +119,7 @@ function Login() {
               </div>
             </div>
             <div className="fb-field">
-              <label className="fb-label">Contrasena</label>
+              <label className="fb-label">Contraseña</label>
               <div className="fb-input-wrap">
                 <i className="bi bi-lock fb-input-icon" />
                 <input
@@ -147,7 +147,7 @@ function Login() {
                 onClick={() => navigate("/forgot-password")}
                 style={{background:"none",border:"none",cursor:"pointer",padding:0,font:"inherit"}}
               >
-                Olvidaste tu contrasena?
+                Olvidaste tu contraseña?
               </button>
             </div>
             <button type="submit" className="fb-btn" disabled={loading}>
@@ -159,7 +159,7 @@ function Login() {
               ) : (
                 <>
                   <i className="bi bi-box-arrow-in-right" />
-                  Iniciar Sesion
+                  <span>Iniciar Sesión</span>
                 </>
               )}
             </button>

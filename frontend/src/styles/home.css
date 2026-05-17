@@ -1,82 +1,61 @@
-/* Fondo general */
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background: #fff; /* blanco puro */
-  font-family: Arial, sans-serif;
-}
-
-/* Contenedor principal */
 .home-container {
-  min-height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  position: relative;
+  width: 100%;
+  height: 100vh;          /* Ocupa toda la pantalla */
+  overflow: hidden;
 }
 
-/* Cuadro de bienvenida */
-.home-container .welcome-box {
-  background-color: #87CEEB; /* celeste */
-  text-color: #000;
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+/* Imagen de fondo */
+.home-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;    /* Mantiene proporciones */
+  z-index: 0;
+}
+
+/* Contenedor overlay */
+.overlay-content {
+  position: absolute;
+  bottom: 20%;            /* Ajusta la altura relativa a la imagen */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
   text-align: center;
-  width: 90%;
-  max-width: 700px;
 }
 
-.home-container .welcome-box h1 {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
-  color: #000;
+/* Botón Inicio - mobile first */
+.btn-home {
+  text-decoration: none;
+  border-radius: 40px;
+  background-color: #9ACD32;
+  border: #000;
+  color: #fff;
+  font-weight: #000;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 80%;             /* Botón ancho en móvil */
+  max-width: 280px;       /* Límite en desktop */
 }
 
-.home-container .welcome-box p {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  color: #000;
+/* Hover en desktop */
+.btn-home:hover {
+  background-color: rgba(20, 108, 67, 0.95);
+  border-color: rgba(15, 81, 50, 1);
 }
 
-/* Botón de login */
-.home-container .welcome-box .btn-primary {
-  background-color: #0000FF; /* azul */
-  color: #fff;               /* texto blanco */
-  font-size: 1.2rem;
-  padding: 0.8rem 2rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.home-container .welcome-box .btn:hover {
-  background-color: #5aaed6; /* azul más claro al pasar */
-}
-
-/* --- Responsive --- */
-@media (max-width: 768px) {
- .home-container .welcome-box {
-    padding: 1.5rem;
-    border-radius: 12px;
+/* Ajustes responsive */
+@media (min-width: 768px) {
+  .overlay-content {
+    bottom: 10%;          /* Ajusta posición en pantallas grandes */
   }
 
-  .home-container .welcome-box h1 {
-    font-size: 2rem;
-  }
-
-  .welcome-box p {
-    font-size: 1.2rem;
-  }
-
-  .home-container .welcome-box .btn {
-    width: 100%; /* botón ocupa todo el ancho en móvil */
-    font-size: 1rem;
-    padding: 0.6rem;
+  .btn-home {
+    width: auto;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
   }
 }

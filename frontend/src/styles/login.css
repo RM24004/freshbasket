@@ -114,7 +114,7 @@
 
 /* ===== RIGHT FORM PANEL ===== */
 .fb-form-panel {
-  width: 460px;
+  width: 660px;
   min-width: 320px;
   display: flex;
   align-items: center;
@@ -185,6 +185,7 @@
   border: 2px solid #e5e7eb;
   border-radius: 10px;
   font-size: 0.95rem;
+  font-weight: bold;
   font-family: 'Nunito', sans-serif;
   color: #1a1a2e;
   background: #f9fafb;
@@ -212,7 +213,12 @@
 .fb-eye-btn:hover { color: #1a6b3a; }
 
 /* Forgot */
-.fb-forgot { text-align: right; margin-top: -0.4rem; }
+.fb-forgot {
+text-align: right;
+margin-top: -0.4rem;
+font-color: #000;
+font-size: 1rem;
+}
 
 .fb-link {
   color: #1a6b3a;
@@ -224,32 +230,30 @@
 .fb-link:hover { color: #2ecc71; text-decoration: underline; }
 .fb-link-bold { font-weight: 800; }
 
-/* Button */
 .fb-btn {
+  background-color: #9ACD32 !important; /* verde siempre */
+  color: #fff !important;               /* texto blanco */
+  border: none !important;
+  border-radius: 100px !important;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.85rem;
-  background: linear-gradient(135deg, #1a6b3a, #2ecc71);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.25s, transform 0.2s, box-shadow 0.25s;
-  box-shadow: 0 4px 15px rgba(46,204,113,0.35);
-  margin-top: 0.4rem;
+  gap: 8px;
 }
-.fb-btn:hover:not(:disabled) {
-  opacity: 0.92;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(46,204,113,0.45);
+
+.fb-btn:hover {
+  background-color: #218838 !important; /* verde más oscuro al pasar el mouse */
 }
-.fb-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.fb-btn:disabled {
+  background-color: #6c757d !important; /* gris cuando está deshabilitado */
+  cursor: not-allowed;
+}
+
 
 /* Spinner */
 .fb-spinner {
@@ -267,7 +271,7 @@
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.9rem;
-  color: #7a8694;
+  color: #000;
 }
 
 /* ===== RESPONSIVE ===== */
