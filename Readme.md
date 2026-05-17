@@ -32,28 +32,21 @@ Esta es la base para el proyecto de la materia Desarrollo de Aplicaciones Web (D
 |---| ------------------------------------ |--------|
 
 Segundo paso:
-Laboratorio 2: Backend Funciona
+Laboratorio 3: Diseño de Interfaz y Simulación de Consumo de API
 
 Objetivo:
-
-Demostrar la capacidad de implementar un sistema persistente bajo una
-arquitectura de N-Capas, asegurando el desacoplamiento de datos mediante DTOs y
-la exposición profesional de servicios a través de OpenAPI
+Diseñar y representar una interfaz de usuario funcional basada en el sistema
+desarrollado en el laboratorio anterior, evidenciando la comprensión de las
+operaciones CRUD desde el frontend mediante un enfoque Mobile First y una
+simulación visual del consumo de API.
 
 -- Descripción del trabajo realizado
 
 Este proyecto implementa una arquitectura de N-Capas con las siguientes fases:
 
-**Fase A - Persistencia con PostgreSQL:**
-Se mapeó la entidad principal con @Entity, se implementó el repositorio
-con JpaRepository y se generó el script SQL del schema de la base de datos.
+**Fase A: Diseño de Interfaz (Mobile First)
 
-**Fase B - Arquitectura y Mapeo:**
-Se implementó la capa de servicio con conversión de objetos Entity a DTO
-y viceversa, organizando el proyecto en paquetes: controller, service,
-repository, entity y dto.
+**Fase B: Implementación Básica
 
-**Fase C - Swagger y OpenAPI:**
-Se configuró la documentación con título, descripción y versión del proyecto,
-y se documentaron los 4 métodos CRUD (GET, POST, PUT, DELETE)
-usando @Operation y @Tag.
+
+**Fase C: Simulación de Operaciones CRUD
