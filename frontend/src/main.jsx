@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./services/axiosConfig";
 import App from "./App.jsx";
 import "bootstrap/dist/css/bootstrap.min.css"; // para estilos de Bootstrap
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'

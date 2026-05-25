@@ -1,3 +1,5 @@
+// Se encarga de realizar todo el proceso de decodificación del token
+
 import { jwtDecode } from "jwt-decode";
 
 const API_URL = "http://localhost:8080/api/auth/login";
@@ -15,11 +17,23 @@ export async function login(email, password) {
   }
 
   const data = await response.json();
+
+  // Guardamos el token para habilitar el acceso a las rutas privadas
   localStorage.setItem("token", data.token);
 
-  // Opcional: decodificar JWT
-  const decoded = jwtDecode(data.token);
-  console.log("Usuario:", decoded.sub, "Roles:", decoded.roles);
+  // Decodificación segura de JWT para evitar crasheos
+  try {
+    const decoded = jwtDecode(data.token);
+
+
+    const userRoles = decoded.roles || decoded.role || decoded.authorities || "No asignado";
+    const userEmail = decoded.sub || decoded.email;
+
+    console.log("Sesión Iniciada -> Usuario:", userEmail, "| Permisos:", userRoles);
+  } catch (jwtError) {
+
+    console.warn("No se pudo decodificar el payload del token JWT:", jwtError.message);
+  }
 
   return data;
 }

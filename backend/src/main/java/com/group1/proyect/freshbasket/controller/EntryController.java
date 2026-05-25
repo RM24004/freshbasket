@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/entries")
 @Tag(name = "Entries", description = "API para la gestión de entradas del inventario de FreshBasket")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EntryController {
 
     private final EntryService entryService;

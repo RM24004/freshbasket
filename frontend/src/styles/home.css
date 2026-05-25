@@ -30,7 +30,7 @@
 .btn-home {
   text-decoration: none;
   border-radius: 40px;
-  background-color: #9ACD32;
+  background: linear-gradient(135deg, #116237 0%, #2ecc71 100%);
   border: #000;
   color: #fff;
   font-weight: #000;

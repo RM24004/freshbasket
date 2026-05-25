@@ -37,7 +37,6 @@ public class Product {
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    // Imagen del producto se guarda la url 
     @Size(max = 500)
     @NotBlank(message = "La imagen es obligatoria")
     @Column(name = "image_url")
@@ -54,6 +53,12 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
+
+    // Relación con usuario
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
 
     

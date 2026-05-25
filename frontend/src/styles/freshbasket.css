@@ -1,0 +1,611 @@
+
+:root {
+  --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Colores de Marca y Fondo */
+  --bg-app: #f4f6f9;
+  --bg-sidebar: #1e293b;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+
+  /* Textos */
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+
+  /* Estados / Acentos */
+  --primary: #2ecc71;
+  --primary-dark: #1a6b3a;
+  --info: #0d6efd;
+  --warning: #fd7e14;
+  --danger: #dc3545;
+  --purple: #6f42c1;
+
+  /* Layout y Efectos */
+  --sidebar-width: 260px;
+  --radius: 8px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --transition: all 0.25s ease-in-out;
+}
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* El contenedor principal en móviles se apila verticalmente */
+.fb-root {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   BARRA LATERAL (Sidebar) - Adaptada a Móvil
+   ========================================================================== */
+.fb-sidebar {
+  width: 100%;
+  background-color: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.fb-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fb-sidebar-brand-icon {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.fb-sidebar-brand-name {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 2.8px;
+}
+
+.fb-sidebar-section {
+  display: none;
+
+}
+
+
+.fb-nav {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+.fb-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.fb-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  padding: 0.5rem 0.85rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.fb-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.fb-nav-item-active {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+}
+
+.fb-nav-icon {
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   ESPACIO DE TRABAJO, TOPBAR Y CONTENIDOS (Móvil)
+   ========================================================================== */
+.fb-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fb-topbar {
+  background-color: #ffffff;
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.fb-top-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: capitalize;
+}
+
+.fb-top-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+
+.fb-top-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fb-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: var(--bg-app);
+}
+
+.fb-form-container {
+  width: 100%;
+}
+
+/* ==========================================================================
+   COMPONENTES DE FORMULARIOS Y TARJETAS (Móvil)
+   ========================================================================== */
+.fb-welcome-card {
+  background: linear-gradient(135deg, var(--bg-sidebar), #0f172a);
+  color: #ffffff;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+
+.fb-welcome-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.fb-welcome-desc {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.fb-welcome-right {
+  align-self: flex-start;
+}
+
+.fb-welcome-icon {
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.15);
+}
+
+/* Sección de Formulario */
+.fb-form-section {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.fb-form-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  padding: 5.25rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+}
+
+.fb-form-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Estructura de inputs del CRUD */
+.fb-crud-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fb-crud-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Una sola columna en móvil */
+  gap: 1rem;
+}
+
+.fb-crud-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.fb-crud-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.fb-crud-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fb-crud-input-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.fb-crud-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem 0.6rem 2.2rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  outline: none;
+  transition: var(--transition);
+}
+
+.fb-crud-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
+}
+
+.fb-action-btn {
+  border: none;
+  color: #ffffff;
+  padding: 0.7rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+  width: 100%; /* Botón completo en móvil */
+}
+
+/* ==========================================================================
+   BÚSQUEDAS Y TARJETAS DE RESULTADOS (Móvil)
+   ========================================================================== */
+.fb-search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.fb-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.fb-search-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--text-light);
+}
+
+.fb-search-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem 0.6rem 2.2rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  outline: none;
+}
+
+.fb-search-btn {
+  justify-content: center;
+  width: 100%;
+  padding: 0.65rem;
+}
+
+/* Cabeceras de Listas */
+.fb-section-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.fb-badge {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: var(--primary-dark);
+  padding: 0.25rem 0.6rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Grillas de usuarios por defecto (1 sola columna en móvil) */
+.fb-results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.fb-user-display-card, .fb-user-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.fb-card-user-title, .fb-user-card-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.fb-detail-card {
+  background-color: var(--bg-card);
+  border-left: 4px solid var(--info);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  margin-top: 1rem;
+}
+
+.fb-empty {
+  background-color: var(--bg-card);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius);
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.fb-profile-container {
+  position: relative;
+}
+
+/* Botón disparador */
+.fb-profile-trigger-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fb-profile-icon {
+  font-size: 1.2rem;
+}
+
+.fb-profile-arrow {
+  font-size: 0.8rem;
+}
+
+/* Menú flotante (Dropdown) */
+.fb-profile-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #ffffff;
+  min-width: 230px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  z-index: 1000;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: fbFadeInDropdown 0.2s ease-out;
+}
+
+/* Cabecera del desplegable */
+.fb-profile-header {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Insignia / Badge de Roles */
+.fb-role-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Colores para Administrador */
+.fb-role-badge.admin {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Colores para Usuario Común */
+.fb-role-badge.usuario {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+/* Texto de Correo Electrónico */
+.fb-profile-email {
+  margin: 0.6rem 0 0 0;
+  font-size: 0.85rem;
+  color: #64748b;
+  word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Botón definitivo de cierre de sesión interno */
+.fb-profile-logout-action-btn {
+  width: 100%;
+  justify-content: center;
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+}
+
+.fb-profile-logout-action-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Animación de entrada para el menú */
+@keyframes fbFadeInDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   MEDIA QUERIES: RESPONSIVE (Escritorios y Pantallas Grandes)
+   ========================================================================== */
+
+/* --- TABLETAS Y DISPOSITIVOS MEDIANOS --- */
+@media (min-width: 768px) {
+  .fb-root {
+    flex-direction: row;
+  }
+
+  .fb-sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+
+  /* NUEVO: Compactamos el contenedor del logo reduciendo su padding vertical */
+  .fb-sidebar-brand {
+    padding: 0.6rem 1rem;
+  }
+
+  /* NUEVO: Reducimos el espacio superior de la palabra "MÓDULOS" */
+  .fb-sidebar-section {
+    display: block;
+    padding: 0.75rem 1rem 0.25rem 1rem;
+  }
+
+  /* CORREGIDO Y REDUCIDO: Se arregló el espacio 'padding 1 rem' que tenía un error de sintaxis */
+  .fb-nav {
+    flex-direction: column;
+    overflow-x: visible;
+    padding: 0.25rem 1rem 1rem 1rem; /* El 0.25rem de arriba pega los botones a "MÓDULOS" */
+  }
+
+  .fb-nav-item {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+  }
+
+  /* ... El resto de tus estilos dentro de la media query se mantienen exactamente igual ... */
+  .fb-topbar {
+    flex-direction: row;
+    padding: 1.25rem 2rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .fb-content {
+    padding: 2rem;
+  }
+
+  .fb-welcome-card {
+    flex-direction: row;
+    padding: 2.5rem;
+  }
+
+  .fb-welcome-icon {
+    font-size: 4.5rem;
+  }
+
+  .fb-form-card {
+    padding: 2rem;
+  }
+
+  .fb-crud-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .fb-action-btn {
+    width: auto;
+  }
+
+  .fb-search-form {
+    flex-direction: row;
+  }
+
+  .fb-search-btn {
+    width: auto;
+  }
+
+  .fb-section-header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .fb-results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

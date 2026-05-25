@@ -18,7 +18,7 @@ public class UserResponseDTO {
     private String name;
 
     @Schema(description = "Apellidos del usuario", example = "Hernandez Verdugo")
-    private String last_name;
+    private String lastName;
 
     @Schema(description = "E-mail del usuario", example = "elbaby.lindo@mail.com")
     private String email;
@@ -26,10 +26,16 @@ public class UserResponseDTO {
     @Schema(description = "Telefono de contacto del usuario", example = "8080-9000 o 23003476")
     private String phone;
 
+    @Schema(description = "Rol del usuario", example = "ADMINISTRADOR, USUARIO, SOPORTE")
+    private String role;
+
     //Con Password encoder logramos que la contraseña no se muestre en texto plano
     @Schema(description = "Contraseña del usuario", example = "JDPEOD34#&TEmxr")
     private String password;
 
     @Schema(description = "ID del país", example = "1")
     private Long countryId;
+
+    @Schema(description = "nombre del país", example = " El Salvador")
+    private String countryName;
 }

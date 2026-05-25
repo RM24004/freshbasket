@@ -1,181 +1,190 @@
 import "../styles/login.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const slides = [
-  {
-    title: "Gestiona tu inventario",
-    desc: "Controla el stock de tus productos en tiempo real con FreshBasket.",
-    bg: "linear-gradient(135deg, #1a6b3a 0%, #2ecc71 100%)",
-    icon: "bi-box-seam-fill",
-  },
-  {
-    title: "Proveedores al instante",
-    desc: "Conecta con tus proveedores y actualiza entradas de forma rapida.",
-    bg: "linear-gradient(135deg, #145a32 0%, #27ae60 100%)",
-    icon: "bi-truck",
-  },
-  {
-    title: "Reportes en tiempo real",
-    desc: "Visualiza el rendimiento de tu negocio con graficas y estadisticas.",
-    bg: "linear-gradient(135deg, #0e3d22 0%, #1e8449 100%)",
-    icon: "bi-bar-chart-fill",
-  },
-];
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [current, setCurrent] = useState(0);
-  const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 3500);
-    return () => clearInterval(timer);
-  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const BACKEND_URL = "http://localhost:8080/api/auth/login";
+
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
+
       if (response.ok) {
-        localStorage.setItem("token", data.token);
-        alert("Login correcto");
-        window.location.href = "/users";
-      } else {
-        alert(data.message || "Credenciales incorrectas");
+              const data = await response.json();
+
+              // Se guarda el token JWT entregado por el backend
+              localStorage.setItem("token", data.token);
+              const rolDesdeBackend = data.role || data.rol || data.userRole;
+              localStorage.setItem("userEmail", data.email)
+
+              if (rolDesdeBackend) {
+                localStorage.setItem("userRole", rolDesdeBackend);
+                console.log("Rol guardado con éxito en el sistema:", rolDesdeBackend);
+              } else {
+                console.warn("Spring Boot no envió ninguna propiedad de rol. Revisa tu backend.");
+              }
+
+              alert("¡Login correcto!");
+              window.location.href = "/freshbasket";
+            } else {
+
+        // Si el backend responde con 401 o 403, evitamos que .json() rompa la app
+        let errorMessage = "Credenciales incorrectas o acceso denegado";
+
+        try {
+          // Intentamos extraer un mensaje de error si el backend envió un objeto JSON
+          const errorData = await response.json();
+          if (errorData?.message) errorMessage = errorData.message;
+        } catch (e) {
+
+        }
+
+        alert(`Error (${response.status}): ${errorMessage}`);
       }
     } catch (error) {
-      console.error("Error detallado:", error);
-      alert("Error: El servidor no responde. Revisa si el backend esta encendido.");
+      console.error("Error detallado en la conexión:", error);
+      alert("Error: No se pudo establecer conexión con el backend. Verifica que Spring Boot esté encendido.");
     } finally {
       setLoading(false);
     }
   };
 
-  const slide = slides[current];
-
   return (
-    <div className="fb-login-root">
-      <div className="fb-slider" style={{ background: slide.bg }}>
-        <div className="fb-circle fb-circle-1" />
-        <div className="fb-circle fb-circle-2" />
-        <div className="fb-circle fb-circle-3" />
-        <div className="fb-slider-content">
-          <div className="fb-brand">
-            <i className="bi bi-basket3-fill fb-brand-icon" />
-            <span className="fb-brand-name">FreshBasket</span>
-          </div>
-          <div className="fb-slide-body" key={current}>
-            <div className="fb-slide-icon">
-              <i className={"bi " + slide.icon} />
-            </div>
-            <h2 className="fb-slide-title">{slide.title}</h2>
-            <p className="fb-slide-desc">{slide.desc}</p>
-          </div>
-          <div className="fb-dots">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                className={"fb-dot" + (i === current ? " fb-dot-active" : "")}
-                onClick={() => setCurrent(i)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+<div className="min-vh-100 d-flex align-items-center justify-content-center bg-light position-relative p-3">
 
-      <div className="fb-form-panel">
-        <div className="fb-form-card">
-          <div className="fb-mobile-brand">
-            <i className="bi bi-basket3-fill" />
-            <span>FreshBasket</span>
+  {/* Botón inicio */}
+  <div
+    className="position-absolute"
+    style={{
+      top: '10px',
+      left: '10px',
+      zIndex: 1000
+    }}
+  >
+    <a
+      href="/"
+      className="btn btn-outline-primary shadow-sm bg-light px-3 text:align"
+      style={{ borderRadius: '23px' }}
+    >
+      <i className="bi bi-house-door me-1"></i>
+      Inicio
+    </a>
+  </div>
+
+  <div className="container">
+    <div className="row justify-content-center">
+      <div className="col-md-10 col-lg-8 col-xl-7">
+
+        {/* Card Principal */}
+        <div className="card shadow-lg border-3 overflow-hidden" style={{ borderRadius: '50px' }}>
+          <div className="row g-1">
+
+            {/* Panel gris*/}
+            <div className="col-md-5 bg-light d-flex align-items-center justify-content-center p-7 text-white text-center">
+            <div>
+             <img src="/logo1.png" alt="logo1.png" className="img-fluid mb-3" />
+            </div>
+           </div>
+
+            {/* Panel Formulario */}
+            <div className="col-md-7">
+              <div className="card-body p-5 p-md-5">
+                <h2 className="text-center mb-4 fw-bold" style={{ color: "#116237" }}>
+                </h2>
+
+                <form onSubmit={handleLogin}>
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold small">Correo electrónico</label>
+                    <div className="input-group">
+                      <input
+                        type="email"
+                        className="form-label fw-semibold small"
+                        placeholder="correo@ejemplo.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="form-label fw-semibold small">Contraseña</label>
+                    <div className="input-group">
+                      <input
+                        type="password"
+                        className="form-label fw-semibold small"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="d-grid">
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-lg fw-bold py-1"
+                      style={{ borderRadius: '20px' }}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <span className="spinner-border spinner-border-sm me-2"></span>
+                      ) : (
+                        "Iniciar Sesión"
+                      )}
+                    </button>
+                  </div>
+
+                  {/* --- NUEVO ENLACE DE RECUPERAR CONTRASEÑA --- */}
+                  <div className="text-end mt-3 mb-2">
+                    <a
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); navigate("/forgot-password"); }}
+                      className="fw-bold text-decoration-none"
+                      style={{ color: "#116237 !important", fontSize: "0.85rem" }}
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </a>
+                  </div>
+
+                </form>
+
+                <div className="text-center mt-3">
+                  <p className="text-muted small mb-0">
+                    ¿No tienes cuenta?{" "}
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate("/register");
+                      }}
+                      className="fw-bold text-decoration-none" style={{ color: "#116237" }}
+                    >
+                      Regístrate aquí
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            </div>
+            </div>
           </div>
-          <h1 className="fb-form-title">Bienvenido</h1>
-          <p className="fb-form-sub">Inicia sesión para continuar</p>
-          <form onSubmit={handleLogin} className="fb-form">
-            <div className="fb-field">
-              <label className="fb-label">Correo Electronico</label>
-              <div className="fb-input-wrap">
-                <i className="bi bi-envelope fb-input-icon" />
-                <input
-                  type="email"
-                  className="fb-input"
-                  placeholder="correo@ejemplo.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-            <div className="fb-field">
-              <label className="fb-label">Contraseña</label>
-              <div className="fb-input-wrap">
-                <i className="bi bi-lock fb-input-icon" />
-                <input
-                  type={showPass ? "text" : "password"}
-                  className="fb-input"
-                  placeholder="........"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  className="fb-eye-btn"
-                  onClick={() => setShowPass(!showPass)}
-                  tabIndex={-1}
-                >
-                  <i className={"bi " + (showPass ? "bi-eye-slash" : "bi-eye")} />
-                </button>
-              </div>
-            </div>
-            <div className="fb-forgot">
-              <button
-                type="button"
-                className="fb-link"
-                onClick={() => navigate("/forgot-password")}
-                style={{background:"none",border:"none",cursor:"pointer",padding:0,font:"inherit"}}
-              >
-                Olvidaste tu contraseña?
-              </button>
-            </div>
-            <button type="submit" className="fb-btn" disabled={loading}>
-              {loading ? (
-                <>
-                  <span className="fb-spinner" />
-                  Ingresando...
-                </>
-              ) : (
-                <>
-                  <i className="bi bi-box-arrow-in-right" />
-                  <span>Iniciar Sesión</span>
-                </>
-              )}
-            </button>
-          </form>
-          <p className="fb-register-text">
-            No tienes cuenta?{" "}
-            <button
-              type="button"
-              className="fb-link fb-link-bold"
-              onClick={() => navigate("/register")}
-              style={{background:"none",border:"none",cursor:"pointer",padding:0,font:"inherit"}}
-            >
-              Registrate aqui
-            </button>
-          </p>
         </div>
+
       </div>
     </div>
   );

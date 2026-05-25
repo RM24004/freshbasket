@@ -45,4 +45,7 @@ public class ProductResponseDTO {
 
     @Schema(description = "ID del usuario", example = "1")
     private Long userId;
+
+    @Schema(description = "Nombre del usuario", example = "Juan Martinez")
+    private String userName;
 }

@@ -27,7 +27,7 @@ public class UserRequestDTO {
     @Size(max = 100)
     @Column(nullable = false, length = 100)
     @Schema(description = "Apellidos del usuario", example = "Hernandez Verdugo")
-    private String last_name;
+    private String lastName;
 
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "Formato de email invalido")
@@ -41,12 +41,16 @@ public class UserRequestDTO {
     @Schema(description = "Teléfono de contacto del usuario", example = "8080-9000 o 23003476")
     private String phone;
 
+    @Column(nullable = false)
+    @Schema(description = "Rol del usuario", example = "ADMINISTRADOR, USUARIO, SOPORTE")
+    private String role;
+
     @NotBlank(message = "La contraseña es obligatoria")
     @Column(nullable = false)
     @Schema(description = "Contraseña del usuario", example = "JDPEOD34#&TEmxr")
     private String password;
 
-    @NotNull(message = "El ID del pais es obligatorio")
-    @Schema(description = "ID del país", example = "1")
-    private Long countryId;
+    @NotNull(message = "El nombre del país es obligatorio")
+    @Schema(description = "Nombre del país", example = "El Salvador")
+    private String countryName;
 }

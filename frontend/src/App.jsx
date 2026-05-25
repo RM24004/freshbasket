@@ -1,34 +1,54 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import HomeScreen from "./pages/home";
 import LoginScreen from "./pages/Login";
-import UsersScreen from "./pages/UsersScreen";
+import Freshbasket from "./pages/freshbasket";
 import Register from './pages/register';
-import ForgotPassword from './pages/ForgotPassword'; 
+import ForgotPassword from './pages/ForgotPassword';
 
+import Products from "./pages/products";
+import Suppliers from "./pages/suppliers";
+import Users from "./pages/users";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token") // si hay token, está logueado
+    !!localStorage.getItem("token")
   );
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsAuthenticated(!!localStorage.getItem("token"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   return (
     <Router>
       <div className="app-container">
-        {/* Menú de navegación */}
-        
-        
+        <nav className="menu-grid"></nav>
 
-        {/* Definición de rutas */}
+
         <Routes>
+
+           {/* Rutas publicas, cualquier persona puede ingresar */}
           <Route path="/" element={<HomeScreen />} />
           <Route path="/login" element={<LoginScreen setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/register" element={<Register />} />
-          
-          {/* --- RUTA QUE FALTABA --- */}
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          
-          {isAuthenticated && <Route path="/users" element={<UsersScreen />} />}
+
+           {/* Rutas privadas, el usuario tiene que loguearse */}
+          <Route
+            path="/freshbasket"
+            element={isAuthenticated ? <Freshbasket /> : <Navigate to="/login" />}
+          >
+            <Route path="productos" element={<Products />} />
+            <Route path="usuarios" element={<Users />} />
+            <Route path="proveedores" element={<Suppliers />} />
+          </Route>
+
+
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
     </Router>

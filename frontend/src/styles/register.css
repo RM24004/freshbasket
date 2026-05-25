@@ -1,16 +1,57 @@
+.login-screen-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  /* El padding aquí actúa como un colchón inflable para que la tarjeta nunca toque los bordes */
+  padding: 1.25rem !important;
+  box-sizing: border-box;
+}
 
-/* Responsive */
-@media (max-width: 480px) {
-  .btn {
-    font-size: 0.85rem;
-    padding: 0.7rem;
+/* Estilos por defecto para móviles (Pantallas pequeñas) */
+.register-card {
+  width: 100% !important;
+  margin: 0 auto !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+.register-side {
+  padding: 2rem 1.5rem !important;
+  border-radius: 20px 20px 0 0 !important; /* Redondeado superior en móvil */
+}
+
+.register-form {
+  padding: 0 !important; /* Dejamos que el card-body de Bootstrap controle el espacio interno */
+}
+
+/* ==========================================================================
+   MEDIA QUERIES: RESPONSIVE PARA EL REGISTRO
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .login-screen-container {
+    padding: 2rem !important;
   }
 
-  .leftTitle {
-    font-size: 1.2rem;
+  .register-card {
+    flex-direction: row !important;
+    max-width: 650px !important;
   }
 
-  .rightTitle {
-    font-size: 1.3rem;
+  .register-side {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 2.5rem !important;
+    border-radius: 20px 0 0 20px !important; /* Redondeado izquierdo en escritorio */
+  }
+
+  .register-form {
+    flex: 2 !important;
   }
 }

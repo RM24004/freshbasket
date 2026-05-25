@@ -33,16 +33,17 @@ public class ProductRequestDTO {
     @Schema(description = "URL de la imagen del producto", example = "https://miapp.com/img/manzana.jpg")
     private String imageUrl;
 
-    @Schema(description = "ID de la categoría", example = "1")
-    @NotNull(message = "El ID de la categoría es obligatorio")
-    private Long categoryId;
+    @Schema(description = "Nombre de la categoría", example = "Frutas")
+    @NotNull(message = "El nombre de la categoría es obligatorio")
+    private String categoryName;
 
-    @Schema(description = "ID del proveedor", example = "1")
-    @NotNull(message = "El ID del proveedor es obligatorio")
-    private Long supplierId;
+    @Schema(description = "El nombre del proveedor", example = "Distribuidora del monte")
+    @NotNull(message = "El nombre del proveedor es obligatorio")
+    private String supplierName;
 
-    @Schema(description = "ID del usuario", example = "1")
-    @NotNull(message = "El ID del usuario es obligatorio")
-    private Long userId;
+    @Schema(description = "Nombre del usuario", example = "Juan Martinez")
+    @NotNull(message = "El nombre del usuario es obligatorio")
+    private String userName;
 
 }
+

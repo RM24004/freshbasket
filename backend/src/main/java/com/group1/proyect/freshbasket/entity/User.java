@@ -19,7 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    
+
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50)
     @Column(nullable = false, length = 50)
@@ -44,15 +44,20 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @NotNull(message = "El ID es obligatorio")
-    @Column(name = "country_id", nullable = false)
-    private Long countryId;
+    @NotNull(message = "El rol es obligatorio")
+    @Column(nullable = false)
+    private String role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY) 
+    // Por esto (Relación Muchos a Uno):
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "country_id", nullable = false)
+    private Country country;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Entry> entries = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY) 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Exit> exits = new ArrayList<>();
 }
