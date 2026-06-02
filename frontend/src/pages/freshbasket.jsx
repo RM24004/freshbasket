@@ -10,6 +10,7 @@ function Freshbasket({ onLogout }) {
 
   //Extrae el rol y correo de cada usuario para mostrarse en el perfil
   const userRole = (localStorage.getItem("userRole") || "USUARIO").toUpperCase().trim();
+  const userName = localStorage.getItem("userName") || "Usuario Registrado";
   const userEmail = localStorage.getItem("userEmail") || "correodeejemplo@mail.com";
 
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -280,6 +281,9 @@ function Freshbasket({ onLogout }) {
                   <div className="fb-profile-dropdown">
                     <div className="fb-profile-header">
                       <span className={`fb-role-badge ${userRole.toUpperCase() === "ADMIN" ? "admin" : "usuario"}`}>{userRole}</span>
+                      <h6 className="fb-profile-name fw-bold text-dark mt-2 mb-1" style={{ fontSize: "0.95rem" }}>
+                        {localStorage.getItem("userName") || "Usuario Registrado"}
+                      </h6>
                       <p className="fb-profile-email"><i className="bi bi-envelope-fill" />{userEmail}</p>
                     </div>
                     <button onClick={handleLogout} className="fb-logout-btn fb-profile-logout-action-btn">

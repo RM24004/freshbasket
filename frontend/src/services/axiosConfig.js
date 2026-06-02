@@ -25,10 +25,15 @@ axios.interceptors.response.use(
         if (error.response) {
             const status = error.response.status;
             const serverMessage = error.response.data?.message;
-
             const method = error.config.method?.toLowerCase();
+            const url = error.config.url || "";
 
-            const isIdRequest = /\/\d+$/.test(error.config.url || "");
+            if (status === 403 && (url.includes("/api/users") || url.includes("/users"))) {
+                console.log(`[Axios Interceptor] 403 bloqueado en silencio para el endpoint: ${url}`);
+                return Promise.reject(error);
+            }
+
+            const isIdRequest = /\/\d+$/.test(url);
 
             if (isIdRequest && (status === 403 || status === 404)) {
                 return Promise.reject(error);
@@ -58,6 +63,7 @@ axios.interceptors.response.use(
 
         return Promise.reject(error);
     }
+
 );
 
 export default axios;

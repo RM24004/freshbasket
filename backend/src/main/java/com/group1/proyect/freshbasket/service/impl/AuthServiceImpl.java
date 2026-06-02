@@ -47,11 +47,12 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getId(),
                 user.getRole()
+
         );
 
         String cleanRole = String.valueOf(user.getRole());
 
-        return new AuthResponseDTO(token, cleanRole, user.getEmail());
+        return new AuthResponseDTO(token, cleanRole, user.getEmail(), user.getName(), user.getLastName());
     }
 
     @Override

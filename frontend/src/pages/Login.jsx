@@ -24,22 +24,23 @@ function Login() {
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("userEmail", data.email || email);
+        localStorage.setItem("userRole", data.role ? data.role.toUpperCase() : "USUARIO");
 
-        const rolDesdeBackend = data.role || data.rol || data.userRole;
-        if (rolDesdeBackend) {
-          localStorage.setItem("userRole", rolDesdeBackend);
-        }
+        // Forzamos la lectura limpia basándonos en lo que imprima la consola
+        const nombreCompleto = data.name
+            ? `${data.name} ${data.lastName || ""}`.trim()
+            : (data.email || email);
 
-        toast.success(`¡Bienvenido! Iniciando sesión como ${email}...`);
+        localStorage.setItem("userName", nombreCompleto);
 
+        toast.success(`¡Bienvenido ${nombreCompleto}!`);
         setTimeout(() => {
           window.location.href = "/freshbasket";
         }, 1500);
       }
     } catch (error) {
-
       if (error.response?.status === 401 || error.response?.status === 400) {
-         toast.error("Credenciales inválidas. Por favor intenta de nuevo.");
+        toast.error("Credenciales inválidas. Por favor intenta de nuevo.");
       }
     } finally {
       setLoading(false);
