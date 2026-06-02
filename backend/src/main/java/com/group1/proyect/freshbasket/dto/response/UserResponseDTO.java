@@ -38,4 +38,5 @@ public class UserResponseDTO {
 
     @Schema(description = "nombre del país", example = " El Salvador")
     private String countryName;
+
 }

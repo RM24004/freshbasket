@@ -23,7 +23,6 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    // Inyección por constructor
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }

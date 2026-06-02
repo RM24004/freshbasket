@@ -30,6 +30,9 @@ public class Category {
     @Column(length = 200)
     private String description;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
     // Relación 1:N: Una categoría tiene muchos productos
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @JsonIgnore

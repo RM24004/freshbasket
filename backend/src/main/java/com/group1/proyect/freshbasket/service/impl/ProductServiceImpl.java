@@ -43,14 +43,17 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(dto.getDescription());
         product.setImageUrl(dto.getImageUrl());
 
+        // Busca ignorando mayúsculas/minúsculas
         String cleanCategoryName = dto.getCategoryName() != null ? dto.getCategoryName().trim() : "";
         Category category = categoryRepository.findByNameIgnoreCase(cleanCategoryName)
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ese nombre: " + dto.getCategoryName()));
 
+        // Busca un proveedor concatenando Name + LastName e ignorando mayúsculas/minúsculas
         String cleanSupplierName = dto.getSupplierName() != null ? dto.getSupplierName().trim() : "";
         Supplier supplier = supplierRepository.findByFullNameIgnoreCase(cleanSupplierName)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con el nombre completo: " + dto.getSupplierName()));
 
+        // Busca un usuario concatenando Name + LastName e ignorando mayúsculas/minúsculas
         String cleanUserName = dto.getUserName() != null ? dto.getUserName().trim() : "";
         User user = userRepository.findByFullNameIgnoreCase(cleanUserName)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el nombre completo: " + dto.getUserName()));
@@ -76,6 +79,8 @@ public class ProductServiceImpl implements ProductService {
         if (product.getCategory() != null) {
             dto.setCategoryId(product.getCategory().getId());
             dto.setCategoryName(product.getCategory().getName());
+        } else {
+            dto.setCategoryName("Sin categoría asignada");
         }
 
         if (product.getSupplier() != null) {
@@ -88,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
             if (!sFullName.isEmpty()) {
                 dto.setSupplierName(sFullName);
             } else {
-                dto.setSupplierName("Proveedor" + product.getSupplier().getId());
+                dto.setSupplierName("Proveedor " + product.getSupplier().getId());
             }
         } else {
             dto.setSupplierName("Sin proveedor asignado");
@@ -104,8 +109,7 @@ public class ProductServiceImpl implements ProductService {
             if (!uFullName.isEmpty()) {
                 dto.setUserName(uFullName);
             } else {
-                // Plan de respaldo si no hay datos de nombre en el usuario
-                dto.setUserName("Usuario" + product.getUser().getId());
+                dto.setUserName("Usuario " + product.getUser().getId());
             }
         } else {
             dto.setUserName("Sin usuario asignado");
@@ -117,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductResponseDTO> getAllProducts() {
-        return productRepository.findAll()
+        return productRepository.findByActiveTrue()
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -127,8 +131,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductResponseDTO getProductById(Long id) {
         return productRepository.findById(id)
+                .filter(Product::isActive)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+
     }
 
     @Override
@@ -199,8 +205,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ese ID: " + id));
 
-        productRepository.delete(product);
-        productRepository.flush();
+        product.setActive(false);
+
     }
 
     @Override
@@ -208,6 +214,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductResponseDTO> searchProductsByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name)
                 .stream()
+                .filter(Product::isActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

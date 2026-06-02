@@ -25,13 +25,21 @@ public class Country {
     @Column(nullable = false, length = 100, unique = true)
     private String name;
 
-    @NotBlank(message = "La Descripcion del país es obligatorio")
+    @NotBlank(message = "La Descripción del país es obligatorio")
     @Size(max = 100)
     @Column(length = 100, unique = true)
-    private String description; // Ej: SV, US, MX
+    private String description;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
     // Relación 1:N: Un país tiene muchos proveedores
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Supplier> suppliers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<User> users = new ArrayList<>();
+
 }

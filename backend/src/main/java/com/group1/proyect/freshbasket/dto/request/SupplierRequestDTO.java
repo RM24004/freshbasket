@@ -38,7 +38,7 @@ public class SupplierRequestDTO {
     @Email(message = "Formato de email inválido")
     @Size(max = 100)
     @Column(length = 100)
-    @Schema(description = "E-mail del usuario", example = "distribuidora.delcampo@mail.com")
+    @Schema(description = "Email del usuario", example = "distribuidora.delcampo@mail.com")
     private String email;
 
     @NotBlank(message = "La dirección es obligatoria")

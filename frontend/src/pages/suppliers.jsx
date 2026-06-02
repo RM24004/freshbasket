@@ -1,8 +1,9 @@
 import "../styles/forms.css";
-import axios from "axios";
+import axios from "../services/axiosConfig.js";
 import { tieneAcceso } from "../config/permissions.js";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   getAllSuppliers, getSupplierById, createSupplier,
   updateSupplier, deleteSupplier, searchSuppliersByName
@@ -14,7 +15,6 @@ function Suppliers() {
 
   const [activeTab, setActiveTab] = useState(localStorage.getItem("activeSupplierTab") || "all");
   const [showWelcome, setShowWelcome] = useState(true);
-
 
   const [allSuppliers, setAllSuppliers] = useState([]);
   const [suppliersByName, setSuppliersByName] = useState([]);
@@ -35,64 +35,54 @@ function Suppliers() {
     countryName: "",
   });
 
-
   const loadSuppliers = async () => {
     try {
       const data = await getAllSuppliers();
       setAllSuppliers(data || []);
     } catch (error) {
-      console.error("Error al cargar todos los proveedores:", error);
       setAllSuppliers([]);
     }
   };
 
- // Controla los cambios en el sub menu de productos
- useEffect(() => {
-   localStorage.setItem("activeSupplierTab", "home");
-   setActiveTab("home");
-   setShowWelcome(true);
+  // Controla los cambios en el sub menu de productos
+  useEffect(() => {
+    localStorage.setItem("activeSupplierTab", "home");
+    setActiveTab("home");
+    setShowWelcome(true);
 
-   const handleSupplierTabChange = () => {
-     const tab = localStorage.getItem("activeSupplierTab") || "home";
-     setActiveTab(tab);
+    const handleSupplierTabChange = () => {
+      const tab = localStorage.getItem("activeSupplierTab") || "home";
+      setActiveTab(tab);
 
-     if (tab === "home") {
-       setShowWelcome(true);
-     } else if (tab === "all") {
-       setShowWelcome(false);
-       if (typeof loadSuppliers === "function") {
-         loadSuppliers();
-       }
-     } else if (tab === "name" || tab === "id" || tab === "create" || tab === "update" || tab === "delete") {
+      if (tab === "home") {
+        setShowWelcome(true);
+      } else if (tab === "all") {
+        setShowWelcome(false);
+        if (typeof loadSuppliers === "function") {
+          loadSuppliers();
+        }
+      } else if (tab === "name" || tab === "id" || tab === "create" || tab === "update" || tab === "delete") {
+        setShowWelcome(false);
+      } else {
+        setShowWelcome(false);
+      }
+    };
+    window.addEventListener("supplierTabChanged", handleSupplierTabChange);
 
-       setShowWelcome(false);
-     } else {
-       setShowWelcome(false);
-     }
-   };
-   window.addEventListener("supplierTabChanged", handleSupplierTabChange);
+    return () => window.removeEventListener("supplierTabChanged", handleSupplierTabChange);
+  }, []);
 
-   return () => window.removeEventListener("supplierTabChanged", handleSupplierTabChange);
- }, []);
 
-  // Carga las dependencias del proveedor (pais)
   const loadDependencies = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const authConfig = {
-        headers: { Authorization: token ? `Bearer ${token}` : "" }
-      };
-
       const [resCountry] = await Promise.all([
-        axios.get("http://192.168.1.60:8080/api/countries", authConfig)
+        axios.get("http://localhost:8080/api/countries")
       ]);
 
       setCountriesList(resCountry.data || []);
     } catch (error) {
-      console.error("Error al cargar las dependencias de proveedores:", error);
     }
   };
-
 
   useEffect(() => {
     loadDependencies();
@@ -101,20 +91,46 @@ function Suppliers() {
   // Se busca un proveedor por nombre
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (search.trim() === "") { setSuppliersByName([]); return; }
-    const data = await searchSuppliersByName(search);
-    setSuppliersByName(data || []);
+
+    if (search.trim() === "") {
+      setSuppliersByName([]);
+      return;
+    }
+
+    try {
+      const data = await searchSuppliersByName(search);
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        toast.error("No se encontró ningún proveedor con ese nombre.");
+        setSuppliersByName([]);
+      } else {
+        setSuppliersByName(data);
+      }
+    } catch (error) {
+      setSuppliersByName([]);
+    }
   };
 
-  // Se busca un proveedor por ID
   const handleSearchById = async (e) => {
     e.preventDefault();
-    if (searchId.trim() === "") { setSupplierById(null); return; }
+
+    if (searchId.trim() === "") {
+      setSupplierById(null);
+      return;
+    }
     try {
       const supplier = await getSupplierById(searchId);
-      setSupplierById(supplier || null);
-    } catch {
+
+      if (!supplier) {
+        toast.error("El proveedor con ese ID no existe.");
+        setSupplierById(null);
+      } else {
+        setSupplierById(supplier);
+      }
+    } catch (error) {
+
       setSupplierById(null);
+      toast.error("No se encontró el proveedor con ese ID.");
     }
   };
 
@@ -125,11 +141,11 @@ function Suppliers() {
     const newSupplier = Object.fromEntries(fd.entries());
 
     const countryFound = countriesList.find(
-      (c) => c.name.toLowerCase() === newSupplier.countryName?.trim().toLowerCase()
+        (c) => c.name.toLowerCase() === newSupplier.countryName?.trim().toLowerCase()
     );
 
     if (!countryFound) {
-      alert("Por favor, selecciona un país válido de la lista.");
+      toast.error("Por favor, selecciona un país válido de la lista.");
       return;
     }
 
@@ -143,19 +159,14 @@ function Suppliers() {
     };
 
     try {
-      const token = localStorage.getItem("token");
-      const authConfig = {
-        headers: { Authorization: token ? `Bearer ${token}` : "" }
-      };
-
-      await createSupplier(payload, authConfig);
-
-      alert("¡Proveedor creado con éxito!");
+      await createSupplier(payload);
+      toast.success("¡Proveedor creado con éxito!");
       e.target.reset();
-      loadSuppliers();
+
+      setTimeout(async () => {
+        await loadSuppliers();
+      }, 300);
     } catch (error) {
-      console.error("Error en la petición:", error.response?.data);
-      alert("Error al crear proveedor: " + (error.response?.data?.message || "Revisa los campos"));
     }
   };
 
@@ -167,16 +178,17 @@ function Suppliers() {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // Controla la carga automatica del formulario de actualización
+  // Controla la carga automática del formulario de actualización
   const handleBlurId = async (e) => {
     const targetValue = (e && e.target) ? e.target.value : e;
     if (!targetValue || String(targetValue).trim() === "") {
-      alert("Por favor, ingresa un ID válido antes de cargar.");
+      toast.error("Por favor, ingresa un ID válido antes de cargar.");
       return;
     }
 
     try {
       const supplier = await getSupplierById(targetValue);
+
       if (supplier) {
         const uId = supplier.id ?? supplier.supplier_id;
         const uLastName = supplier.lastName ?? supplier.last_name;
@@ -184,7 +196,7 @@ function Suppliers() {
         const uCountryName = supplier.countryName ?? supplier.country_name ?? supplier.country?.name;
 
         const countryCorrespondiente = countriesList.find(
-          (c) => (c.id === uCountryId || c.country_id === uCountryId || c.name === uCountryName)
+            (c) => (c.id === uCountryId || c.country_id === uCountryId || c.name === uCountryName)
         );
 
         setFormData({
@@ -196,13 +208,12 @@ function Suppliers() {
           address: supplier.address || "",
           countryName: countryCorrespondiente ? countryCorrespondiente.name : (uCountryName || ""),
         });
-        console.log("¡proveedor cargado con éxito!", supplier);
+        toast.success("¡Proveedor cargado con éxito!");
       } else {
-        alert("No se encontró el proveedor con ese ID");
+        toast.error("No se encontró el proveedor con ese ID");
       }
     } catch (error) {
-      console.error(error);
-      alert("Error al consultar el proveedor");
+      toast.error("No se encontró el proveedor con ese ID.");
     }
   };
 
@@ -210,24 +221,24 @@ function Suppliers() {
   const handleUpdateSubmit = async (e) => {
     if (e) e.preventDefault();
 
-  const formElements = e.target.elements;
-  const supplierId = formElements.id?.value || formData.id || formData.productId;
+    const formElements = e.target.elements;
+    const supplierId = formElements.id?.value || formData.id || formData.productId;
 
     if (!supplierId || String(supplierId).trim() === "") {
-      alert("Error: El ID del proveedor no puede estar vacío. Por favor, cargue un proveedor válido.");
+      toast.error("Error: El ID del proveedor no puede estar vacío.");
       return;
     }
 
-  const countryFound = Array.isArray(countriesList) && countriesList.find(
-      (c) => c.name?.toLowerCase() === formData.countryName?.trim().toLowerCase()
+    const countryFound = Array.isArray(countriesList) && countriesList.find(
+        (c) => c.name?.toLowerCase() === formData.countryName?.trim().toLowerCase()
     );
 
     if (!countryFound) {
-      alert("Por favor, selecciona un país válido de la lista antes de actualizar.");
+      toast.error("Por favor, selecciona un país válido de la lista antes de actualizar.");
       return;
     }
 
-  const payload = {
+    const payload = {
       name: formData.name,
       lastName: formData.lastName,
       phone: formData.phone,
@@ -238,15 +249,27 @@ function Suppliers() {
 
     try {
       await updateSupplier(supplierId, payload);
+      toast.success("¡Proveedor actualizado correctamente!");
 
-      alert("¡Proveedor actualizado correctamente!");
-      loadSuppliers();
+      setFormData({
+        id: "",
+        name: "",
+        lastName: "",
+        phone: "",
+        email: "",
+        address: "",
+        countryName: "",
+      });
 
-      } catch (error){
-      console.error("Error completo en la consola:", error.response?.data);
-      alert("Error al actualizar: " + (error.response?.data?.message || "Revisa los datos"));
+      setEditSearchId("");
+
+      setTimeout(async () => {
+        await loadSuppliers();
+      }, 300);
+    } catch (error) {
     }
   };
+
 
   useEffect(() => {
     if (activeTab === "create" && typeof tieneAcceso === "function" && !tieneAcceso(userRole, "crear")) setActiveTab("all");
@@ -255,367 +278,397 @@ function Suppliers() {
   }, [activeTab, userRole]);
 
   return (
-    <div className="fb-form-container">
-      {activeTab === "home" && showWelcome && (
-        <div className="fb-photo-section">
-          <img
-            src="/logo1.png"
-            alt="Foto principal FreshBasket"
-            className="fb-photo"
-          />
-        </div>
-      )}
+      <div className="fb-form-container">
+        {activeTab === "home" && showWelcome && (
+            <div className="fb-photo-section">
+              <img
+                  src="/logo1.png"
+                  alt="Foto principal FreshBasket"
+                  className="fb-photo"
+              />
+            </div>
+        )}
 
-      {/* ALL SUPPLIERS */}
-      {activeTab === "all" && !showWelcome && (
-        <div className="fb-form-section">
-          <div className="fb-section-header">
-            <h3 className="fb-table-title">
-              <i className="bi bi-truck" /> Mostrando todos los registros
-            </h3>
-            <span className="fb-badge">{allSuppliers.length} registros</span>
-          </div>
+        {/* ALL SUPPLIERS */}
+        {activeTab === "all" && !showWelcome && (
+            <div className="fb-form-section">
+              <div className="fb-section-header">
+                <h3 className="fb-table-title">
+                  <i className="bi bi-truck" /> Mostrando todos los registros
+                </h3>
+                <span className="fb-badge">{allSuppliers.length} registros</span>
+              </div>
 
-          <div className="fb-results-grid fb-users-cards-margin">
-            {Array.isArray(allSuppliers) && allSuppliers.length > 0 ? (
-              allSuppliers.map((sup) => {
-                const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
-                  (c) => (c.id === sup.countryId || c.country_id === sup.countryId)
-                );
+              <div className="fb-results-grid fb-users-cards-margin">
+                {Array.isArray(allSuppliers) && allSuppliers.length > 0 ? (
+                    allSuppliers.map((sup) => {
+                      const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
+                          (c) => (c.id === sup.countryId || c.country_id === sup.countryId)
+                      );
 
-                return (
-                  <div key={sup.id || sup.supplier_id} className="fb-user-display-card">
-                    <div className="fb-card-user-info">
-                      <h4 className="fb-card-user-title">
-                        {sup.name} {sup.lastName || sup.last_name}
-                      </h4>
-                      <span className="fb-card-user-id">ID: {sup.id || sup.supplier_id}</span>
-                    </div>
-                    <div className="fb-card-user-body">
-                      <p className="fb-card-user-detail">
-                        <i className="bi bi-envelope" /> {sup.email}
-                      </p>
-                      <p className="fb-card-user-detail">
-                        <i className="bi bi-telephone" /> {sup.phone}
-                      </p>
-                      <p className="fb-card-user-detail">
-                        <i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}
-                      </p>
-                      <p className="fb-card-user-detail">
-                        <i className="bi bi-globe" />
-                        <span className="fb-country">
+                      return (
+                          <div key={sup.id || sup.supplier_id} className="fb-user-display-card">
+                            <div className="fb-card-user-info">
+                              <h4 className="fb-card-user-title">
+                                {sup.name} {sup.lastName || sup.last_name}
+                              </h4>
+                              <span className="fb-card-user-id">ID: {sup.id || sup.supplier_id}</span>
+                            </div>
+                            <div className="fb-card-user-body">
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-envelope" /> {sup.email}
+                              </p>
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-telephone" /> {sup.phone}
+                              </p>
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}
+                              </p>
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-globe" />
+                                <span className="fb-country">
                           {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
                         </span>
-                      </p>
+                              </p>
+                            </div>
+                          </div>
+                      );
+                    })
+                ) : (
+                    <div className="fb-empty fb-grid-full-width">
+                      <i className="bi bi-inbox" />
+                      <p>No hay proveedores registrados</p>
                     </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="fb-empty fb-grid-full-width">
-                <i className="bi bi-inbox" />
-                <p>No hay proveedores registrados</p>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-      )}
+            </div>
+        )}
 
         {/* SEARCH BY NAME */}
         {activeTab === "name" && !showWelcome && (
-          <div className="fb-form-section">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title"><i className="bi bi-search" /> Escriba un nombre del proveedor</h3>
-              <form onSubmit={handleSearch} className="fb-search-form">
-                <div className="fb-search-input-wrap">
-                  <i className="bi bi-person fb-search-icon" />
-                  <input type="text" className="fb-search-input" placeholder="Ej: Martin Antonio"
-                    value={search} onChange={e => setSearch(e.target.value)} />
-                </div>
-                <button type="submit" className="fb-search-btn">
-                  <i className="bi bi-search" /> Buscar proveedor
-                </button>
-              </form>
+            <div className="fb-form-section">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title"><i className="bi bi-search" /> Escriba un nombre del proveedor</h3>
+                <form onSubmit={handleSearch} className="fb-search-form">
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-person fb-search-icon" />
+                    <input type="text" className="fb-search-input" placeholder="Ej: Distribuidora"
+                           value={search} onChange={e => setSearch(e.target.value)} />
+                  </div>
+                  <button type="submit" className="fb-search-btn">
+                    <i className="bi bi-search" /> Buscar proveedor
+                  </button>
+                </form>
+              </div>
+
+              {suppliersByName.length > 0 && (
+                  <div className="fb-results-grid">
+                    {suppliersByName.map(sup => {
+                      const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
+                          (c) => (c.id === sup.countryId || c.country_id === sup.countryId)
+                      );
+
+                      return (
+                          <div key={sup.id || sup.supplier_id} className="fb-user-card">
+                            <div>
+                              <p className="fb-user-card-name">{sup.name} {sup.lastName || sup.last_name}</p>
+                              <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {sup.email}</p>
+                              <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {sup.phone}</p>
+                              <p className="fb-user-card-detail"><i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}</p>
+                              <p className="fb-user-card-detail">
+                                <i className="bi bi-globe" />
+                                {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
+                              </p>
+                            </div>
+                          </div>
+                      );
+                    })}
+                  </div>
+              )}
             </div>
-
-            {suppliersByName.length > 0 && (
-              <div className="fb-results-grid">
-                {suppliersByName.map(sup => {
-                  const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
-                    (c) => (c.id === sup.countryId || c.country_id === sup.countryId)
-                  );
-
-                  return (
-                    <div key={sup.id || sup.supplier_id} className="fb-user-card">
-                      <div>
-                        <p className="fb-user-card-name">{sup.name} {sup.lastName || sup.last_name}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {sup.email}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {sup.phone}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}</p>
-                        <p className="fb-user-card-detail">
-                          <i className="bi bi-globe" />
-                          {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {search.trim() !== "" && suppliersByName.length === 0 && (
-              <div className="fb-empty">
-                <i className="bi bi-search" style={{ fontSize: "2rem" }} />
-                <p>No se encontraron proveedores con ese nombre</p>
-              </div>
-            )}
-          </div>
         )}
 
         {/* SEARCH BY ID */}
         {activeTab === "id" && !showWelcome && (
-          <div className="fb-form-section">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID del proveedor</h3>
-              <form onSubmit={handleSearchById} className="fb-search-form">
-                <div className="fb-search-input-wrap">
-                  <i className="bi bi-person fb-search-icon" />
-                  <input type="number" className="fb-search-input" placeholder="Ingrese ID"
-                    value={searchId} onChange={e => setSearchId(e.target.value)} />
-                </div>
-                <button type="submit" className="fb-search-btn">
-                  <i className="bi bi-search" /> Buscar proveedor
-                </button>
-              </form>
-            </div>
-
-            {supplierById && (() => {
-              const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
-                (c) => (c.id === supplierById.countryId || c.country_id === supplierById.countryId)
-              );
-
-              return (
-                <div className="fb-results-grid">
-                  <div className="fb-user-card">
-                    <div>
-                      <p className="fb-user-card-name">
-                        {supplierById?.name} {supplierById?.lastName || supplierById?.last_name}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-envelope" /> {supplierById?.email}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-telephone" /> {supplierById?.phone}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-geo-alt" /> {supplierById?.address || "Sin dirección"}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-globe" />{" "}
-                        {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
-                      </p>
-                    </div>
+            <div className="fb-form-section">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID del proveedor</h3>
+                <form onSubmit={handleSearchById} className="fb-search-form">
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-person fb-search-icon" />
+                    <input type="number" className="fb-search-input" placeholder="Ingrese ID"
+                           value={searchId} onChange={e => setSearchId(e.target.value)} />
                   </div>
-                </div>
-              );
-            })()}
-
-            {!supplierById && searchId && (
-              <div className="fb-empty">
-                <i className="bi bi-search" style={{ fontSize: "2rem" }} />
-                <p>No se encontró proveedor con ese ID</p>
+                  <button type="submit" className="fb-search-btn">
+                    <i className="bi bi-search" /> Buscar proveedor
+                  </button>
+                </form>
               </div>
-            )}
-          </div>
+
+              {supplierById && (() => {
+                const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
+                    (c) => (c.id === supplierById.countryId || c.country_id === supplierById.countryId)
+                );
+
+                return (
+                    <div className="fb-results-grid">
+                      <div className="fb-user-card">
+                        <div>
+                          <p className="fb-user-card-name">
+                            {supplierById?.name} {supplierById?.lastName || supplierById?.last_name}
+                          </p>
+                          <p className="fb-user-card-detail">
+                            <i className="bi bi-envelope" /> {supplierById?.email}
+                          </p>
+                          <p className="fb-user-card-detail">
+                            <i className="bi bi-telephone" /> {supplierById?.phone}
+                          </p>
+                          <p className="fb-user-card-detail">
+                            <i className="bi bi-geo-alt" /> {supplierById?.address || "Sin dirección"}
+                          </p>
+                          <p className="fb-user-card-detail">
+                            <i className="bi bi-globe" />{" "}
+                            {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                );
+              })()}
+            </div>
         )}
 
         {/* CREATE SUPPLIER */}
         {activeTab === "create" && !showWelcome && (
-          <div className="fb-form-section fb-tab-create">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title">
-                <i className="bi bi-person-plus-fill" /> Introduzca los datos del nuevo proveedor
-              </h3>
-              <form onSubmit={handleCreateSubmit} className="fb-crud-form">
-                <div className="fb-crud-grid">
-                  {[
-                    { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
-                    { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
-                    { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "7777-7777" },
-                    { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "correo@ejemplo.com" },
-                    { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección completa" },
-                  ].map((f) => (
-                    <div key={f.name} className="fb-crud-field">
-                      <label className="fb-crud-label">{f.label}</label>
+            <div className="fb-form-section fb-tab-create">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title">
+                  <i className="bi bi-person-plus-fill" /> Introduzca los datos del nuevo proveedor
+                </h3>
+                <form onSubmit={handleCreateSubmit} className="fb-crud-form">
+                  <div className="fb-crud-grid">
+                    {[
+                      { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
+                      { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
+                      { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "7777-7777" },
+                      { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "correo@ejemplo.com" },
+                      { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección completa" },
+                    ].map((f) => (
+                        <div key={f.name} className="fb-crud-field">
+                          <label className="fb-crud-label">{f.label}</label>
+                          <div className="fb-crud-input-wrap">
+                            <i className={`bi ${f.icon} fb-crud-input-icon`} />
+                            <input type={f.type || "text"} name={f.name} className="fb-crud-input" placeholder={f.placeholder} required />
+                          </div>
+                        </div>
+                    ))}
+
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">País</label>
                       <div className="fb-crud-input-wrap">
-                        <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                        <input type={f.type || "text"} name={f.name} className="fb-crud-input" placeholder={f.placeholder} required />
+                        <i className="bi bi-globe fb-crud-input-icon" />
+                        <input
+                            type="text"
+                            name="countryName"
+                            list={`countries-options-${countriesList.length}`}
+                            className="fb-crud-input"
+                            placeholder="Selecciona o escribe un país"
+                            required
+                            autoComplete="off"
+                        />
+                        <datalist id={`countries-options-${countriesList.length}`}>
+                          {Array.isArray(countriesList) && countriesList.map((c, idx) => (
+                              <option key={c.id || c.country_id || idx} value={c.name} />
+                          ))}
+                        </datalist>
                       </div>
                     </div>
-                  ))}
-
-                  <div className="fb-crud-field">
-                    <label className="fb-crud-label">País</label>
-                    <div className="fb-crud-input-wrap">
-                      <i className="bi bi-globe fb-crud-input-icon" />
-                      <input
-                        type="text"
-                        name="countryName"
-                        list={`countries-options-${countriesList.length}`}
-                        className="fb-crud-input"
-                        placeholder="Selecciona o escribe un país"
-                        required
-                        autoComplete="off"
-                      />
-                      <datalist id={`countries-options-${countriesList.length}`}>
-                        {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                          <option key={c.id || c.country_id || idx} value={c.name} />
-                        ))}
-                      </datalist>
-                    </div>
                   </div>
-                </div>
 
-                <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
-                  <i className="bi bi-person-check-fill" /> Crear proveedor
-                </button>
-              </form>
+                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
+                    <i className="bi bi-person-check-fill" /> Crear proveedor
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
         )}
 
         {/* UPDATE SUPPLIER */}
         {activeTab === "update" && !showWelcome && (
-          <div className="fb-form-section fb-tab-update">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title"><i className="bi bi-pencil-square" /> Actualice el dato o los datos del proveedor</h3>
-              <form onSubmit={handleUpdateSubmit} onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()} className="fb-crud-form">
-                <div className="fb-crud-grid">
-                  <div className="fb-crud-field">
-                    <label className="fb-crud-label">ID proveedor</label>
-                    <div className="fb-crud-input-wrap" style={{ display: "flex", gap: "0.5rem" }}>
-                      <div style={{ position: "relative", flex: 1 }}>
-                        <i className="bi bi-hash fb-crud-input-icon" style={{ zIndex: 5 }} />
-                        <input
-                          type="number"
-                          name="id"
-                          className="fb-crud-input"
-                          placeholder="ID del proveedor"
-                          value={formData.id || ""}
-                          onChange={handleChange}
-                          required
-                        />
+            <div className="fb-form-section fb-tab-update">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title"><i className="bi bi-pencil-square" /> Actualice el dato o los datos del proveedor</h3>
+                <form onSubmit={handleUpdateSubmit} onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()} className="fb-crud-form">
+                  <div className="fb-crud-grid">
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">ID proveedor</label>
+                      <div className="fb-crud-input-wrap" style={{ display: "flex", gap: "0.5rem" }}>
+                        <div style={{ position: "relative", flex: 1 }}>
+                          <i className="bi bi-hash fb-crud-input-icon" style={{ zIndex: 5 }} />
+                          <input
+                              type="number"
+                              name="id"
+                              className="fb-crud-input"
+                              placeholder="ID del proveedor"
+                              value={formData.id || ""}
+                              onChange={handleChange}
+                              required
+                          />
+                        </div>
+                        <button
+                            type="button"
+                            className="fb-search-btn"
+                            style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
+                            onClick={() => handleBlurId(formData.id)}
+                        >
+                          Cargar
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        className="fb-search-btn"
-                        style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
-                        onClick={() => handleBlurId(formData.id)}
-                      >
-                        Cargar
-                      </button>
                     </div>
-                  </div>
 
-                  {[
-                    { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
-                    { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
-                    { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "Teléfono" },
-                    { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "Email" },
-                    { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección" },
-                  ].map((f) => (
-                    <div key={f.name} className="fb-crud-field">
-                      <label className="fb-crud-label">{f.label}</label>
+                    {[
+                      { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
+                      { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
+                      { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "Teléfono" },
+                      { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "Email" },
+                      { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección" },
+                    ].map((f) => (
+                        <div key={f.name} className="fb-crud-field">
+                          <label className="fb-crud-label">{f.label}</label>
+                          <div className="fb-crud-input-wrap">
+                            <i className={`bi ${f.icon} fb-crud-input-icon`} />
+                            <input type={f.type || "text"} name={f.name} className="fb-crud-input"
+                                   placeholder={f.placeholder} value={formData[f.name] || ""}
+                                   onChange={handleChange} required />
+                          </div>
+                        </div>
+                    ))}
+
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">País</label>
                       <div className="fb-crud-input-wrap">
-                        <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                        <input type={f.type || "text"} name={f.name} className="fb-crud-input"
-                          placeholder={f.placeholder} value={formData[f.name] || ""}
-                          onChange={handleChange} required />
+                        <i className="bi bi-globe fb-crud-input-icon" />
+                        <input
+                            type="text"
+                            name="countryName"
+                            list={`countries-update-options-${countriesList.length}`}
+                            className="fb-crud-input"
+                            placeholder="Selecciona o escribe un país"
+                            value={formData.countryName || ""}
+                            onChange={handleChange}
+                            required
+                            autoComplete="off"
+                        />
+                        <datalist id={`countries-update-options-${countriesList.length}`}>
+                          {Array.isArray(countriesList) && countriesList.map((c, idx) => (
+                              <option key={c.id || c.country_id || idx} value={c.name} />
+                          ))}
+                        </datalist>
                       </div>
                     </div>
-                  ))}
-
-                  <div className="fb-crud-field">
-                    <label className="fb-crud-label">País</label>
-                    <div className="fb-crud-input-wrap">
-                      <i className="bi bi-globe fb-crud-input-icon" />
-                      <input
-                        type="text"
-                        name="countryName"
-                        list={`countries-update-options-${countriesList.length}`}
-                        className="fb-crud-input"
-                        placeholder="Selecciona o escribe un país"
-                        value={formData.countryName || ""}
-                        onChange={handleChange}
-                        required
-                        autoComplete="off"
-                      />
-                      <datalist id={`countries-update-options-${countriesList.length}`}>
-                        {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                          <option key={c.id || c.country_id || idx} value={c.name} />
-                        ))}
-                      </datalist>
-                    </div>
                   </div>
-                </div>
-                <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#b45309,#fd7e14)", marginTop: "1.5rem" }}>
-                  <i className="bi bi-check-circle-fill" /> Actualizar proveedor
-                </button>
-              </form>
+                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#b45309,#fd7e14)", marginTop: "1.5rem" }}>
+                    <i className="bi bi-check-circle-fill" /> Actualizar proveedor
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
         )}
 
-    {/* DELETE SUPPLIER */}
-    {activeTab === "delete" && !showWelcome && (
-      <div className="fb-form-section">
-        <div className="fb-form-card" style={{ borderTop: "4px solid #dc3545" }}>
-          <h3 className="fb-form-title" style={{ color: "#dc3545" }}>
-            <i className="bi bi-trash3-fill" /> Introduzca el ID del proveedor
-          </h3>
-          <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
-            ⚠️ Al eliminar el proveedor se borrará permanentemente de su base de datos ⚠️
-          </p>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const idValue = e.target.id.value;
+        {/* DELETE SUPPLIER */}
+        {activeTab === "delete" && !showWelcome && (
+            <div className="fb-form-section">
+              <div className="fb-form-card" style={{ borderTop: "4px solid #dc3545" }}>
+                <h3 className="fb-form-title" style={{ color: "#dc3545" }}>
+                  <i className="bi bi-trash3-fill" /> Introduzca el ID del proveedor
+                </h3>
+                <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
+                  ⚠️ Al eliminar el proveedor se borrará permanentemente de su base de datos ⚠️
+                </p>
+                <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const form = e.target;
+                      const idValue = form.id.value;
 
-              const confirmDelete = window.confirm(
-                `¿Está seguro de que desea eliminar el proveedor con el ID ${idValue}?`
-              );
+                      if (!idValue || String(idValue).trim() === "") {
+                        toast.error("Por favor, ingresa un ID válido.");
+                        return;
+                      }
 
-              if (!confirmDelete) return;
+                      try {
+                        const supplier = await getSupplierById(idValue);
 
-              try {
-                await deleteSupplier(idValue);
-                alert("Proveedor eliminado correctamente");
-                e.target.reset();
-                loadSuppliers();
-              } catch (error) {
-                alert("Error al eliminar proveedor");
-              }
-            }}
-            className="fb-search-form"
-          >
-            <div className="fb-search-input-wrap">
-              <i className="bi bi-hash fb-search-icon" />
-              <input
-                type="number"
-                name="id"
-                className="fb-search-input"
-                placeholder="ID del proveedor a eliminar"
-                required
-              />
+                        if (!supplier) {
+                          toast.error(`No se puede eliminar el proveedor con ID ${idValue}.`);
+                          return;
+                        }
+
+                        toast((t) => (
+                            <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
+                <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
+                  ¿Está seguro de que desea eliminar el proveedor con el ID <strong>{idValue}</strong>?
+                </span>
+                              <div className="d-flex justify-content-center gap-2 mt-1">
+                                <button
+                                    className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={async () => {
+                                      toast.dismiss(t.id);
+
+                                      try {
+                                        await deleteSupplier(idValue);
+                                        toast.success(`Proveedor con ID ${idValue} eliminado correctamente.`);
+                                        form.reset();
+
+                                        setTimeout(async () => {
+                                          await loadSuppliers();
+                                        }, 300);
+                                      } catch (error) {
+                                        toast.error("Hubo un problema al ejecutar la eliminación.");
+                                      }
+                                    }}
+                                >
+                                  Eliminar
+                                </button>
+                                <button
+                                    className="btn btn-light btn-sm px-3 border shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </div>
+                        ), {
+                          duration: Infinity,
+                          position: "top-center"
+                        });
+
+                      } catch (error) {
+                        toast.error(`No se encontró el proveedor con ID ${idValue}.`);
+                      }
+                    }}
+                    className="fb-search-form"
+                >
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-hash fb-search-icon" />
+                    <input
+                        type="number"
+                        name="id"
+                        className="fb-search-input"
+                        placeholder="ID del proveedor a eliminar"
+                        required
+                    />
+                  </div>
+                  <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
+                    <i className="bi bi-trash3" /> Eliminar proveedor
+                  </button>
+                </form>
+              </div>
             </div>
-            <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
-              <i className="bi bi-trash3" /> Eliminar proveedor
-            </button>
-          </form>
-        </div>
+        )}
       </div>
-    )}
-    </div>
   );
 }
 

@@ -49,6 +49,9 @@ public class Entry {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
     @PrePersist
     protected void onCreate() {
         entryDate = LocalDateTime.now();

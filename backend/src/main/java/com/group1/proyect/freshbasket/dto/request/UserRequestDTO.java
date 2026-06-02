@@ -53,4 +53,5 @@ public class UserRequestDTO {
     @NotNull(message = "El nombre del país es obligatorio")
     @Schema(description = "Nombre del país", example = "El Salvador")
     private String countryName;
+
 }

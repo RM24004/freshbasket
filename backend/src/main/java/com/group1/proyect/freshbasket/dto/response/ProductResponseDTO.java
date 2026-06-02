@@ -1,7 +1,6 @@
 package com.group1.proyect.freshbasket.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.math.BigDecimal;
 @Getter

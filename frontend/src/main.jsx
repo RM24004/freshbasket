@@ -7,7 +7,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import "./index.css";// tus estilos personalizados
 
 
-// Montar la aplicación en el div con id="root" de index.html
+// Montar la aplicación en el div con ID="root" de index.html
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />

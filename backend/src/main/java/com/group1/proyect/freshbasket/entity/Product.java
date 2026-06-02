@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,10 +39,14 @@ public class Product {
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
+    // Imagen del producto se guarda la url
     @Size(max = 500)
     @NotBlank(message = "La imagen es obligatoria")
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
     // Relación con Categoría
     @JsonIgnore
@@ -59,6 +65,13 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Entry> entries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Exit> exits = new ArrayList<>();
 }
 
-    

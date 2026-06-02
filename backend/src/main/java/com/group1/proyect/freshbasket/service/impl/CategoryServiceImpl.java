@@ -44,8 +44,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponseDTO> getAllCategories() {
-        return categoryRepository.findAll()
+        return categoryRepository.findByActiveTrue()
                 .stream()
+                .filter(Category::isActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -54,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public CategoryResponseDTO getCategoryById(Long id) {
         return categoryRepository.findById(id)
+                .filter(Category::isActive)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Categoria no encontrada con ese ID: " + id));
     }
@@ -82,24 +84,19 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional // Importante: org.springframework.transaction.annotation.Transactional
     public void deleteCategory(Long id) {
-        // Buscamos el usuario primero
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Categoria no encontrada con ese ID: " + id));
 
-        // Borramos la entidad encontrada
-        categoryRepository.delete(category);
-
-        //sincronización inmediata
-        categoryRepository.flush();
+        category.setActive(false);
     }
 
     @Override
     public List<CategoryResponseDTO> searchCategoriesByName(String name) {
         return categoryRepository.findByNameContainingIgnoreCase(name)
                 .stream()
+                .filter(Category::isActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
 }
-

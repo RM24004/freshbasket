@@ -2,10 +2,7 @@ package com.group1.proyect.freshbasket.service.impl;
 
 import com.group1.proyect.freshbasket.dto.request.EntryRequestDTO;
 import com.group1.proyect.freshbasket.dto.response.EntryResponseDTO;
-import com.group1.proyect.freshbasket.entity.Entry;
-import com.group1.proyect.freshbasket.entity.Product;
-import com.group1.proyect.freshbasket.entity.Supplier;
-import com.group1.proyect.freshbasket.entity.User;
+import com.group1.proyect.freshbasket.entity.*;
 import com.group1.proyect.freshbasket.repository.EntryRepository;
 import com.group1.proyect.freshbasket.repository.ProductRepository;
 import com.group1.proyect.freshbasket.repository.SupplierRepository;
@@ -42,35 +39,82 @@ public class EntryServiceImpl implements EntryService {
     // DTO → Entity
     private Entry convertToEntity(EntryRequestDTO dto) {
         Entry entry = new Entry();
-
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        Supplier supplier = supplierRepository.findById(dto.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
-
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
+        entry.setEntryDate(java.time.LocalDateTime.now());
         entry.setUnitCost(dto.getUnitCost());
         entry.setQuantity(dto.getQuantity());
+
+        // Busca ignorando mayúsculas/minúsculas
+        String cleanProductName = dto.getProductName() != null ? dto.getProductName().trim() : "";
+        Product product = productRepository.findByNameIgnoreCase(cleanProductName)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ese nombre: " + dto.getProductName())); // Corregido typo "encontrada"
+
+        // Busca un proveedor concatenando Name + LastName e ignorando mayúsculas/minúsculas
+        String cleanSupplierName = dto.getSupplierName() != null ? dto.getSupplierName().trim() : "";
+        Supplier supplier = supplierRepository.findByFullNameIgnoreCase(cleanSupplierName)
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con el nombre completo: " + dto.getSupplierName()));
+
+        // Busca un usuario concatenando Name + LastName e ignorando mayúsculas/minúsculas
+        String cleanUserName = dto.getUserName() != null ? dto.getUserName().trim() : "";
+        User user = userRepository.findByFullNameIgnoreCase(cleanUserName)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el nombre completo: " + dto.getUserName()));
+
         entry.setProduct(product);
         entry.setSupplier(supplier);
         entry.setUser(user);
 
         return entry;
     }
+
+
     // Entity → DTO
     private EntryResponseDTO convertToDTO(Entry entry) {
         EntryResponseDTO dto = new EntryResponseDTO();
 
         dto.setId(entry.getId());
+        dto.setEntryDate(entry.getEntryDate());
         dto.setUnitCost(entry.getUnitCost());
         dto.setQuantity(entry.getQuantity());
-        dto.setProductId(entry.getProduct().getId());
-        dto.setSupplierId(entry.getSupplier().getId());
-        dto.setUserId(entry.getUser().getId());
 
+
+        if (entry.getProduct() != null) {
+            dto.setProductId(entry.getProduct().getId());
+            dto.setProductName(entry.getProduct().getName());
+        } else {
+            dto.setProductName("Sin producto asignado");
+        }
+
+
+        if (entry.getSupplier() != null) {
+            dto.setSupplierId(entry.getSupplier().getId());
+
+            String sName = entry.getSupplier().getName() != null ? entry.getSupplier().getName() : "";
+            String sLastName = entry.getSupplier().getLastName() != null ? entry.getSupplier().getLastName() : "";
+            String sFullName = (sName + " " + sLastName).trim();
+
+            if (!sFullName.isEmpty()) {
+                dto.setSupplierName(sFullName);
+            } else {
+                dto.setSupplierName("Proveedor " + entry.getSupplier().getId()); // Añadido espacio para mejorar formato: "Proveedor 5"
+            }
+        } else {
+            dto.setSupplierName("Sin proveedor asignado");
+        }
+
+        if (entry.getUser() != null) {
+            dto.setUserId(entry.getUser().getId());
+
+            String uName = entry.getUser().getName() != null ? entry.getUser().getName() : "";
+            String uLastName = entry.getUser().getLastName() != null ? entry.getUser().getLastName() : "";
+            String uFullName = (uName + " " + uLastName).trim();
+
+            if (!uFullName.isEmpty()) {
+                dto.setUserName(uFullName);
+            } else {
+                dto.setUserName("Usuario " + entry.getUser().getId()); // Añadido espacio para mejorar formato: "Usuario 12"
+            }
+        } else {
+            dto.setUserName("Sin usuario asignado");
+        }
 
         return dto;
     }
@@ -79,14 +123,16 @@ public class EntryServiceImpl implements EntryService {
     @Transactional (readOnly = true)
     public EntryResponseDTO getEntryById(Long id) {
         return entryRepository.findById(id)
+                .filter(Entry::isActive)
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new RuntimeException("Entrada no encontrada con ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Entrada no encontrada con ese ID: " + id));
     }
 
     @Override
     public List<EntryResponseDTO> getAllEntries() {
-        return entryRepository.findAll()
+        return entryRepository.findByActiveTrue()
                 .stream()
+                .filter(Entry::isActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -99,6 +145,11 @@ public class EntryServiceImpl implements EntryService {
         // Actualizar stock del producto
         Product product = entry.getProduct();
         if (product != null) {
+            if (!product.isActive()) {
+                throw new IllegalStateException("No se pueden registrar entradas para un producto eliminado.");
+            }
+
+
             int nuevoStock = product.getCurrentStock() + entry.getQuantity();
             product.setCurrentStock(nuevoStock);
 
@@ -118,14 +169,23 @@ public class EntryServiceImpl implements EntryService {
         Entry entry = entryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Entrada no encontrada con ese ID"));
 
-        Product product = productRepository.findById(requestDTO.getProductId())
-                .orElseThrow(() -> new RuntimeException("ID del Producto no encontrado"));
+        String cleanProductName = requestDTO.getProductName() != null ? requestDTO.getProductName().trim() : "";
+        Product product = productRepository.findByNameIgnoreCase(cleanProductName)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ese nombre: " + requestDTO.getProductName()));
 
-        Supplier supplier = supplierRepository.findById(requestDTO.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("ID del Proveedor no encontrado"));
+        if (!product.isActive()) {
+            throw new IllegalStateException("No se puede modificar esta entrada porque el producto asociado está eliminado.");
+        }
 
-        User user = userRepository.findById(requestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("ID del Usuario no encontrado"));
+        String cleanSupplierName = requestDTO.getSupplierName() != null ? requestDTO.getSupplierName().trim() : "";
+        Supplier supplier = supplierRepository.findByFullNameIgnoreCase(cleanSupplierName)
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con Nombre: " + requestDTO.getSupplierName()));
+
+
+        String cleanUserName = requestDTO.getUserName() != null ? requestDTO.getUserName().trim() : "";
+        User user = userRepository.findByFullNameIgnoreCase(cleanUserName)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con Nombre: " + requestDTO.getUserName()));
+
 
         // Ajustamos el inventario al actualizar una entrada (si se actualiza el campo de cantidad)
         int cantidadAnterior = entry.getQuantity();
@@ -141,6 +201,7 @@ public class EntryServiceImpl implements EntryService {
         productRepository.save(product);
 
         // Actualizar datos de la entrada
+        entry.setEntryDate(requestDTO.getEntryDate());
         entry.setQuantity(cantidadNueva);
         entry.setUnitCost(requestDTO.getUnitCost());
         entry.setProduct(product);
@@ -148,6 +209,7 @@ public class EntryServiceImpl implements EntryService {
         entry.setUser(user);
 
         Entry updated = entryRepository.save(entry);
+
         return convertToDTO(updated);
     }
 
@@ -158,18 +220,20 @@ public class EntryServiceImpl implements EntryService {
         Entry entry = entryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Entrada no encontrada con ese ID: " + id));
 
-        //Al eliminar una entrada tambien debe de disminuir el inventario.
+        //Al eliminar una entrada támbien debe de disminuir el inventario.
         Product product = entry.getProduct();
         if (product != null) {
+            if (!product.isActive()) {
+                throw new IllegalStateException("No se puede eliminar esta entrada porque pertenece a un producto eliminado.");
+            }
+
             int nuevoStock = product.getCurrentStock() - entry.getQuantity();
             product.setCurrentStock(nuevoStock);
             productRepository.save(product);
         }
-        //Borramos la entidad encontrada
-        entryRepository.deleteById(id);
 
-        //sincronización inmediata
-        entryRepository.flush();
+        entry.setActive(false);
+        entryRepository.save(entry);
     }
 
 }

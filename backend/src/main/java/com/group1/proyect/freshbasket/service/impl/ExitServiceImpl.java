@@ -9,6 +9,7 @@ import com.group1.proyect.freshbasket.repository.ExitRepository;
 import com.group1.proyect.freshbasket.repository.ProductRepository;
 import com.group1.proyect.freshbasket.repository.UserRepository;
 import com.group1.proyect.freshbasket.service.ExitService;
+import jakarta.persistence.Column;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,14 +68,16 @@ public class ExitServiceImpl implements ExitService {
     @Transactional (readOnly = true)
     public ExitResponseDTO getExitById(Long id) {
         return exitRepository.findById(id)
+                .filter(Exit::isActive)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Salida no encontrada con ese ID: " + id));
     }
 
     @Override
     public List<ExitResponseDTO> getAllExits() {
-        return exitRepository.findAll()
+        return exitRepository.findByActiveTrue()
                 .stream()
+                .filter(Exit::isActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -142,12 +145,8 @@ public class ExitServiceImpl implements ExitService {
             product.setCurrentStock(nuevoStock);
             productRepository.save(product);
         }
-        //Borramos la entidad encontrada
-        exitRepository.deleteById(id);
 
-        //sincronización inmediata
-        exitRepository.flush();
+        exit.setActive(false);
     }
-
 
 }

@@ -1,8 +1,9 @@
 import "../styles/forms.css";
-import axios from "axios";
+import axios from "../services/axiosConfig.js";
 import { tieneAcceso } from "../config/permissions.js";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   getAllUsers, getUserById, createUser,
   updateUser, deleteUser, searchUsersByName
@@ -13,8 +14,8 @@ function Users() {
   const userRole = localStorage.getItem("userRole") || "USUARIO";
 
   // Lee la opción elegida desde el menú desplegable de usuarios
-  const [activeTab, setActiveTab] = useState(localStorage.getItem("activeUserTab") || "all");
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem("activeUserTab") || "home");
+  const [showWelcome, setShowWelcome] = useState(() => (localStorage.getItem("activeUserTab") || "home") === "home");
 
   const [allUsers, setAllUsers] = useState([]);
   const [usersByName, setUsersByName] = useState([]);
@@ -36,51 +37,43 @@ function Users() {
     countryName: "",
   });
 
-   // Controla que mostrar en el sub menu de usuario
-   useEffect(() => {
-       localStorage.setItem("activeUserTab", "home");
-       setActiveTab("home");
-       setShowWelcome(true);
+  // Controla los cambios en el sub menú de usuarios
+  useEffect(() => {
+    localStorage.setItem("activeUserTab", "home");
+    setActiveTab("home");
+    setShowWelcome(true);
 
-       const handleUserTabChange = () => {
-         const tab = localStorage.getItem("activeUserTab") || "home";
-         setActiveTab(tab);
+    const handleUserTabChange = () => {
+      const tab = localStorage.getItem("activeUserTab") || "home";
+      setActiveTab(tab);
 
-         if (tab === "home") {
-           setShowWelcome(true);
-         } else if (tab === "all") {
-           setShowWelcome(false);
-           if (typeof loadUsers === "function") {
-             loadUsers();
-           }
-         } else if (tab === "name" || tab === "id" || tab === "create" || tab === "update" || tab === "delete") {
+      if (tab === "home") {
+        setShowWelcome(true);
+      } else if (tab === "all") {
+        setShowWelcome(false);
+        if (typeof loadUsers === "function") {
+          loadUsers();
+        }
+      } else if (tab === "name" || tab === "id" || tab === "create" || tab === "update" || tab === "delete") {
+        setShowWelcome(false);
+      } else {
+        setShowWelcome(false);
+      }
+    };
+    window.addEventListener("userTabChanged", handleUserTabChange);
 
-           setShowWelcome(false);
-         } else {
-           setShowWelcome(false);
-         }
-       };
-       window.addEventListener("userTabChanged", handleUserTabChange);
-
-       return () => window.removeEventListener("userTabChanged", handleUserTabChange);
-     }, []);
-
+    return () => window.removeEventListener("userTabChanged", handleUserTabChange);
+  }, []);
 
   // Carga dinámica de dependencias
   const loadDependencies = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const authConfig = {
-        headers: { Authorization: token ? `Bearer ${token}` : "" }
-      };
-
       const [resCountry] = await Promise.all([
-        axios.get("http://192.168.1.60:8080/api/countries", authConfig)
+        axios.get("http://localhost:8080/api/countries")
       ]);
-
       setCountriesList(resCountry.data || []);
     } catch (error) {
-      console.error("Error al cargar las dependencias de usuarios:", error);
+
     }
   };
 
@@ -90,7 +83,6 @@ function Users() {
       const data = await getAllUsers();
       setAllUsers(data || []);
     } catch (error) {
-      console.error("Error al cargar todos los usuarios:", error);
       setAllUsers([]);
     }
   };
@@ -100,69 +92,90 @@ function Users() {
     loadDependencies();
   }, []);
 
-  // Controla cuando se realiza una bùsqueda por nombre
+  // Controla cuando se realiza una búsqueda por nombre
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (search.trim() === "") { setUsersByName([]); return; }
-    const data = await searchUsersByName(search);
-    setUsersByName(data || []);
-  };
 
-  // Controla cuando se realiza una bùsqueda por ID
-  const handleSearchById = async (e) => {
-    e.preventDefault();
-    if (searchId.trim() === "") { setUserById(null); return; }
+    if (search.trim() === "") {
+      setUsersByName([]);
+      return;
+    }
+
     try {
-      const user = await getUserById(searchId);
-      setUserById(user || null);
-    } catch {
-      setUserById(null);
+      const data = await searchUsersByName(search);
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        toast.error("No se encontró ningún usuario con ese nombre.");
+        setUsersByName([]);
+      } else {
+        setUsersByName(data);
+      }
+    } catch (error) {
+      setUsersByName([]);
     }
   };
 
-// Controla la creaciòn de un usuario
+
+  // Controla cuando se realiza una búsqueda por ID
+  const handleSearchById = async (e) => {
+    e.preventDefault();
+
+    if (searchId.trim() === "") {
+      setUserById(null);
+      return;
+    }
+    try {
+      const user = await getUserById(searchId);
+
+      if (!user) {
+        toast.error("El usuario con ese ID no existe.");
+        setUserById(null);
+      } else {
+        setUserById(user);
+      }
+    } catch (error) {
+
+      setUserById(null);
+      toast.error("No se encontró el usuario con ese ID.");
+    }
+  };
+
+  // Controla la creación de un usuario
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
-    const newSupplier = Object.fromEntries(fd.entries());
+    const newUser = Object.fromEntries(fd.entries());
 
     try {
-      const token = localStorage.getItem("token");
-      const authConfig = {
-        headers: { Authorization: token ? `Bearer ${token}` : "" }
-      };
-
       await createUser({
         ...newUser,
         countryName: newUser.countryName?.trim()
-      }, authConfig);
+      });
 
-      alert("¡Usuario creado con éxito!");
+      toast.success("¡Usuario creado con éxito!");
       e.target.reset();
-      loadSuppliers();
+
+      setTimeout(async () => {
+        if (typeof loadUsers === "function") {
+          await loadUsers();
+        }
+      }, 300);
     } catch (error) {
-      console.error("Error completo:", error);
-      alert("Error al crear usuario: " + (error.response?.data?.message || "No tienes permisos o verifique los datos"));
     }
   };
 
-  // Controla la busqueda de un usuario por ID
   const updateUserById = async (id, payload) => {
     await updateUser(id, payload);
-    loadUsers();
+    await loadUsers();
   };
 
-  // Rellena automaticamente el formulario de UPDATE
-  const handleChange = (e) => setFormData({
-      ...formData, [e.target.name]: e.target.value });
+  // Rellena automáticamente el formulario de UPDATE
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // Controla que se actualice uno o todos los campos de UPDATE
+  // Controla la precarga de datos al salir del input ID en UPDATE
   const handleBlurId = async (e) => {
     const targetValue = (e && e.target) ? e.target.value : e;
-    if (!targetValue || String(targetValue).trim() === "") {
-      alert("Por favor, ingresa un ID válido antes de cargar.");
-      return;
-    }
+    if (!targetValue || String(targetValue).trim() === "") return;
 
     try {
       const user = await getUserById(targetValue);
@@ -173,7 +186,7 @@ function Users() {
         const uCountryName = user.countryName ?? user.country_name ?? user.country?.name;
 
         const paisCorrespondiente = countriesList.find(
-          (c) => (c.id === uCountryId || c.country_id === uCountryId || c.name === uCountryName)
+            (c) => (c.id === uCountryId || c.country_id === uCountryId || c.name === uCountryName)
         );
 
         setFormData({
@@ -186,17 +199,20 @@ function Users() {
           role: user.role || "",
           countryName: paisCorrespondiente ? paisCorrespondiente.name : (uCountryName || ""),
         });
-        console.log("¡Usuario cargado con éxito!", user);
+        toast.success("¡Usuario cargado con éxito!");
       } else {
-        alert("No se encontró el usuario con ese ID");
+        toast.error("El usuario con ese ID no existe.");
       }
     } catch (error) {
-      console.error(error);
-      alert("Error al consultar usuario");
+      setFormData({
+        id: "", name: "", lastName: "", phone: "", email: "",
+        password: "", role: "", countryName: ""
+      });
+      toast.error("No se encontró ningún usuario con el ID especificado.");
     }
   };
 
-  // Controla que el formulario se envie correctamente
+  // Controla el envío de la actualización
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     const { id, name, lastName, phone, email, password, role, countryName } = formData;
@@ -216,10 +232,15 @@ function Users() {
 
     try {
       await updateUserById(id, payload);
-      alert("Usuario actualizado correctamente");
-      await loadUsers();
+      toast.success("Usuario actualizado correctamente");
+
+      setFormData({
+        id: "", name: "", lastName: "", phone: "", email: "",
+        password: "", role: "", countryName: "",
+      });
+      setEditSearchId("");
     } catch (error) {
-      alert("Error al actualizar: " + (error.response?.data?.message || "Revisa los datos"));
+
     }
   };
 
@@ -231,19 +252,19 @@ function Users() {
   }, [activeTab, userRole]);
 
   return (
-    <div className="fb-form-container">
-          {activeTab === "home" && showWelcome && (
-              <div className="fb-photo-section">
+      <div className="fb-form-container">
+        {activeTab === "home" && showWelcome && (
+            <div className="fb-photo-section">
               <img
-              src="/logo1.png"
-              alt="Foto principal FreshBasket"
-              className="fb-photo"
-          />
-          </div>
-         )}
+                  src="/logo1.png"
+                  alt="Foto principal FreshBasket"
+                  className="fb-photo"
+              />
+            </div>
+        )}
 
-          {/* ALL USERS */}
-          {activeTab === "all" && (
+        {/* ALL USERS */}
+        {activeTab === "all" && (
             <div className="fb-form-section">
               <div className="fb-section-header">
                 <h3 className="fb-table-title">
@@ -254,45 +275,45 @@ function Users() {
 
               <div className="fb-results-grid fb-users-cards-margin">
                 {Array.isArray(allUsers) && allUsers.length > 0 ? (
-                  allUsers.map((u2) => (
-                    <div key={u2.id} className="fb-user-display-card">
-                      <div className="fb-card-user-info">
-                        <h4 className="fb-card-user-title">
-                          {u2.name} {u2.lastName}
-                        </h4>
-                        <span className="fb-card-user-id">ID: {u2.id}</span>
-                      </div>
-                      <div className="fb-card-user-body">
-                        <p className="fb-card-user-detail">
-                          <i className="bi bi-envelope" /> {u2.email}
-                        </p>
-                        <p className="fb-card-user-detail">
-                          <i className="bi bi-telephone" /> {u2.phone}
-                        </p>
-                        <p className="fb-card-user-detail">
-                            <i className="bi bi-telephone" /> {u2.role}
-                        </p>
-                        <p className="fb-card-user-detail">
-                          <i className="bi bi-geo-alt" />
-                          <span className="fb-country">
+                    allUsers.map((u2) => (
+                        <div key={u2.id} className="fb-user-display-card">
+                          <div className="fb-card-user-info">
+                            <h4 className="fb-card-user-title">
+                              {u2.name} {u2.lastName}
+                            </h4>
+                            <span className="fb-card-user-id">ID: {u2.id}</span>
+                          </div>
+                          <div className="fb-card-user-body">
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-envelope" /> {u2.email}
+                            </p>
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-telephone" /> {u2.phone}
+                            </p>
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-telephone" /> {u2.role}
+                            </p>
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-geo-alt" />
+                              <span className="fb-country">
                             {u2.countryName || "Sin país"}
                           </span>
-                        </p>
-                      </div>
-                    </div>
-                  ))
+                            </p>
+                          </div>
+                        </div>
+                    ))
                 ) : (
-                  <div className="fb-empty fb-grid-full-width">
-                    <i className="bi bi-inbox" />
-                    <p>No hay usuarios registrados</p>
-                  </div>
+                    <div className="fb-empty fb-grid-full-width">
+                      <i className="bi bi-inbox" />
+                      <p>No hay usuarios registrados</p>
+                    </div>
                 )}
               </div>
             </div>
-          )}
+        )}
 
-          {/* SEARCH BY NAME */}
-          {activeTab === "name" && (
+        {/* SEARCH BY NAME */}
+        {activeTab === "name" && (
             <div className="fb-form-section">
               <div className="fb-form-card">
                 <h3 className="fb-form-title"><i className="bi bi-search" /> Escriba un nombre del usuario</h3>
@@ -300,7 +321,7 @@ function Users() {
                   <div className="fb-search-input-wrap">
                     <i className="bi bi-person fb-search-icon" />
                     <input type="text" className="fb-search-input" placeholder="Ej: Martin Antonio"
-                      value={search} onChange={e => setSearch(e.target.value)} />
+                           value={search} onChange={e => setSearch(e.target.value)} />
                   </div>
                   <button type="submit" className="fb-search-btn">
                     <i className="bi bi-search" /> Buscar usuario
@@ -308,28 +329,25 @@ function Users() {
                 </form>
               </div>
               {usersByName.length > 0 && (
-                <div className="fb-results-grid">
-                  {usersByName.map(u2 => (
-                    <div key={u2.id} className="fb-user-card">
-                      <div>
-                        <p className="fb-user-card-name">{u2.name} {u2.lastName}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {u2.email}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {u2.phone}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {u2.role}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-globe" /> {u2.countryName || "Sin país"}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {search.trim() !== "" && usersByName.length === 0 && (
-                <div className="fb-empty"><i className="bi bi-search" style={{ fontSize: "2rem" }} /><p>No se encontraron usuarios con ese nombre</p></div>
+                  <div className="fb-results-grid">
+                    {usersByName.map(u2 => (
+                        <div key={u2.id} className="fb-user-card">
+                          <div>
+                            <p className="fb-user-card-name">{u2.name} {u2.lastName}</p>
+                            <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {u2.email}</p>
+                            <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {u2.phone}</p>
+                            <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {u2.role}</p>
+                            <p className="fb-user-card-detail"><i className="bi bi-globe" /> {u2.countryName || "Sin país"}</p>
+                          </div>
+                        </div>
+                    ))}
+                  </div>
               )}
             </div>
-          )}
+        )}
 
-          {/* SEARCH BY ID */}
-          {activeTab === "id" && (
+        {/* SEARCH BY ID */}
+        {activeTab === "id" && (
             <div className="fb-form-section">
               <div className="fb-form-card">
                 <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID del usuario</h3>
@@ -337,7 +355,7 @@ function Users() {
                   <div className="fb-search-input-wrap">
                     <i className="bi bi-person fb-search-icon" />
                     <input type="number" className="fb-search-input" placeholder="Ingrese ID"
-                      value={searchId} onChange={e => setSearchId(e.target.value)} />
+                           value={searchId} onChange={e => setSearchId(e.target.value)} />
                   </div>
                   <button type="submit" className="fb-search-btn">
                     <i className="bi bi-search" /> Buscar usuario
@@ -345,29 +363,23 @@ function Users() {
                 </form>
               </div>
               {userById && (
-                    <div className="fb-results-grid">
-                      <div className="fb-user-card">
-                        <div>
-                          <p className="fb-user-card-name">{userById.name} {userById.lastName}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {userById.email}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {userById.phone}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-person-badge" /> {userById.role}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-globe" /> {userById.countryName || "Sin país"}</p>
-                        </div>
+                  <div className="fb-results-grid">
+                    <div className="fb-user-card">
+                      <div>
+                        <p className="fb-user-card-name">{userById.name} {userById.lastName}</p>
+                        <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {userById.email}</p>
+                        <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {userById.phone}</p>
+                        <p className="fb-user-card-detail"><i className="bi bi-person-badge" /> {userById.role}</p>
+                        <p className="fb-user-card-detail"><i className="bi bi-globe" /> {userById.countryName || "Sin país"}</p>
                       </div>
                     </div>
-                  )}
-                  {!userById && searchId && (
-                    <div className="fb-empty">
-                      <i className="bi bi-search" style={{ fontSize: "2rem" }} />
-                      <p>No se encontró usuario con ese ID</p>
-                    </div>
-                    )}
-                </div>
+                  </div>
               )}
+            </div>
+        )}
 
-          {/* CREATE USER */}
-          {activeTab === "create" && (
+        {/* CREATE USER */}
+        {activeTab === "create" && (
             <div className="fb-form-section fb-tab-create">
               <div className="fb-form-card">
                 <h3 className="fb-form-title">
@@ -383,13 +395,13 @@ function Users() {
                       { label: "Credenciales", name: "role", icon: "bi-person", placeholder: "Credenciales de" },
                       { label: "Contraseña", name: "password", icon: "bi-lock", type: "password", placeholder: "••••••••" },
                     ].map((f) => (
-                      <div key={f.name} className="fb-crud-field">
-                        <label className="fb-crud-label">{f.label}</label>
-                        <div className="fb-crud-input-wrap">
-                          <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                          <input type={f.type || "text"} name={f.name} className="fb-crud-input" placeholder={f.placeholder} required />
+                        <div key={f.name} className="fb-crud-field">
+                          <label className="fb-crud-label">{f.label}</label>
+                          <div className="fb-crud-input-wrap">
+                            <i className={`bi ${f.icon} fb-crud-input-icon`} />
+                            <input type={f.type || "text"} name={f.name} className="fb-crud-input" placeholder={f.placeholder} required />
+                          </div>
                         </div>
-                      </div>
                     ))}
 
                     <div className="fb-crud-field">
@@ -397,17 +409,17 @@ function Users() {
                       <div className="fb-crud-input-wrap">
                         <i className="bi bi-globe fb-crud-input-icon" />
                         <input
-                          type="text"
-                          name="countryName"
-                          list={`countries-options-${countriesList.length}`}
-                          className="fb-crud-input"
-                          placeholder="Selecciona o escribe un país"
-                          required
-                          autoComplete="off"
+                            type="text"
+                            name="countryName"
+                            list={`countries-options-${countriesList.length}`}
+                            className="fb-crud-input"
+                            placeholder="Selecciona o escribe un país"
+                            required
+                            autoComplete="off"
                         />
                         <datalist id={`countries-options-${countriesList.length}`}>
                           {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                            <option key={c.id || c.country_id || idx} value={c.name} />
+                              <option key={c.id || c.country_id || idx} value={c.name} />
                           ))}
                         </datalist>
                       </div>
@@ -420,10 +432,10 @@ function Users() {
                 </form>
               </div>
             </div>
-          )}
+        )}
 
-          {/* UPDATE USER */}
-          {activeTab === "update" && (
+        {/* UPDATE USER */}
+        {activeTab === "update" && (
             <div className="fb-form-section fb-tab-update">
               <div className="fb-form-card">
                 <h3 className="fb-form-title"><i className="bi bi-pencil-square" /> Actualice el dato o los datos del usuario</h3>
@@ -435,20 +447,20 @@ function Users() {
                         <div style={{ position: "relative", flex: 1 }}>
                           <i className="bi bi-hash fb-crud-input-icon" style={{ zIndex: 5 }} />
                           <input
-                            type="number"
-                            name="id"
-                            className="fb-crud-input"
-                            placeholder="ID del usuario"
-                            value={formData.id || ""}
-                            onChange={handleChange}
-                            required
+                              type="number"
+                              name="id"
+                              className="fb-crud-input"
+                              placeholder="ID del usuario"
+                              value={formData.id || ""}
+                              onChange={handleChange}
+                              required
                           />
                         </div>
                         <button
-                          type="button"
-                          className="fb-search-btn"
-                          style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
-                          onClick={() => handleBlurId(formData.id)}
+                            type="button"
+                            className="fb-search-btn"
+                            style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
+                            onClick={() => handleBlurId(formData.id)}
                         >
                           Cargar
                         </button>
@@ -463,15 +475,15 @@ function Users() {
                       { label: "Contraseña", name: "password", icon: "bi-lock", type: "password" },
                       { label: "Credenciales", name: "role", icon: "bi-person" },
                     ].map((f) => (
-                      <div key={f.name} className="fb-crud-field">
-                        <label className="fb-crud-label">{f.label}</label>
-                        <div className="fb-crud-input-wrap">
-                          <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                          <input type={f.type || "text"} name={f.name} className="fb-crud-input"
-                            placeholder={f.placeholder} value={formData[f.name] || ""}
-                            onChange={handleChange} required={f.name !== "password"} />
+                        <div key={f.name} className="fb-crud-field">
+                          <label className="fb-crud-label">{f.label}</label>
+                          <div className="fb-crud-input-wrap">
+                            <i className={`bi ${f.icon} fb-crud-input-icon`} />
+                            <input type={f.type || "text"} name={f.name} className="fb-crud-input"
+                                   placeholder={f.placeholder} value={formData[f.name] || ""}
+                                   onChange={handleChange} required={f.name !== "password"} />
+                          </div>
                         </div>
-                      </div>
                     ))}
 
                     <div className="fb-crud-field">
@@ -479,19 +491,19 @@ function Users() {
                       <div className="fb-crud-input-wrap">
                         <i className="bi bi-globe fb-crud-input-icon" />
                         <input
-                          type="text"
-                          name="countryName"
-                          list={`countries-update-options-${countriesList.length}`}
-                          className="fb-crud-input"
-                          placeholder="Selecciona o escribe un país"
-                          value={formData.countryName || ""}
-                          onChange={handleChange}
-                          required
-                          autoComplete="off"
+                            type="text"
+                            name="countryName"
+                            list={`countries-update-options-${countriesList.length}`}
+                            className="fb-crud-input"
+                            placeholder="Selecciona o escribe un país"
+                            value={formData.countryName || ""}
+                            onChange={handleChange}
+                            required
+                            autoComplete="off"
                         />
                         <datalist id={`countries-update-options-${countriesList.length}`}>
                           {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                            <option key={c.id || c.country_id || idx} value={c.name} />
+                              <option key={c.id || c.country_id || idx} value={c.name} />
                           ))}
                         </datalist>
                       </div>
@@ -503,48 +515,96 @@ function Users() {
                 </form>
               </div>
             </div>
-          )}
+        )}
 
-          {/* DELETE USER*/}
-          {activeTab === "delete" && (
+        {/* DELETE USER */}
+        {activeTab === "delete" && (
             <div className="fb-form-section">
               <div className="fb-form-card" style={{ borderTop: "4px solid #dc3545" }}>
                 <h3 className="fb-form-title" style={{ color: "#dc3545" }}>
                   <i className="bi bi-trash3-fill" /> Introduzca el ID del usuario
                 </h3>
                 <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
-                  ⚠️ Al eliminar el usuario se borrara permanentemente de su base de datos ⚠️
+                  ⚠️ Al eliminar el usuario se desactivará de su base de datos ⚠️
                 </p>
                 <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    const idValue = e.target.id.value;
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const formElement = e.currentTarget;
+                      const idValue = formElement.userId.value;
 
-                    const confirmDelete = window.confirm(
-                      `¿Está seguro de que desea eliminar el usuario con ese ID ${idValue}?`
-                    );
+                      if (!idValue || String(idValue).trim() === "") {
+                        toast.error("Por favor, ingresa un ID válido.");
+                        return;
+                      }
 
-                    if (!confirmDelete) return;
+                      try {
+                        const user = await getUserById(idValue);
 
-                    try {
-                      await deleteUserById(idValue);
-                      alert("Usuario eliminado correctamente");
-                      e.target.reset();
-                      loadUsers();
-                    } catch (error) {
-                      alert("Error al eliminar usuario");
-                    }
-                  }}
-                  className="fb-search-form"
+                        // 🛠️ STEP 2: Si el servidor responde vacío o no encuentra al usuario
+                        if (!user) {
+                          toast.error(`No se puede eliminar: El usuario con ID ${idValue} no existe.`);
+                          return;
+                        }
+
+                        toast((t) => (
+                            <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
+                          <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
+                           ¿Está seguro de que desea eliminar al usuario <strong>{user.name ? `${user.name} ${user.lastName || ""}` : idValue}</strong>?
+                            </span>
+                              <div className="d-flex justify-content-center gap-2 mt-1">
+                                <button
+                                    className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={async () => {
+                                      toast.dismiss(t.id);
+
+                                      try {
+                                        await deleteUser(idValue);
+                                        toast.success(`Usuario con ID ${idValue} eliminado correctamente.`);
+
+                                        if (formElement) formElement.reset();
+
+                                        setTimeout(async () => {
+                                          if (typeof loadUsers === "function") {
+                                            await loadUsers();
+                                          }
+                                        }, 300);
+                                      } catch (error) {
+                                        toast.error("Error al ejecutar la eliminación en el servidor.");
+                                      }
+                                    }}
+                                >
+                                  Eliminar
+                                </button>
+                                <button
+                                    className="btn btn-light btn-sm px-3 border shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </div>
+                        ), {
+                          duration: Infinity,
+                          position: "top-center"
+                        });
+
+                      } catch (error) {
+                        toast.error(`El usuario con ID ${idValue} no existe o no se pudo verificar.`);
+                      }
+                    }}
+                    className="fb-search-form"
                 >
                   <div className="fb-search-input-wrap">
                     <i className="bi bi-hash fb-search-icon" />
                     <input
-                      type="number"
-                      name="id"
-                      className="fb-search-input"
-                      placeholder="ID del usuario a eliminar"
-                      required
+                        type="number"
+                        name="userId"
+                        className="fb-search-input"
+                        placeholder="ID del usuario a eliminar"
+                        required
                     />
                   </div>
                   <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
@@ -553,11 +613,9 @@ function Users() {
                 </form>
               </div>
             </div>
-          )}
+        )}
+      </div>
+  );
+}
 
-         </div>
-
-   );
- }
-
- export default Users;
+export default Users;

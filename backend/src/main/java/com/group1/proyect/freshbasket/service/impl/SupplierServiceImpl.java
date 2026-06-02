@@ -4,6 +4,7 @@ import com.group1.proyect.freshbasket.dto.request.SupplierRequestDTO;
 import com.group1.proyect.freshbasket.dto.response.SupplierResponseDTO;
 import com.group1.proyect.freshbasket.entity.Country;
 import com.group1.proyect.freshbasket.entity.Supplier;
+import com.group1.proyect.freshbasket.entity.User;
 import com.group1.proyect.freshbasket.repository.CountryRepository;
 import com.group1.proyect.freshbasket.repository.SupplierRepository;
 import com.group1.proyect.freshbasket.service.SupplierService;
@@ -62,7 +63,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public List<SupplierResponseDTO> getAllSuppliers() {
-        return supplierRepository.findAll()
+        return supplierRepository.findByActiveTrue()
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -72,6 +73,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Transactional(readOnly = true)
     public SupplierResponseDTO getSupplierById(Long id) {
         return supplierRepository.findById(id)
+                .filter(Supplier::isActive)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con ese ID: " + id));
     }
@@ -106,23 +108,18 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     @Transactional // Importante: org.springframework.transaction.annotation.Transactional
     public void deleteSupplier(Long id) {
-        // Buscamos el usuario primero
         Supplier supplier = supplierRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con ese ID: " + id));
 
-        // Borramos la entidad encontrada
-        supplierRepository.delete(supplier);
-
-        //sincronización inmediata
-        supplierRepository.flush();
+        supplier.setActive(false);
     }
 
     @Override
     public List<SupplierResponseDTO> searchSuppliersByName(String name) {
         return supplierRepository.findByNameContainingIgnoreCase(name)
                 .stream()
+                .filter(Supplier::isActive)
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 }
-

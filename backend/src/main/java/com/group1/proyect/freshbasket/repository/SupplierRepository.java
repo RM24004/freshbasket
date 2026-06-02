@@ -17,4 +17,6 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
     @Query("SELECT s FROM Supplier s WHERE LOWER(TRIM(CONCAT(s.name, ' ', COALESCE(s.lastName, '')))) = LOWER(TRIM(:fullName))")
     Optional<Supplier> findByFullNameIgnoreCase(@Param("fullName") String fullName);
+
+    List<Supplier> findByActiveTrue();
 }

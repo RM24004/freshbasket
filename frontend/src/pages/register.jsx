@@ -1,36 +1,62 @@
-// Pagina de registro, en el caso que un usuario no tenga cuenta.
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../services/userService.js";
+import axios from "axios";
+import toast from "react-hot-toast";
 import "../styles/register.css";
 
 function RegisterScreen() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [countriesList, setCountriesList] = useState([]);
+
+  // Cargar la lista de países dinámicamente al montar el componente (Ruta Pública)
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/countries");
+        setCountriesList(response.data || []);
+      } catch (error) {
+        console.error("No se pudo cargar la lista de países dinámicamente:", error);
+      }
+    };
+    fetchCountries();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.target);
+    const countryValue = formData.get("countryName")?.trim();
 
+    if (!countryValue) {
+      toast.error("Por favor, introduce o selecciona un país.");
+      setLoading(false);
+      return;
+    }
+
+    // Estructuramos el JSON exactamente como lo espera tu AuthController en el backend
     const newUser = {
       name: formData.get("name"),
-      last_name: formData.get("lastName"),
+      lastName: formData.get("lastName"),
       phone: formData.get("phone"),
       email: formData.get("email"),
       password: formData.get("password"),
-      countryId: Number(formData.get("countryId")),
+      role: "USUARIO",
+      countryName: countryValue
     };
 
     try {
-      await createUser(newUser);
-      alert("¡Cuenta creada correctamente!");
-      navigate("/login");
+      await axios.post("http://localhost:8080/api/auth/register", newUser);
+
+      toast.success("¡Cuenta creada correctamente! Redirigiendo...");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
-      console.error("Error en registro:", error.response?.data || error.message);
-      alert("Error al registrarse: " + (error.response?.data?.message || "Error de conexión"));
+      const errorMessage = error.response?.data?.message || "Verifique los datos ingresados";
+      toast.error("Error al registrarse: " + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -42,9 +68,9 @@ function RegisterScreen() {
         {/* Botón Inicio fijo en desktop */}
         <div className="position-absolute top-0 start-0 p-3 d-none d-md-block">
           <button
-            onClick={() => navigate("/")}
-            className="btn btn-outline-success shadow-sm px-3"
-            style={{ borderRadius: "8px" }}
+              onClick={() => navigate("/")}
+              className="btn btn-outline-success shadow-sm px-3"
+              style={{ borderRadius: "8px" }}
           >
             <i className="bi bi-house-door me-2"></i> Inicio
           </button>
@@ -53,9 +79,9 @@ function RegisterScreen() {
         {/* Botón Inicio integrado en mobile */}
         <div className="w-100 p-3 d-block d-md-none">
           <button
-            onClick={() => navigate("/")}
-            className="btn btn-outline-success w-100"
-            style={{ borderRadius: "8px" }}
+              onClick={() => navigate("/")}
+              className="btn btn-outline-success w-100"
+              style={{ borderRadius: "8px" }}
           >
             <i className="bi bi-house-door me-2"></i> Inicio
           </button>
@@ -63,14 +89,14 @@ function RegisterScreen() {
 
         {/* Caja principal */}
         <div
-          className="card shadow-lg border-0 overflow-hidden mx-3 mx-md-auto register-card"
-          style={{
-            borderRadius: "25px",
-            maxWidth: "700px",
-            width: "100%",
-            height: window.innerWidth >= 992 ? "90vh" : "auto",
-            overflowY: window.innerWidth >= 992 ? "auto" : "visible"
-          }}
+            className="card shadow-lg border-0 overflow-hidden mx-3 mx-md-auto register-card"
+            style={{
+              borderRadius: "25px",
+              maxWidth: "700px",
+              width: "100%",
+              height: window.innerWidth >= 992 ? "90vh" : "auto",
+              overflowY: window.innerWidth >= 992 ? "auto" : "visible"
+            }}
         >
           <div className="row g-0 h-100">
 
@@ -106,8 +132,24 @@ function RegisterScreen() {
                       <input type="text" name="phone" className="form-control bg-light" placeholder="7777-7777" required />
                     </div>
                     <div className="col-md-6 mb-2">
-                      <label className="form-label fw-semibold small">ID de País</label>
-                      <input type="number" name="countryId" className="form-control bg-light" placeholder="Ej: 1" required />
+                      <label className="form-label fw-semibold small">País</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-globe fb-crud-input-icon" />
+                        <input
+                            type="text"
+                            name="countryName"
+                            list={`countries-options-${countriesList.length}`}
+                            className="fb-crud-input"
+                            placeholder="Selecciona o escribe un país"
+                            required
+                            autoComplete="off"
+                        />
+                        <datalist id={`countries-options-${countriesList.length}`}>
+                          {Array.isArray(countriesList) && countriesList.map((c, idx) => (
+                              <option key={c.id || c.country_id || idx} value={c.name} />
+                          ))}
+                        </datalist>
+                      </div>
                     </div>
                   </div>
 
@@ -123,36 +165,37 @@ function RegisterScreen() {
 
                   <div className="d-grid">
                     <button
-                      type="submit"
-                      className="btn btn-success btn-lg fw-bold py-2"
-                      style={{ borderRadius: "10px" }}
-                      disabled={loading}
+                        type="submit"
+                        className="btn btn-success btn-lg fw-bold py-2"
+                        style={{ borderRadius: "10px" }}
+                        disabled={loading}
                     >
                       {loading ? (
-                        <span className="spinner-border spinner-border-sm me-2"></span>
+                          <span className="spinner-border spinner-border-sm me-2"></span>
                       ) : "Registrarme Ahora"}
                     </button>
                   </div>
                 </form>
 
-                {/* Enunciado de login siempre visible */}
+                {/* Enunciado de login */}
                 <div className="text-center mt-3">
                   <p className="text-muted small mb-0">
                     ¿Ya tienes cuenta?{" "}
                     <button
-                      onClick={() => navigate("/login")}
-                      className="btn btn-link text-success fw-bold text-decoration-none p-0"
+                        type="button"
+                        onClick={() => navigate("/login")}
+                        className="btn btn-link text-success fw-bold text-decoration-none p-0"
                     >
                       Inicia sesión aquí
                     </button>
-                </p>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 

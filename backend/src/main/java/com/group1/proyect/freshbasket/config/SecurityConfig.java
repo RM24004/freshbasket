@@ -31,75 +31,75 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        http.csrf(csrf -> csrf.disable());
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.authorizeHttpRequests(auth -> auth
 
-                        // Rutas públicas para swagger y el login
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/v3/api-docs.yaml",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/webjars/**"
-                        ).permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-
-
-                        // Rutas para products y detalles de permisos
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMINISTRADOR")
+                // Rutas públicas para swagger y el login
+                .requestMatchers(
+                        "/v3/api-docs/**",
+                        "/v3/api-docs.yaml",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/webjars/**"
+                ).permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/countries/**").permitAll()
 
 
-                        // Rutas para entries y exits
-                        .requestMatchers(HttpMethod.GET, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                        .requestMatchers(HttpMethod.GET, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-
-                        .requestMatchers(HttpMethod.POST, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                        .requestMatchers(HttpMethod.POST, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-
-                        .requestMatchers(HttpMethod.PUT, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                        .requestMatchers(HttpMethod.PUT, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-
-                        .requestMatchers(HttpMethod.DELETE, "/api/entries/**").hasAuthority("ADMINISTRADOR")
-                        .requestMatchers(HttpMethod.DELETE, "/api/exits/**").hasAuthority("ADMINISTRADOR")
+                // Rutas para products y detalles de permisos
+                .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.PUT, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMINISTRADOR")
 
 
-                        // Rutas para suppliers y categories
-                        .requestMatchers(HttpMethod.GET, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                        .requestMatchers(HttpMethod.GET, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+                // Rutas para entries y exits
+                .requestMatchers(HttpMethod.GET, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+                .requestMatchers(HttpMethod.GET, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
 
-                        .requestMatchers(HttpMethod.POST, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                        .requestMatchers(HttpMethod.POST, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
 
-                        .requestMatchers(HttpMethod.PUT, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                        .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.PUT, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.PUT, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
 
-                        .requestMatchers(HttpMethod.DELETE, "/api/suppliers/**").hasAuthority("ADMINISTRADOR")
-                        .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("ADMINISTRADOR")
-
-
-                        // Rutas para countries
-                        .requestMatchers(HttpMethod.GET, "/api/countries/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                        .requestMatchers(HttpMethod.POST, "/api/countries/**").hasAuthority("ADMINISTRADOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/countries/**").hasAuthority("ADMINISTRADOR")
-                        .requestMatchers(HttpMethod.DELETE, "/api/countries/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/entries/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/exits/**").hasAuthority("ADMINISTRADOR")
 
 
-                        // Rutas para Users
-                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                        .requestMatchers("/api/users/**").hasAuthority("ADMINISTRADOR")
+                // Rutas para suppliers y categories
+                .requestMatchers(HttpMethod.GET, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+                .requestMatchers(HttpMethod.GET, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+
+                .requestMatchers(HttpMethod.POST, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+
+                .requestMatchers(HttpMethod.PUT, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+
+                .requestMatchers(HttpMethod.DELETE, "/api/suppliers/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("ADMINISTRADOR")
 
 
-                        // Seguridad global
-                        .anyRequest().authenticated()
-                );
+                // Rutas para countries
+                .requestMatchers(HttpMethod.GET, "/api/countries/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/countries/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/countries/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/countries/**").hasAuthority("ADMINISTRADOR")
 
-        // Filtro JWT antes del filtro de autenticación por defecto
+
+                // Rutas para Users
+                .requestMatchers(HttpMethod.GET, "/api/users/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers("/api/users/**").hasAuthority("ADMINISTRADOR")
+
+
+                // Seguridad global
+                .anyRequest().authenticated()
+        );
+
+        // Filtro JWT antes del filtro de autenticación
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
