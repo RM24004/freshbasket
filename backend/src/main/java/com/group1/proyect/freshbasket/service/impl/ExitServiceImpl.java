@@ -9,7 +9,6 @@ import com.group1.proyect.freshbasket.repository.ExitRepository;
 import com.group1.proyect.freshbasket.repository.ProductRepository;
 import com.group1.proyect.freshbasket.repository.UserRepository;
 import com.group1.proyect.freshbasket.service.ExitService;
-import jakarta.persistence.Column;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,15 +35,17 @@ public class ExitServiceImpl implements ExitService {
     // DTO → Entity
     private Exit convertToEntity(ExitRequestDTO dto) {
         Exit exit = new Exit();
-
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        exit.setExitDate(dto.getExitDate());
+        exit.setExitDate(java.time.LocalDateTime.now());
         exit.setQuantity(dto.getQuantity());
+
+        String cleanProductName = dto.getProductName() != null ? dto.getProductName().trim() : "";
+        Product product = productRepository.findByNameIgnoreCase(cleanProductName)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ese nombre: " + dto.getProductName()));
+
+        String cleanUserName = dto.getUserName() != null ? dto.getUserName().trim() : "";
+        User user = userRepository.findByFullNameIgnoreCase(cleanUserName)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el nombre completo: " + dto.getUserName()));
+
         exit.setProduct(product);
         exit.setUser(user);
 
@@ -54,12 +55,34 @@ public class ExitServiceImpl implements ExitService {
     // Entity → DTO
     private ExitResponseDTO convertToDTO(Exit exit) {
         ExitResponseDTO dto = new ExitResponseDTO();
-
         dto.setId(exit.getId());
         dto.setExitDate(exit.getExitDate());
         dto.setQuantity(exit.getQuantity());
         dto.setProductId(exit.getProduct().getId());
         dto.setUserId(exit.getUser().getId());
+
+        if (exit.getProduct() != null) {
+            dto.setProductId(exit.getProduct().getId());
+            dto.setProductName(exit.getProduct().getName());
+        } else {
+            dto.setProductName("Sin producto asignado");
+        }
+
+        if (exit.getUser() != null) {
+            dto.setUserId(exit.getUser().getId());
+
+            String uName = exit.getUser().getName() != null ? exit.getUser().getName() : "";
+            String uLastName = exit.getUser().getLastName() != null ? exit.getUser().getLastName() : "";
+            String uFullName = (uName + " " + uLastName).trim();
+
+            if (!uFullName.isEmpty()) {
+                dto.setUserName(uFullName);
+            } else {
+                dto.setUserName("Usuario " + exit.getUser().getId());
+            }
+        } else {
+            dto.setUserName("Sin usuario asignado");
+        }
 
         return dto;
     }
@@ -86,7 +109,6 @@ public class ExitServiceImpl implements ExitService {
     public ExitResponseDTO createExit(ExitRequestDTO requestDTO) {
         Exit exit = convertToEntity(requestDTO);
 
-        // Se actualiza el stock del producto
         Product product = exit.getProduct();
         if (product != null) {
             int nuevoStock = product.getCurrentStock() - exit.getQuantity();
@@ -97,6 +119,8 @@ public class ExitServiceImpl implements ExitService {
             productRepository.save(product);
         }
 
+        exit.setExitDate(java.time.LocalDateTime.now());
+
         Exit savedExit = exitRepository.save(exit);
         return convertToDTO(savedExit);
     }
@@ -106,11 +130,13 @@ public class ExitServiceImpl implements ExitService {
         Exit exit = exitRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Salida no encontrada"));
 
-        Product product = productRepository.findById(requestDTO.getProductId())
-                .orElseThrow(() -> new RuntimeException("ID del Producto no encontrado"));
+        String cleanProductName = requestDTO.getProductName() != null ? requestDTO.getProductName().trim() : "";
+        Product product = productRepository.findByNameIgnoreCase(cleanProductName)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ese nombre: " + requestDTO.getProductName()));
 
-        User user = userRepository.findById(requestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("ID del Usuario no encontrado"));
+        String cleanUserName = requestDTO.getUserName() != null ? requestDTO.getUserName().trim() : "";
+        User user = userRepository.findByFullNameIgnoreCase(cleanUserName)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ese nombre: " + requestDTO.getUserName()));
 
         // Si se actualiza el campo de la cantida se ajusta el stock según diferencia
         int cantidadAnterior = exit.getQuantity();
@@ -125,7 +151,6 @@ public class ExitServiceImpl implements ExitService {
         productRepository.save(product);
 
         // Se actualizan los datos de la salida
-        exit.setExitDate(requestDTO.getExitDate());
         exit.setQuantity(cantidadNueva);
         exit.setProduct(product);
         exit.setUser(user);
@@ -141,12 +166,17 @@ public class ExitServiceImpl implements ExitService {
 
         Product product = exit.getProduct();
         if (product != null) {
+            if (!product.isActive()) {
+                throw new IllegalStateException("No se puede eliminar esta salida porque pertenece a un producto eliminado.");
+            }
+
             int nuevoStock = product.getCurrentStock() + exit.getQuantity();
             product.setCurrentStock(nuevoStock);
             productRepository.save(product);
         }
 
         exit.setActive(false);
+        exitRepository.save(exit);
     }
 
 }

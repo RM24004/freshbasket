@@ -1,6 +1,7 @@
+//interceptor de errores a nivel global
+
 import axios from "axios";
 import toast from "react-hot-toast";
-
 
 axios.interceptors.request.use(
     (config) => {
@@ -42,6 +43,9 @@ axios.interceptors.response.use(
             switch (status) {
                 case 401:
                     toast.error(serverMessage || "Sesión expirada o no válida. Por favor, inicia sesión de nuevo.");
+                    localStorage.removeItem("token");
+                    
+                    window.location.href = "/login";
                     break;
                 case 403:
                     toast.error(serverMessage || "No tienes los permisos necesarios para realizar esta acción.");
@@ -63,7 +67,6 @@ axios.interceptors.response.use(
 
         return Promise.reject(error);
     }
-
 );
 
 export default axios;

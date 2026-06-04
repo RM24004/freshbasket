@@ -48,14 +48,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String role = jwtUtil.extractRole(token);
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
                     SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
-
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
-
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
+            } else {
+                System.out.println("[JwtFilter] Token inválido o expirado para la ruta: " + path);
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+
+                String jsonResponse = "{\"message\": \"Sesión expirada o no válida. Por favor, inicia sesión de nuevo.\"}";
+                response.getWriter().write(jsonResponse);
+
+                return;
             }
         }
 

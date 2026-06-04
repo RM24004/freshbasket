@@ -2,16 +2,19 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
-import HomeScreen from "./pages/home";
-import LoginScreen from "./pages/Login";
+import Home from "./pages/home";
+import Login from "./pages/Login";
 import Freshbasket from "./pages/freshbasket";
 import Register from './pages/register';
+import Profile from "./pages/profile.jsx";
 import ForgotPassword from './pages/ForgotPassword';
 
 import Products from "./pages/products";
 import Suppliers from "./pages/suppliers";
 import Users from "./pages/users";
 import Entries from "./pages/entries";
+import Exits from "./pages/exits";
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -35,8 +38,8 @@ function App() {
 
           <Routes>
             {/* Rutas públicas, cualquier persona puede ingresar */}
-            <Route path="/" element={<HomeScreen />} />
-            <Route path="/login" element={<LoginScreen setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
@@ -49,6 +52,23 @@ function App() {
               <Route path="usuarios" element={<Users />} />
               <Route path="proveedores" element={<Suppliers />} />
               <Route path="entradas" element={<Entries />} />
+              <Route path="salidas" element={<Exits />} />
+
+              <Route
+                  path="my-profile"
+                  element={
+                    <Profile
+                        loggedInUser={{
+                          id: localStorage.getItem("userId"),
+                          name: localStorage.getItem("userName"),
+                          lastName: localStorage.getItem("userLastName") || "",
+                          email: localStorage.getItem("userEmail") || "",
+                          role: localStorage.getItem("userRole") || "",
+                          countryName: localStorage.getItem("userCountry") || ""
+                        }}
+                    />
+                  }
+              />
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />

@@ -33,7 +33,7 @@ public class UserResponseDTO {
     @Schema(description = "Contraseña del usuario", example = "JDPEOD34#&TEmxr")
     private String password;
 
-    @Schema(description = "ID del país", example = "1")
+   @Schema(description = "ID del país", example = "1")
     private Long countryId;
 
     @Schema(description = "nombre del país", example = " El Salvador")

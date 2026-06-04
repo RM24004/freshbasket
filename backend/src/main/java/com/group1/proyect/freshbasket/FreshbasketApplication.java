@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class FreshbasketApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(FreshbasketApplication.class, args);
-    }
+    public static void main(String[] args)
+    {SpringApplication.run(FreshbasketApplication.class, args);}
 
 }

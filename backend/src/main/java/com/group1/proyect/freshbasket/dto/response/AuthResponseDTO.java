@@ -1,8 +1,7 @@
 package com.group1.proyect.freshbasket.dto.response;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 @Data
 @AllArgsConstructor
 public class AuthResponseDTO {
@@ -11,5 +10,4 @@ public class AuthResponseDTO {
     private String email;
     private String name;
     private String lastName;
-
 }

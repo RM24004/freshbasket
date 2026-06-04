@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    // Inyección por constructor
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -36,6 +36,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Usuarios obtenidos exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
@@ -49,6 +50,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getuserById(
             @Parameter(description = "ID del usuario a buscar", example = "1", required = true)
@@ -64,6 +66,7 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos del usuario inválidos")
     })
+
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(
             @Parameter(description = "Datos del usuario a crear", required = true)
@@ -82,6 +85,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
+
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(
             @Parameter(description = "ID del usuario a actualizar", example = "1", required = true)
@@ -125,4 +129,19 @@ public class UserController {
         return ResponseEntity.ok(userService.searchUsersByName(name));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMyProfile(Principal principal) {
+        String email = principal.getName();
+        UserResponseDTO userProfile = userService.getUserProfileByEmail(email);
+        return ResponseEntity.ok(userProfile);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponseDTO> updateMyProfile(Principal principal, @RequestBody UserRequestDTO requestDTO) {
+        String email = principal.getName();
+        UserResponseDTO updatedUser = userService.updateUserProfileByEmail(email, requestDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
 }
+
+

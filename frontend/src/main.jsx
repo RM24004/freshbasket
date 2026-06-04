@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./services/axiosConfig";
 import App from "./App.jsx";
-import "bootstrap/dist/css/bootstrap.min.css"; // para estilos de Bootstrap
+import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import "./index.css";// tus estilos personalizados
+import "./index.css";
 
 
 // Montar la aplicación en el div con ID="root" de index.html

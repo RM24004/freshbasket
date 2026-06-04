@@ -1,9 +1,11 @@
-// servicio con el que conectamos todas nuestras peticiones
-// de PRODUCTS desde el Backend
+/*
+ Servicio con el que conectamos todas nuestras peticiones
+ de PRODUCTS desde el Backend
+*/
 
 import axios from "../services/axiosConfig.js";
 
-const API_URL = "http://localhost:8080/api/products";
+const API_URL = "http://192.168.1.60:8080/api/products";
 
 // GET all products
 export const getAllProducts = async () => {
