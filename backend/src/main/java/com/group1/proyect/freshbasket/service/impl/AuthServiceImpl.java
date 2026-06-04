@@ -47,7 +47,6 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getId(),
                 user.getRole()
-
         );
 
         String cleanRole = String.valueOf(user.getRole());

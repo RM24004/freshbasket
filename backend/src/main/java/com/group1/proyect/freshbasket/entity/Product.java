@@ -39,7 +39,7 @@ public class Product {
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    // Imagen del producto se guarda la url
+    // Imagen del producto se guarda la url 
     @Size(max = 500)
     @NotBlank(message = "La imagen es obligatoria")
     @Column(name = "image_url")
@@ -75,3 +75,4 @@ public class Product {
     private List<Exit> exits = new ArrayList<>();
 }
 
+    

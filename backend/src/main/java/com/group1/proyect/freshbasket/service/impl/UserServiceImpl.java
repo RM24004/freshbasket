@@ -138,7 +138,10 @@ public class UserServiceImpl implements UserService {
         userExisting.setEmail(requestDTO.getEmail());
         userExisting.setRole(requestDTO.getRole());
 
-        if (requestDTO.getPassword() != null && !requestDTO.getPassword().isEmpty()) {
+        if (requestDTO.getPassword() != null
+                && !requestDTO.getPassword().trim().isEmpty()
+                && !requestDTO.getPassword().equals("DUMMY_PASSWORD_NOT_CHANGED")) {
+
             userExisting.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
         }
 
@@ -174,5 +177,41 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public UserResponseDTO getUserProfileByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el email: " + email));
+        return convertToDTO(user);
+    }
 
-}
+    @Override
+    public UserResponseDTO updateUserProfileByEmail(String email, UserRequestDTO requestDTO) {
+        User userExisting = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el email: " + email));
+
+        userExisting.setName(requestDTO.getName());
+        userExisting.setLastName(requestDTO.getLastName());
+        userExisting.setPhone(requestDTO.getPhone());
+
+        if (requestDTO.getPassword() != null
+                && !requestDTO.getPassword().trim().isEmpty()
+                && !requestDTO.getPassword().equals("DUMMY_PASSWORD_NOT_CHANGED")) {
+            userExisting.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        }
+        
+        String countryName = requestDTO.getCountryName();
+        if (countryName != null && !countryName.trim().isEmpty()) {
+            Country country = countryRepository.findByNameIgnoreCase(countryName.trim())
+                    .orElseGet(() -> {
+                        Country newCountry = new Country();
+                        newCountry.setName(countryName.trim());
+                        return countryRepository.save(newCountry);
+                    });
+            userExisting.setCountry(country);
+        }
+
+        User savedUser = userRepository.save(userExisting);
+        return convertToDTO(savedUser);
+    }
+
+ }

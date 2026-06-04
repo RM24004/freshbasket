@@ -1,13 +1,14 @@
-// servicio con el que conectamos todas nuestras peticiones
-// de ENTRIES desde el Backend
+/*
+ servicio con el que conectamos todas nuestras peticiones
+ de ENTRIES desde el Backend
+*/
 
 import axios from "../services/axiosConfig.js";
 
-const API_URL = "http://localhost:8080/api/entries";
+const API_URL = "http://192.168.1.60:8080/api/entries";
 
 // GET all entries
 export const getAllEntries = async () => {
-  // El interceptor ya le pone el Token y maneja errores con Toast automáticamente
   const response = await axios.get(API_URL);
   return response.data;
 };

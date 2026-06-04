@@ -26,7 +26,6 @@ public class Exit {
     @Column(nullable = false)
     private Integer quantity;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     @NotNull(message = "La fecha es obligatoria")
     @Column(name = "exit_date", nullable = false, updatable = false)
     private LocalDateTime exitDate;

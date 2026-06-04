@@ -18,10 +18,6 @@ import java.time.LocalDateTime;
 @Schema(description = "DTO para recibir datos de una entrada (sin ID)")
 public class EntryRequestDTO {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-    @Schema(description = "Hora y fecha del registro de la entrada", example = "20/05/2026 12:30")
-    private LocalDateTime entryDate;
-
     @NotNull(message = "El costo unitario es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El costo unitario debe ser mayor a 0")
     @Schema(description = "Precio de cada producto en la entrada", example = "manzanas = 0.50")

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
+    
     // esta parte retorna ENTIDAD, no DTO
     List<Product> findByNameContainingIgnoreCase(String name);
 

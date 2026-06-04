@@ -19,7 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-
+    
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50)
     @Column(nullable = false, length = 50)

@@ -25,7 +25,7 @@ public class Supplier {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Size(max = 100)
+   @Size(max = 100)
     @NotBlank(message = "El contacto es obligatorio")
     @Column(length = 100)
     private String lastName;

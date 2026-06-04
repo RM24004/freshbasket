@@ -1,3 +1,4 @@
+
 :root {
   --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
@@ -486,17 +487,27 @@ body {
   gap: 0.3rem;
 }
 
-/* Botón definitivo de cierre de sesión interno */
-.fb-profile-logout-action-btn {
+.fb-profile-edit-btn {
   width: 100%;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  color: #000000;
+  font-weight: 500;
+  background-color: #ffffff;
+  border: 1px solid #ccccff;
+  border-radius: 6px;
+  display: flex;
   justify-content: center;
-  background-color: #ef4444;
-  color: #ffffff;
-  border: none;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.fb-profile-logout-action-btn:hover {
-  background-color: #dc2626;
+
+.fb-profile-edit-action-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #999999;
 }
 
 /* Animación de entrada para el menú */

@@ -15,20 +15,16 @@ import java.time.LocalDateTime;
 @Schema(description = "DTO para recibir datos de una entrada (sin ID)")
 public class ExitRequestDTO {
 
-    @NotNull(message = "La fecha de salida es obligatoria")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
-    @Schema(description = "Fecha y hora en la que se ejecuto la entrada", example = "29/04/2026 16:45")
-    private LocalDateTime exitDate;
-
     @Min(value = 1, message = "La cantidad debe ser mayor a 0")
+    @NotNull(message = "La cantidad es obligatoria")
     @Schema(description = "Cantidad total de la salida", example = "50")
     private Integer quantity;
 
-    @NotNull(message = "El ID del producto es obligatorio")
-    @Schema(description = "ID del producto", example = "1")
-    private Long productId;
+    @Schema(description = "El nombre del producto", example = "pollo indio")
+    @NotNull(message = "El nombre del producto es obligatorio")
+    private String productName;
 
-    @NotNull(message = "El ID del usuario es obligatorio")
-    @Schema(description = "ID del usuario", example = "1")
-    private Long userId;
+    @Schema(description = "Nombre del usuario", example = "Juan Martinez")
+    @NotNull(message = "El nombre del usuario es obligatorio")
+    private String userName;
 }

@@ -108,6 +108,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     @Transactional // Importante: org.springframework.transaction.annotation.Transactional
     public void deleteSupplier(Long id) {
+        // Buscamos el usuario primero
         Supplier supplier = supplierRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con ese ID: " + id));
 

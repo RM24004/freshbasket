@@ -49,18 +49,18 @@ public class SecurityConfig {
 
 
                 // Rutas para products y detalles de permisos
-                .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                .requestMatchers(HttpMethod.POST, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "CLIENTE", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "SOPORTE")
                 .requestMatchers(HttpMethod.PUT, "/api/products/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
                 .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMINISTRADOR")
 
 
                 // Rutas para entries y exits
-                .requestMatchers(HttpMethod.GET, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                .requestMatchers(HttpMethod.GET, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+                .requestMatchers(HttpMethod.GET, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "SOPORTE")
+                .requestMatchers(HttpMethod.GET, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "SOPORTE")
 
-                .requestMatchers(HttpMethod.POST, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                .requestMatchers(HttpMethod.POST, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "SOPORTE")
 
                 .requestMatchers(HttpMethod.PUT, "/api/entries/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
                 .requestMatchers(HttpMethod.PUT, "/api/exits/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
@@ -70,11 +70,11 @@ public class SecurityConfig {
 
 
                 // Rutas para suppliers y categories
-                .requestMatchers(HttpMethod.GET, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                .requestMatchers(HttpMethod.GET, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
+                .requestMatchers(HttpMethod.GET, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "CLIENTE", "SOPORTE")
+                .requestMatchers(HttpMethod.GET, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "CLIENTE", "SOPORTE")
 
-                .requestMatchers(HttpMethod.POST, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
-                .requestMatchers(HttpMethod.POST, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE", "EMPLEADO")
+                .requestMatchers(HttpMethod.POST, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE", "EMPLEADO")
 
                 .requestMatchers(HttpMethod.PUT, "/api/suppliers/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
                 .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
@@ -84,11 +84,13 @@ public class SecurityConfig {
 
 
                 // Rutas para countries
-                .requestMatchers(HttpMethod.GET, "/api/countries/**").hasAnyAuthority("ADMINISTRADOR", "USUARIO", "SOPORTE")
-                .requestMatchers(HttpMethod.POST, "/api/countries/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.GET, "/api/countries/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/countries/**").hasAnyAuthority("ADMINISTRADOR", "EMPLEADO")
                 .requestMatchers(HttpMethod.PUT, "/api/countries/**").hasAuthority("ADMINISTRADOR")
                 .requestMatchers(HttpMethod.DELETE, "/api/countries/**").hasAuthority("ADMINISTRADOR")
 
+                .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()
 
                 // Rutas para Users
                 .requestMatchers(HttpMethod.GET, "/api/users/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
@@ -99,7 +101,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
 
-        // Filtro JWT antes del filtro de autenticación
+        // Filtro JWT antes del filtro de autenticación por defecto
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

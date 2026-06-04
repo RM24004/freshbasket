@@ -94,7 +94,7 @@ public class EntryServiceImpl implements EntryService {
             if (!sFullName.isEmpty()) {
                 dto.setSupplierName(sFullName);
             } else {
-                dto.setSupplierName("Proveedor " + entry.getSupplier().getId()); // Añadido espacio para mejorar formato: "Proveedor 5"
+                dto.setSupplierName("Proveedor " + entry.getSupplier().getId());
             }
         } else {
             dto.setSupplierName("Sin proveedor asignado");
@@ -110,7 +110,7 @@ public class EntryServiceImpl implements EntryService {
             if (!uFullName.isEmpty()) {
                 dto.setUserName(uFullName);
             } else {
-                dto.setUserName("Usuario " + entry.getUser().getId()); // Añadido espacio para mejorar formato: "Usuario 12"
+                dto.setUserName("Usuario " + entry.getUser().getId());
             }
         } else {
             dto.setUserName("Sin usuario asignado");
@@ -149,15 +149,15 @@ public class EntryServiceImpl implements EntryService {
                 throw new IllegalStateException("No se pueden registrar entradas para un producto eliminado.");
             }
 
-
             int nuevoStock = product.getCurrentStock() + entry.getQuantity();
             product.setCurrentStock(nuevoStock);
 
-            // Actualizar precio con el costo unitario de la entrada
             product.setPrice(entry.getUnitCost());
 
             productRepository.save(product);
         }
+
+        entry.setEntryDate(java.time.LocalDateTime.now());
 
         Entry savedEntry = entryRepository.save(entry);
         return convertToDTO(savedEntry);
@@ -179,12 +179,12 @@ public class EntryServiceImpl implements EntryService {
 
         String cleanSupplierName = requestDTO.getSupplierName() != null ? requestDTO.getSupplierName().trim() : "";
         Supplier supplier = supplierRepository.findByFullNameIgnoreCase(cleanSupplierName)
-                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con Nombre: " + requestDTO.getSupplierName()));
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con ese nombre: " + requestDTO.getSupplierName()));
 
 
         String cleanUserName = requestDTO.getUserName() != null ? requestDTO.getUserName().trim() : "";
         User user = userRepository.findByFullNameIgnoreCase(cleanUserName)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con Nombre: " + requestDTO.getUserName()));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ese nombre: " + requestDTO.getUserName()));
 
 
         // Ajustamos el inventario al actualizar una entrada (si se actualiza el campo de cantidad)
@@ -201,7 +201,6 @@ public class EntryServiceImpl implements EntryService {
         productRepository.save(product);
 
         // Actualizar datos de la entrada
-        entry.setEntryDate(requestDTO.getEntryDate());
         entry.setQuantity(cantidadNueva);
         entry.setUnitCost(requestDTO.getUnitCost());
         entry.setProduct(product);

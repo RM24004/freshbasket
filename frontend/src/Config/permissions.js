@@ -3,8 +3,10 @@
 
 export const matriz_permisos = {
   ADMINISTRADOR: { verTabsConsulta: true, crear: true,  actualizar: true,  eliminar: true,  verModuloUsuarios: true },
+  EMPLEADO:      { verTabsConsulta: true, crear: true, actualizar: false, eliminar: false, verModuloUsuarios: false },
   SOPORTE:       { verTabsConsulta: true, crear: true,  actualizar: true,  eliminar: false, verModuloUsuarios: true },
-  USUARIO:       { verTabsConsulta: true, crear: false, actualizar: false, eliminar: false, verModuloUsuarios: false }
+  CLIENTE:       { verTabsConsulta: true, crear: false, actualizar: false, eliminar: false, verModuloUsuarios: false }
+
 };
 
 export const tieneAcceso = (rol, accion) => {
