@@ -1,4 +1,4 @@
-// Pagina de registro, en el caso que un usuario no tenga cuenta.
+// Página de registro, en el caso de que un usuario no tenga cuenta.
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ function Register() {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get("http://192.168.1.60:8080/api/countries");
+        const response = await axios.get("http://localhost:8080/api/countries");
         setCountriesList(response.data || []);
       } catch (error) {
         console.error("No se pudo cargar la lista de países dinámicamente:", error);
@@ -38,19 +38,18 @@ function Register() {
       return;
     }
 
-    // Estructuramos el JSON exactamente como lo espera tu AuthController en el backend
     const newUser = {
       name: formData.get("name"),
       lastName: formData.get("lastName"),
       phone: formData.get("phone"),
       email: formData.get("email"),
       password: formData.get("password"),
-      role: "USUARIO",
+      role: "CLIENTE",
       countryName: countryValue
     };
 
     try {
-      await axios.post("http://192.168.1.60:8080/api/auth/register", newUser);
+      await axios.post("http://localhost:8080/api/auth/register", newUser);
 
       toast.success("¡Cuenta creada correctamente! Redirigiendo...");
 

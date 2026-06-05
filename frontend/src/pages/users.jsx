@@ -1,6 +1,6 @@
 import "../styles/forms.css";
 import axios from "../services/axiosConfig.js";
-import { tieneAcceso } from "../config/permissions.js";
+import { tieneAcceso } from "../Config/permissions";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -11,7 +11,7 @@ import {
 
 function Users() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole") || "USUARIO";
+  const userRole = localStorage.getItem("userRole") || "CLIENTE";
 
   // Lee la opción elegida desde el menú desplegable de usuarios
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem("activeUserTab") || "home");
@@ -69,7 +69,7 @@ function Users() {
   const loadDependencies = async () => {
     try {
       const [resCountry] = await Promise.all([
-        axios.get("http://192.168.1.60:8080/api/countries")
+        axios.get("http://localhost:8080/api/countries")
       ]);
       setCountriesList(resCountry.data || []);
     } catch (error) {

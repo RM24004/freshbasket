@@ -17,8 +17,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
-@Tag(name = "Categories", description = "API para la gestión de categorías de FreshBasket")
 @CrossOrigin(origins = "http://localhost:5173")
+@Tag(name = "Categories", description = "API para la gestión de categorías de FreshBasket")
 public class CategoryController {
 
     private final CategoryService categoryService;

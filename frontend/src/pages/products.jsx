@@ -1,6 +1,6 @@
 import "../styles/forms.css";
 import axios from "../services/axiosConfig.js";
-import { tieneAcceso } from "../config/permissions.js";
+import { tieneAcceso } from "../Config/permissions";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -73,13 +73,13 @@ function Products() {
 
       // Lanzamos en paralelo solo Categorías y Proveedores
       const promesas = [
-        axios.get("http://192.168.1.60:8080/api/categories"),
-        axios.get("http://192.168.1.60:8080/api/suppliers")
+        axios.get("http://localhost:8080/api/categories"),
+        axios.get("http://localhost:8080/api/suppliers")
       ];
 
       // Si tiene permisos, agregamos la petición de usuarios a la cola
       if (esAdminOSoporte) {
-        promesas.push(axios.get("http://192.168.1.60:8080/api/users"));
+        promesas.push(axios.get("http://localhost:8080/api/users"));
       }
 
       const resultados = await Promise.all(promesas);
@@ -585,81 +585,87 @@ function Products() {
                   <i className="bi bi-trash3-fill" /> Eliminar producto de inventario
                 </h3>
                 <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
-                  ⚠️ Al eliminar el producto se borrarán permanentemente de su inventario ⚠️.
+                  ⚠️ Al eliminar el producto se borrará permanentemente de su inventario ⚠️.
                 </p>
+
                 <form
-                 onSubmit={async (e) => {
-                 e.preventDefault();
-                 const form = e.target;
-                 const id = form.elements.id.value;
-                 if (!id || String(id).trim() === "") {
-                   toast.error("Por favor, ingresa un ID válido.");
-                   return;
-                 }
-                 try {
-                   const product = await getProductById(id);
-                   if (!product) {
-                     toast.error(`No se puede eliminar: El producto con ID ${id} no existe.`);
-                     return; // Detiene la ejecución por completo y no pregunta nada
-                   }
-                   toast((t) => (
-                       <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
-                      <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
-                  ¿Seguro que deseas eliminar el producto con ID <strong>{id}</strong>?
-                </span>
-                <div className="d-flex justify-content-center gap-2 mt-1">
-                  <button
-                      className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
-                      style={{ borderRadius: "12px", fontSize: "0.85rem" }}
-                      onClick={async () => {
-                        toast.dismiss(t.id);
-                     try {
-                       await deleteProduct(id);
-                       toast.success(`Producto con ID ${id} eliminado del sistema.`);
-                       form.reset();
-                       setTimeout(async () => {
-                         if (typeof loadProducts === "function") {
-                           await loadProducts();
-                         }
-                         }, 300);
-                     } catch (error) {
-                       toast.error("Hubo un problema al ejecutar la eliminación.");
-                     }
-                      }}
-                  >
-                    Eliminar
-                  </button>
-                  <button
-                      className="btn btn-light btn-sm px-3 border shadow-sm"
-                      style={{ borderRadius: "12px", fontSize: "0.85rem" }}
-                      onClick={() => toast.dismiss(t.id)}
-                  >
-                    Cancelar
-                  </button>
-                </div>
-               </div>
-              ), {
-             duration: Infinity,
-             position: "top-center"
-            });
-                 } catch (error) {
-                   toast.error(`No se encontró el producto con ID ${id}.`);
-                 }
-                 }}
-                 className="fb-search-form"
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const formInstance = e.target;
+                      const idValue = formInstance.elements.id.value;
+
+                      if (!idValue || String(idValue).trim() === "") {
+                        toast.error("Por favor, ingresa un ID válido.");
+                        return;
+                      }
+
+                      try {
+                        const product = await getProductById(idValue);
+
+                        if (!product) {
+                          toast.error(`No se puede eliminar: El producto con ID ${idValue} no existe.`);
+                          return;
+                        }
+
+                        const productName = product?.name ? product.name.trim() : `con ID ${idValue}`;
+
+                        toast((t) => (
+                            <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
+                          <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
+                          ¿Esta seguro que desea eliminar el producto <strong>{productName}</strong>?
+                            </span>
+                              <div className="d-flex justify-content-center gap-2 mt-1">
+                                <button
+                                    className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={async () => {
+                                      toast.dismiss(t.id);
+                                      try {
+                                        await deleteProduct(idValue);
+                                        toast.success(`Producto "${productName}" eliminado del sistema.`);
+                                        formInstance.reset();
+                                        setTimeout(async () => {
+                                          if (typeof loadProducts === "function") {
+                                            await loadProducts();
+                                          }
+                                        }, 300);
+                                      } catch (error) {
+                                        toast.error("Hubo un problema al ejecutar la eliminación.");
+                                      }
+                                    }}
+                                >
+                                  Eliminar
+                                </button>
+                                <button
+                                    className="btn btn-light btn-sm px-3 border shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </div>
+                        ), {
+                          duration: Infinity,
+                          position: "top-center"
+                        });
+                      } catch (error) {
+                        toast.error(`No se encontró el producto con ID ${idValue}.`);
+                      }
+                    }}
+                    className="fb-search-form"
                 >
-               <div className="fb-search-input-wrap">
-              <i className="bi bi-hash fb-search-icon" />
-              <input type="number" name="id" className="fb-search-input" placeholder="ID del producto" required />
-               </div>
-             <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
-             <i className="bi bi-trash3" /> Eliminar
-             </button>
-            </form>
-           </div>
-          </div>
-        )}
-    </div>
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-hash fb-search-icon" />
+                    <input type="number" name="id" className="fb-search-input" placeholder="ID del producto" required />
+                  </div>
+                  <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
+                    <i className="bi bi-trash3" /> Eliminar
+                  </button>
+                </form>
+              </div>
+            </div>
+        )}   </div>
   );
 }
 

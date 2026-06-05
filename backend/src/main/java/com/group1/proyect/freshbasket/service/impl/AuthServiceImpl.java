@@ -91,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setCountry(country);
 
-        user.setRole("USUARIO");
+        user.setRole("CLIENTE");
 
         userRepository.save(user);
     }

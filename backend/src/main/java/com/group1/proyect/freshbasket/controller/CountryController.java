@@ -1,6 +1,7 @@
 package com.group1.proyect.freshbasket.controller;
 
 import com.group1.proyect.freshbasket.dto.request.CountryRequestDTO;
+import com.group1.proyect.freshbasket.dto.response.CategoryResponseDTO;
 import com.group1.proyect.freshbasket.dto.response.CountryResponseDTO;
 import com.group1.proyect.freshbasket.service.CountryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +18,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/countries")
-@Tag(name = "Countries", description = "API para la gestión de Países de FreshBasket")
 @CrossOrigin(origins = "http://localhost:5173")
+@Tag(name = "Countries", description = "API para la gestión de Países de FreshBasket")
 public class CountryController {
 
     private final CountryService countryService;
@@ -107,6 +108,14 @@ public class CountryController {
 
         countryService.deleteCountry(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<CountryResponseDTO>> searchCategoriesByName(
+            @Parameter(description = "Nombre o parte del nombre del país a buscar", example = "El Salvador", required = true)
+            @RequestParam String name) {
+
+        return ResponseEntity.ok(countryService.searchCountriesByName(name));
     }
 
 }

@@ -1,7 +1,7 @@
 
 import "../styles/forms.css";
 import axios from "../services/axiosConfig.js";
-import { tieneAcceso } from "../config/permissions.js";
+import { tieneAcceso } from "../Config/permissions";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";

@@ -17,7 +17,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id") //en la base de datos lo deje como category_id
+    @Column(name = "category_id")
     private Long id;
 
     @NotBlank(message = "El nombre es obligatorio")

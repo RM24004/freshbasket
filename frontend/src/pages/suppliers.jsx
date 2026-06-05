@@ -1,6 +1,6 @@
 import "../styles/forms.css";
 import axios from "../services/axiosConfig.js";
-import { tieneAcceso } from "../config/permissions.js";
+import { tieneAcceso } from "../Config/permissions";
 import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -8,10 +8,11 @@ import {
   getAllSuppliers, getSupplierById, createSupplier,
   updateSupplier, deleteSupplier, searchSuppliersByName
 } from "../services/supplierService.js";
+import { createCountry } from "../services/countryService.js";
 
 function Suppliers() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole") || "USUARIO";
+  const userRole = localStorage.getItem("userRole") || "CLIENTE";
 
   const [activeTab, setActiveTab] = useState(localStorage.getItem("activeSupplierTab") || "all");
   const [showWelcome, setShowWelcome] = useState(true);
@@ -76,7 +77,7 @@ function Suppliers() {
   const loadDependencies = async () => {
     try {
       const [resCountry] = await Promise.all([
-        axios.get("http://192.168.1.60:8080/api/countries")
+        axios.get("http://localhost:8080/api/countries")
       ]);
 
       setCountriesList(resCountry.data || []);
@@ -137,36 +138,58 @@ function Suppliers() {
   // Permite crear un nuevo registro de un proveedor
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
-    const fd = new FormData(e.target);
-    const newSupplier = Object.fromEntries(fd.entries());
 
-    const countryFound = countriesList.find(
-        (c) => c.name.toLowerCase() === newSupplier.countryName?.trim().toLowerCase()
-    );
+    const formInstance = e.target;
+    const formFields = new FormData(formInstance);
+    const countryValue = formFields.get("countryName")?.trim();
 
-    if (!countryFound) {
-      toast.error("Por favor, selecciona un país válido de la lista.");
+    if (!countryValue) {
+      toast.error("Por favor, introduce o selecciona un país.");
       return;
     }
 
-    const payload = {
-      name: newSupplier.name,
-      lastName: newSupplier.lastName,
-      phone: newSupplier.phone,
-      email: newSupplier.email,
-      address: newSupplier.address,
-      countryId: countryFound.id || countryFound.country_id
-    };
+    const countryFound = countriesList.find(
+        (c) => c.name?.toLowerCase() === countryValue.toLowerCase()
+    );
+
+    let finalCountryId = null;
 
     try {
-      await createSupplier(payload);
+      if (!countryFound) {
+        const newCountry = await createCountry({
+          name: countryValue,
+          description: "Pais creado automaticamente desde el modulo de proveedores"
+        });
+
+        finalCountryId = newCountry?.id || newCountry?.country_id;
+
+        if (typeof loadDependencies === "function") {
+          await loadDependencies();
+        }
+      } else {
+        finalCountryId = countryFound.id || countryFound.country_id;
+      }
+
+      const supplierPayload = {
+        name: formFields.get("name")?.trim(),
+        lastName: formFields.get("lastName")?.trim(),
+        phone: formFields.get("phone")?.trim(),
+        email: formFields.get("email")?.trim(),
+        address: formFields.get("address")?.trim(),
+        countryId: finalCountryId
+      };
+
+      await createSupplier(supplierPayload);
       toast.success("¡Proveedor creado con éxito!");
-      e.target.reset();
+      formInstance.reset();
 
       setTimeout(async () => {
         await loadSuppliers();
       }, 300);
+
     } catch (error) {
+      console.error("Error al registrar el proveedor:", error);
+      toast.error("Hubo un error al procesar el registro del proveedor.");
     }
   };
 
@@ -291,58 +314,54 @@ function Suppliers() {
 
       {/* ALL SUPPLIERS */}
       {activeTab === "all" && !showWelcome && (
-        <div className="fb-form-section">
-          <div className="fb-section-header">
-            <h3 className="fb-table-title">
-              <i className="bi bi-truck" /> Mostrando todos los registros
-            </h3>
-            <span className="fb-badge">{allSuppliers.length} registros</span>
-          </div>
+          <div className="fb-form-section">
+            <div className="fb-section-header">
+              <h3 className="fb-table-title">
+                <i className="bi bi-truck" /> Mostrando todos los registros
+              </h3>
+              <span className="fb-badge">{allSuppliers.length} registros</span>
+            </div>
 
-          <div className="fb-results-grid fb-users-cards-margin">
-            {Array.isArray(allSuppliers) && allSuppliers.length > 0 ? (
-              allSuppliers.map((sup) => {
-                const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
-                  (c) => (c.id === sup.countryId || c.country_id === sup.countryId)
-                );
-
-                return (
-                  <div key={sup.id || sup.supplier_id} className="fb-user-display-card">
-                    <div className="fb-card-user-info">
-                      <h4 className="fb-card-user-title">
-                        {sup.name} {sup.lastName || sup.last_name}
-                      </h4>
+            <div className="fb-results-grid fb-users-cards-margin">
+              {Array.isArray(allSuppliers) && allSuppliers.length > 0 ? (
+               allSuppliers.map((sup) => (
+                 <div key={sup.id || sup.supplier_id} className="fb-user-display-card">
+                  <div className="fb-card-user-info">
+                   <h4 className="fb-card-user-title">
+                    {sup.name} {sup.lastName || sup.last_name}
+                     </h4>
                       <span className="fb-card-user-id">ID: {sup.id || sup.supplier_id}</span>
-                    </div>
-                    <div className="fb-card-user-body">
+                      </div>
+                      <div className="fb-card-user-body">
                       <p className="fb-card-user-detail">
-                        <i className="bi bi-envelope" /> {sup.email}
-                      </p>
-                      <p className="fb-card-user-detail">
-                        <i className="bi bi-telephone" /> {sup.phone}
-                      </p>
-                      <p className="fb-card-user-detail">
-                        <i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}
-                      </p>
-                      <p className="fb-card-user-detail">
-                        <i className="bi bi-globe" />
-                        <span className="fb-country">
-                          {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="fb-empty fb-grid-full-width">
-                <i className="bi bi-inbox" />
-                <p>No hay proveedores registrados</p>
+                      <i className="bi bi-envelope" /> {sup.email}
+                     </p>
+                    <p className="fb-card-user-detail">
+                    <i className="bi bi-telephone" /> {sup.phone}
+                    </p>
+                    <p className="fb-card-user-detail">
+                   <i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}
+                  </p>
+                 <p className="fb-card-user-detail">
+                <i className="bi bi-globe" />
+                <span className="fb-country">
+                {sup.countryName || (Array.isArray(countriesList) &&
+                countriesList.find(c => String(c.id || c.country_id) === String(
+            sup.countryId || sup.country_id))?.name) || "Sin país"}
+               </span>
+                </p>
               </div>
-            )}
-          </div>
-        </div>
-      )}
+            </div>
+            ))
+           ) : (
+           <div className="fb-empty fb-grid-full-width">
+           <i className="bi bi-inbox" />
+          <p>No hay proveedores registrados</p>
+         </div>
+         )}
+       </div>
+      </div>
+     )}
 
         {/* SEARCH BY NAME */}
         {activeTab === "name" && !showWelcome && (
@@ -438,8 +457,8 @@ function Suppliers() {
           </div>
         )}
 
-        {/* CREATE SUPPLIER */}
-        {activeTab === "create" && !showWelcome && (
+      {/* CREATE SUPPLIER */}
+      {activeTab === "create" && !showWelcome && (
           <div className="fb-form-section fb-tab-create">
             <div className="fb-form-card">
               <h3 className="fb-form-title">
@@ -454,13 +473,19 @@ function Suppliers() {
                     { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "correo@ejemplo.com" },
                     { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección completa" },
                   ].map((f) => (
-                    <div key={f.name} className="fb-crud-field">
-                      <label className="fb-crud-label">{f.label}</label>
-                      <div className="fb-crud-input-wrap">
-                        <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                        <input type={f.type || "text"} name={f.name} className="fb-crud-input" placeholder={f.placeholder} required />
+                      <div key={f.name} className="fb-crud-field">
+                        <label className="fb-crud-label">{f.label}</label>
+                        <div className="fb-crud-input-wrap">
+                          <i className={`bi ${f.icon} fb-crud-input-icon`} />
+                          <input
+                              type={f.type || "text"}
+                              name={f.name}
+                              className="fb-crud-input"
+                              placeholder={f.placeholder}
+                              required
+                          />
+                        </div>
                       </div>
-                    </div>
                   ))}
 
                   <div className="fb-crud-field">
@@ -468,17 +493,17 @@ function Suppliers() {
                     <div className="fb-crud-input-wrap">
                       <i className="bi bi-globe fb-crud-input-icon" />
                       <input
-                        type="text"
-                        name="countryName"
-                        list={`countries-options-${countriesList.length}`}
-                        className="fb-crud-input"
-                        placeholder="Selecciona o escribe un país"
-                        required
-                        autoComplete="off"
+                          type="text"
+                          name="countryName"
+                          list="suppliers-countries-datalist" // ID Estático corregido
+                          className="fb-crud-input"
+                          placeholder="Selecciona o escribe un país"
+                          required
+                          autoComplete="off"
                       />
-                      <datalist id={`countries-options-${countriesList.length}`}>
+                      <datalist id="suppliers-countries-datalist"> {/* Coincide exactamente con el list de arriba */}
                         {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                          <option key={c.id || c.country_id || idx} value={c.name} />
+                            <option key={c.id || c.country_id || idx} value={c.name} />
                         ))}
                       </datalist>
                     </div>
@@ -486,12 +511,12 @@ function Suppliers() {
                 </div>
 
                 <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
-               <i className="bi bi-person-check-fill" /> Crear proveedor
-             </button>
-            </form>
+                  <i className="bi bi-person-check-fill" /> Crear proveedor
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
-       )}
+      )}
 
         {/* UPDATE SUPPLIER */}
         {activeTab === "update" && !showWelcome && (
@@ -577,91 +602,100 @@ function Suppliers() {
 
       {/* DELETE SUPPLIER */}
       {activeTab === "delete" && !showWelcome && (
-       <div className="fb-form-section">
-        <div className="fb-form-card" style={{ borderTop: "4px solid #dc3545" }}>
-         <h3 className="fb-form-title" style={{ color: "#dc3545" }}>
-          <i className="bi bi-trash3-fill" /> Introduzca el ID del proveedor
-           </h3>
-            <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
-             ⚠️ Al eliminar el proveedor se borrará permanentemente de su base de datos ⚠️
-             </p>
-             <form
-              onSubmit={async (e) => {
-               e.preventDefault();
-                const form = e.target;
-                  const idValue = form.id.value;
-                   if (!idValue || String(idValue).trim() === "") {
-                   toast.error("Por favor, ingresa un ID válido.");
-                  return;
-                  }
-                  try {
-                  const supplier = await getSupplierById(idValue);
-                   if (!supplier) {
-                   toast.error(`No se puede eliminar el proveedor con ID ${idValue}.`);
-                  return;
-                  }
-                  toast((t) => (
-                  <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
-                <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
-                ¿Está seguro de que desea eliminar el proveedor con el ID <strong>{idValue}</strong>?
-               </span>
-               <div className="d-flex justify-content-center gap-2 mt-1">
-               <button
-               className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
-                style={{ borderRadius: "12px", fontSize: "0.85rem" }}
-                 onClick={async () => {
-                  toast.dismiss(t.id);
-                   try {
-                       await deleteSupplier(idValue);
-                        toast.success(`Proveedor con ID ${idValue} eliminado correctamente.`);
-                         form.reset();
-                        setTimeout(async () => {
-                       await loadSuppliers();
-                   }, 300);
-                   } catch (error) {
-                     toast.error("Hubo un problema al ejecutar la eliminación.");
+          <div className="fb-form-section">
+            <div className="fb-form-card" style={{ borderTop: "4px solid #dc3545" }}>
+              <h3 className="fb-form-title" style={{ color: "#dc3545" }}>
+                <i className="bi bi-trash3-fill" /> Introduzca el ID del proveedor
+              </h3>
+              <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
+                ⚠️ Al eliminar el proveedor se borrará permanentemente de su base de datos ⚠️
+              </p>
+
+              <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const formInstance = e.target;
+                    const idValue = formInstance.id.value;
+
+                    if (!idValue || String(idValue).trim() === "") {
+                      toast.error("Por favor, ingresa un ID válido.");
+                      return;
                     }
-                 }}
-                 >
-              Eliminar
-               </button>
-                <button
-                className="btn btn-light btn-sm px-3 border shadow-sm"
-                 style={{ borderRadius: "12px", fontSize: "0.85rem" }}
-                  onClick={() => toast.dismiss(t.id)}
-                   >
-                Cancelar
-             </button>
-           </div>
-          </div>
-          ), {
-          duration: Infinity,
-          position: "top-center"
-          });
-           } catch (error) {
-               toast.error(`No se encontró el proveedor con ID ${idValue}.`);
-           }
-           }}
-          className="fb-search-form"
-          >
-           <div className="fb-search-input-wrap">
-             <i className="bi bi-hash fb-search-icon" />
-               <input
-                type="number"
-                name="id"
-                 className="fb-search-input"
-                 placeholder="ID del proveedor a eliminar"
-                 required
-                 />
-              </div>
-              <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
-               <i className="bi bi-trash3" /> Eliminar proveedor
+
+                    try {
+                      const supplier = await getSupplierById(idValue);
+
+                      if (!supplier) {
+                        toast.error(`No se puede eliminar el proveedor con ID ${idValue}.`);
+                        return;
+                      }
+
+                      const supplierName = supplier?.name || "";
+                      const supplierLastName = supplier?.lastName || supplier?.last_name || "";
+                      const displayName = supplierName ? `${supplierName} ${supplierLastName}`.trim() : `ID: ${idValue}`;
+
+                      toast((t) => (
+                          <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
+                      <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
+                     ¿Está seguro de que desea eliminar al proveedor <strong>{displayName}</strong>?
+                     </span>
+                     <div className="d-flex justify-content-center gap-2 mt-1">
+                     <button
+                     className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
+                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                   onClick={async () => {
+                  toast.dismiss(t.id);
+                 try {
+                 await deleteSupplier(idValue);
+                 toast.success(`Proveedor con ID ${idValue} eliminado correctamente.`);
+                 formInstance.reset();
+                 setTimeout(async () => {
+                 await loadSuppliers();
+                  }, 300);
+                 } catch (error) {
+                toast.error("Hubo un problema al ejecutar la eliminación.");
+                 }
+                }}
+                >
+               Eliminar
               </button>
-              </form>
-            </div>
+              <button
+              className="btn btn-light btn-sm px-3 border shadow-sm"
+              style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+              onClick={() => toast.dismiss(t.id)}
+             >
+            Cancelar
+           </button>
           </div>
-      )}
-    </div>
+          </div>
+         ), {
+          duration: Infinity,
+           position: "top-center"
+            });
+           } catch (error) {
+          toast.error(`No se encontró el proveedor con ID ${idValue}.`);
+         }
+         }}
+         className="fb-search-form"
+          >
+          <div className="fb-search-input-wrap">
+          <i className="bi bi-hash fb-search-icon" />
+           <input
+           type="number"
+           name="id"
+           className="fb-search-input"
+           placeholder="ID del proveedor a eliminar"
+           required
+          />
+         </div>
+        <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
+       <i className="bi bi-trash3" /> Eliminar proveedor
+     </button>
+    </form>
+   </div>
+   </div>
+   )}
+  </div>
   );
 }
 

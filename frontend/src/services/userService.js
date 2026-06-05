@@ -5,7 +5,7 @@
 
 import axios from "../services/axiosConfig.js";
 
-const API_URL = "http://192.168.1.60:8080/api/users";
+const API_URL = "http://localhost:8080/api/users";
 
 // GET all users
 export const getAllUsers = async () => {

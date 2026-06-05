@@ -1,6 +1,6 @@
 import "../styles/forms.css";
 import axios from "../services/axiosConfig.js";
-import { tieneAcceso } from "../config/permissions.js";
+import { tieneAcceso } from "../Config/permissions";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -67,11 +67,11 @@ function Exits () {
         try {
 
             const promesas = [
-               axios.get("http://192.168.1.60:8080/api/products"),
+               axios.get("http://localhost:8080/api/products"),
             ];
 
             if (isAdminOrSupport) {
-                promesas.push(axios.get("http://192.168.1.60:8080/api/users"));
+                promesas.push(axios.get("http://localhost:8080/api/users"));
             }
 
             const resultados = await Promise.all(promesas);

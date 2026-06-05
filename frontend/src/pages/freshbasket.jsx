@@ -1,6 +1,6 @@
 // Nuestra página principal
 import "../styles/freshbasket.css";
-import { tieneAcceso } from "../config/permissions.js";
+import { tieneAcceso } from "../Config/permissions";
 import Profile from "./profile.jsx";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
@@ -10,7 +10,7 @@ function Freshbasket({ onLogout }) {
   const location = useLocation();
 
   // Extrae el rol y correo de cada usuario para mostrarse en el perfil
-  const userRole = (localStorage.getItem("userRole") || "USUARIO").toUpperCase().trim();
+  const userRole = (localStorage.getItem("userRole") || "CLIENTE").toUpperCase().trim();
   const userEmail = localStorage.getItem("userEmail") || "correodeejemplo@mail.com";
 
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -49,8 +49,8 @@ function Freshbasket({ onLogout }) {
   //Menu en el que se muestran todos los modulos segun sea el ROL
   const menuItems = React.useMemo(() => {
     return [
-      { key: "home",         icon: "bi-house-fill",         label: "Inicio",      path: "/freshbasket" },
-      { key: "productos",    icon: "bi-basket3-fill",       label: "Productos",   path: "/freshbasket/productos", hasSubmenu: true },
+      { key: "home",         icon: "bi-house-fill",         label: "Inicio",        path: "/freshbasket" },
+      { key: "productos",    icon: "bi-basket3-fill",       label: "Productos",     path: "/freshbasket/productos", hasSubmenu: true },
 
       ...(tieneAcceso(userRole, "crear") ? [
         { key: "entradas",     icon: "bi-box-arrow-in-down",  label: "Entradas" ,   path: "/freshbasket/entradas", hasSubmenu: true }
@@ -65,15 +65,15 @@ function Freshbasket({ onLogout }) {
       ] : []),
 
       ...(tieneAcceso(userRole, "verModuloUsuarios") ? [
-        { key: "usuarios",     icon: "bi-people-fill",        label: "Usuarios",     path: "/freshbasket/usuarios", hasSubmenu: true }
+        { key: "usuarios",     icon: "bi-people-fill",        label: "Usuarios",    path: "/freshbasket/usuarios", hasSubmenu: true }
       ] : []),
 
       ...(tieneAcceso(userRole, "crear") ? [
-        { key: "categorías",   icon: "bi-tags-fill",          label: "Categorías" }
+        { key: "categorias",   icon: "bi-tags-fill",          label: "Categorias",  path: "/freshbasket/categorias", hasSubmenu: true }
       ] : []),
 
       ...(tieneAcceso(userRole, "crear") ? [
-        { key: "paises",       icon: "bi-globe-americas",     label: "Países" }
+        { key: "paises",       icon: "bi-globe-americas",     label: "Paises",      path: "/freshbasket/paises", hasSubmenu: true }
       ] : []),
     ];
   }, [userRole]);
@@ -161,7 +161,7 @@ function Freshbasket({ onLogout }) {
   const exitSubItems = React.useMemo(() => {
     return [
       ...(tieneAcceso(userRole, "verTabsConsulta") ? [
-        { key: "all",    icon: "bi-box-seam-fill",    label: "Todos las salidas" },
+        { key: "all",    icon: "bi-box-seam-fill",    label: "Todas las salidas" },
         { key: "id",     icon: "bi-tag-fill",         label: "Buscar por ID" }
       ] : []),
       ...(tieneAcceso(userRole, "crear") ? [
@@ -172,6 +172,46 @@ function Freshbasket({ onLogout }) {
       ] : []),
       ...(tieneAcceso(userRole, "eliminar") ? [
         { key: "delete", icon: "bi-trash3-fill",      label: "Eliminar salida" }
+      ] : [])
+    ];
+  }, [userRole]);
+
+  // Sub menu de categorías
+  const categorySubItems = React.useMemo(() => {
+    return [
+      ...(tieneAcceso(userRole, "verTabsConsulta") ? [
+        { key: "all",    icon: "bi-box-seam-fill",    label: "Todas las categorias" },
+        { key: "name",     icon: "bi-tag-fill",         label: "Buscar por nombre" },
+        { key: "id",     icon: "bi-tag-fill",         label: "Buscar por ID" }
+      ] : []),
+      ...(tieneAcceso(userRole, "crear") ? [
+        { key: "create", icon: "bi-plus-circle-fill", label: "Registrar categoria" }
+      ] : []),
+      ...(tieneAcceso(userRole, "actualizar") ? [
+        { key: "update", icon: "bi-pencil-square",    label: "Actualizar categoria" }
+      ] : []),
+      ...(tieneAcceso(userRole, "eliminar") ? [
+        { key: "delete", icon: "bi-trash3-fill",      label: "Eliminar categoria" }
+      ] : [])
+    ];
+  }, [userRole]);
+
+  // Sub menu de paises
+  const countrySubItems = React.useMemo(() => {
+    return [
+      ...(tieneAcceso(userRole, "verTabsConsulta") ? [
+        { key: "all",    icon: "bi-box-seam-fill",    label: "Todos los paises" },
+        { key: "name",     icon: "bi-tag-fill",         label: "Buscar por nombre" },
+        { key: "id",     icon: "bi-tag-fill",         label: "Buscar por ID" }
+      ] : []),
+      ...(tieneAcceso(userRole, "crear") ? [
+        { key: "create", icon: "bi-plus-circle-fill", label: "Registrarun  pais" }
+      ] : []),
+      ...(tieneAcceso(userRole, "actualizar") ? [
+        { key: "update", icon: "bi-pencil-square",    label: "Actualizar un pais" }
+      ] : []),
+      ...(tieneAcceso(userRole, "eliminar") ? [
+        { key: "delete", icon: "bi-trash3-fill",      label: "Eliminar un pais" }
       ] : [])
     ];
   }, [userRole]);
@@ -195,6 +235,8 @@ function Freshbasket({ onLogout }) {
              item.key === "proveedores" ? supplierSubItems :
              item.key === "entradas" ? entrySubItems :
              item.key === "salidas" ? exitSubItems :
+             item.key === "categorias" ? categorySubItems :
+             item.key === "paises" ? countrySubItems :
            [];
 
        return (
@@ -204,11 +246,14 @@ function Freshbasket({ onLogout }) {
                 onClick={() => {
                  if (item.path) {
                   const tabKeys = {
-                productos: "activeProductTab",
-                usuarios: "activeUserTab",
-                proveedores: "activeSupplierTab",
-                entradas: "activeEntryTab",
-                salidas: "activeExitTab"
+                 productos: "activeProductTab",
+                 usuarios: "activeUserTab",
+                 proveedores: "activeSupplierTab",
+                 entradas: "activeEntryTab",
+                 salidas: "activeExitTab",
+                 categorías: "activeCategoryTab",
+                 paises: "activeCountryTab"
+
                };
                 if (tabKeys[item.key] && !localStorage.getItem(tabKeys[item.key])) {
                  localStorage.setItem(tabKeys[item.key], tieneAcceso(userRole, "verTabsConsulta") ? "all" : "create");
@@ -225,6 +270,7 @@ function Freshbasket({ onLogout }) {
             <i className={`bi ${isMenuOpen ? "bi-chevron-up" : "bi-chevron-down"} fb-profile-arrow`} style={{ fontSize: "0.8rem" }} />
            )}
           </button>
+
          {/* SUB-MENÚ DINÁMICO */}
          {item.hasSubmenu && isMenuOpen && subItemsArr.length > 0 && (
          <div className="fb-sidebar-submenu" style={{ paddingLeft: "1.5rem", display: "flex", flexDirection: "column", gap: "0.25rem", marginTop: "0.25rem" }}>
@@ -234,7 +280,10 @@ function Freshbasket({ onLogout }) {
            item.key === "usuarios" ? "activeUserTab" :
            item.key === "proveedores" ? "activeSupplierTab" :
            item.key === "entradas" ? "activeEntryTab" :
-           item.key === "salidas" ? "activeExitTab" : "";
+           item.key === "salidas" ? "activeExitTab" :
+           item.key === "categorias" ? "activeCategoryTab" :
+           item.key === "paises" ? "activeCountryTab" : "";
+
            const currentActiveTab = localStorage.getItem(storageKey) || (tieneAcceso(userRole, "verTabsConsulta") ? "all" : "create");
            const isSubActive = currentActiveTab === sub.key;
      return (
@@ -250,7 +299,9 @@ function Freshbasket({ onLogout }) {
                usuarios: { storage: "activeUserTab", event: "userTabChanged" },
                proveedores: { storage: "activeSupplierTab", event: "supplierTabChanged" },
                entradas: { storage: "activeEntryTab", event: "entryTabChanged" },
-               salidas: { storage: "activeExitTab", event: "exitTabChanged" }
+               salidas: { storage: "activeExitTab", event: "exitTabChanged" },
+               categorias: { storage: "activeCategoryTab", event: "categoryTabChanged" },
+               paises: { storage: "activeCountryTab", event: "countryTabChanged" }
              };
              const currentConfig = tabKeys[item.key];
              if (currentConfig) {
