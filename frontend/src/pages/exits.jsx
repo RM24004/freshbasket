@@ -11,7 +11,7 @@ import {
 
 function Exits () {
     const navigate = useNavigate();
-    const userRole = localStorage.getItem("userRole") || "USUARIO";
+    const userRole = localStorage.getItem("userRole") || "CLIENTE";
 
     const userLogin = localStorage.getItem("userName") || localStorage.getItem("userEmail") || "";
     const isAdminOrSupport = ["ADMINISTRADOR", "ADMIN", "SOPORTE"].includes(userRole.toUpperCase());
@@ -266,7 +266,6 @@ function Exits () {
         }
     };
 
-
     // Redirección de seguridad si cambiamos de rol o pestaña
     useEffect(() => {
         if (activeTab === "create" && typeof tieneAcceso === "function" && !tieneAcceso(userRole, "crear")) setActiveTab("all");
@@ -286,70 +285,97 @@ function Exits () {
        </div>
        )}
 
-        {/* ALL EXITS */}
-        {activeTab === "all" && (
-        <div className="fb-results-grid fb-users-cards-margin">
-        {Array.isArray(allExits) && allExits.length > 0 ? (
-        allExits.map((exit) => (
-        <div key={exit.id || exit.exitId} className="fb-user-display-card">
-        <div className="fb-card-user-info">
-        <h4 className="fb-card-user-title">
-         {exit.productName}
-          </h4>
-          <span className="fb-card-user-id">ID: {exit.id || exit.exitId}</span>
-           </div>
-           <div className="fb-card-user-body">
-            <p className="fb-card-user-detail">
-              <i className="bi bi-calendar-event" /> fecha de registro: {exit.exitDate}
-                </p>
-                 <p className="fb-card-user-detail">
-                 <i className="bi bi-layers" /> Cantidad: {exit.quantity}
-                 </p>
-               <p className="fb-card-user-detail">
-              <i className="bi bi-person" /> Usuario que registro: {exit.userName || "Sin usuario"}
-              </p>
-            </div>
-           </div>
-           ))
-           ) : (
-         <div className="fb-empty fb-grid-full-width">
-         <i className="bi bi-inbox" />
-        <p>No hay salidas registradas</p>
-       </div>
-       )}
-     </div>
-    )}
-
-     {/* SEARCH BY ID */}
-     {activeTab === "id" && (
-      <div className="fb-form-section">
-         <div className="fb-form-card">
-             <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID de la salida</h3>
-             <form onSubmit={handleSearchById} className="fb-search-form">
-                <div className="fb-search-input-wrap">
-                    <i className="bi bi-hash fb-search-icon" />
-                    <input type="number" className="fb-search-input" placeholder="Ingrese ID de salida"
-                    value={searchId} onChange={e => setSearchId(e.target.value)} />
-                   </div>
-                    <button type="submit" className="fb-search-btn">
-                  <i className="bi bi-search" /> Buscar salida
-                  </button>
-                  </form>
+      {/* ALL EXITS */}
+      {activeTab === "all" && (
+       <div className="fb-form-section">
+         <div className="fb-section-header">
+          <h3 className="fb-table-title">
+           <i className="bi bi-box-seam-fill" /> Mostrando todos los registros
+            </h3>
+             <span className="fb-badge">
+             {Array.isArray(allExits) ? allExits.length : 0} registros
+             </span>
+              </div>
+               <div className="fb-results-grid fb-users-cards-margin">
+                {Array.isArray(allExits) && allExits.length > 0 ? (
+                 allExits.map((exit) => (
+                  <div key={exit.id || exit.exitId} className="fb-user-display-card">
+                      <div className="fb-card-user-info">
+                          <h4 className="fb-card-user-title">
+                              {exit.productName}
+                          </h4>
+                          <span className="fb-card-user-id">ID: {exit.id || exit.exitId}</span>
+                      </div>
+                      <div className="fb-card-user-body">
+                          <p className="fb-card-user-detail">
+                              <i className="bi bi-calendar-event" /> Fecha de registro: {exit.exitDate}
+                          </p>
+                          <p className="fb-card-user-detail">
+                              <i className="bi bi-layers" /> Cantidad: {exit.quantity}
+                          </p>
+                          <p className="fb-card-user-detail">
+                              <i className="bi bi-person" /> Usuario que registró: {exit.userName || "Sin usuario"}
+                          </p>
+                      </div>
                   </div>
-                 {exitById && (
-                 <div className="fb-results-grid">
-                 <div className="fb-user-card">
-                 <div>
-              <p className="fb-user-card-name">{exitById.productName}</p>
-             <p className="fb-user-card-detail"><i className="bi bi-calendar-event" /> Fecha de registro: {exitById.exitDate}</p>
-            <p className="fb-user-card-detail"><i className="bi bi-layers" /> Cantidad: {exitById.quantity}</p>
-            <p className="fb-user-card-detail"><i className="bi bi-person" /> Usuario que registro: {exitById.userName || "Sin usuario"}</p>
-            </div>
-          </div>
+                 ))
+                ) : (
+                    <div className="fb-empty fb-grid-full-width">
+                        <i className="bi bi-inbox" />
+                        <p>No hay salidas registradas</p>
+                    </div>
+                )}
+               </div>
+       </div>
+      )}
+
+      {/* SEARCH BY ID */}
+       {activeTab === "id" && (
+         <div className="fb-form-section">
+           <div className="fb-form-card">
+             <h3 className="fb-form-title">
+               <i className="bi bi-search" /> Introduzca el ID de la salida
+                </h3>
+                 <form onSubmit={handleSearchById} className="fb-search-form">
+                  <div className="fb-search-input-wrap">
+                  <i className="bi bi-hash fb-search-icon" />
+                  <input
+                  type="number"
+                  className="fb-search-input"
+                 placeholder="Ingrese ID de salida"
+                value={searchId}
+               onChange={e => setSearchId(e.target.value)}
+               />
+             </div>
+            <button type="submit" className="fb-search-btn">
+           <i className="bi bi-search" /> Buscar salida
+          </button>
+         </form>
         </div>
-        )}
-    </div>
-    )}
+       {exitById && (
+         <div className="fb-results-grid fb-users-cards-margin" style={{ marginTop: '20px' }}>
+           <div className="fb-user-display-card">
+            <div className="fb-card-user-info">
+             <h4 className="fb-card-user-title">
+             {exitById.productName}
+              </h4>
+              </div>
+               <div className="fb-card-user-body">
+                <p className="fb-card-user-detail">
+               <i className="bi bi-calendar-event" /> Fecha de registro: {exitById.exitDate}
+                </p>
+                <p className="fb-card-user-detail">
+                <i className="bi bi-layers" /> Cantidad: {exitById.quantity}
+                </p>
+               <p className="fb-card-user-detail">
+               <i className="bi bi-person" /> Usuario que registró: {exitById.userName || "Sin usuario"}
+              </p>
+             </div>
+           </div>
+         </div>
+       )}
+         </div>
+       )}
 
     {/* CREATE EXIT */}
     {activeTab === "create" && (
@@ -418,7 +444,7 @@ function Exits () {
           </div>
         </div>
            <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
-           <i className="bi bi-check-circle-fill" /> Crear salida
+           <i className="bi bi-check-circle-fill" /> Registrar salida
        </button>
      </form>
     </div>
@@ -448,9 +474,10 @@ function Exits () {
                  />
                </div>
               <button
-             type="button"
-            className="fb-search-btn"
-            style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
+                  type="button"
+                  className="fb-search-btn"
+                  style={{ padding: "0 1rem", height: "42px", marginTop: "0", display: "flex",
+                      alignItems: "center", gap: "0.25rem", cursor: "pointer" }}
              onClick={() => handleBlurId(formData.exitId)}
               >
               Cargar
@@ -527,7 +554,7 @@ function Exits () {
              </div>
          </div>
 
-        <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#b45309,#fd7e14)", marginTop: "1.5rem" }}>
+        <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
          <i className="bi bi-check-circle-fill" /> Actualizar entrada
         </button>
         </form>
@@ -569,7 +596,8 @@ function Exits () {
              toast((t) => (
                <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
                 <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
-                ¿Está seguro de que desea eliminar la salida con el ID <strong>{idValue}</strong>?
+              ¿Está seguro de que desea eliminar la salida del producto
+                    <strong> {nombreProducto}</strong> con el ID <strong>{idValue}</strong>?
               </span>
               <div className="d-flex justify-content-center gap-2 mt-1">
              <button
@@ -587,7 +615,7 @@ function Exits () {
               entryDate: "",
               quantity: "",
               productName: "",
-              userName: usuarioLogueado
+              userName: userLogin
             });
             }
          setTimeout(async () => {

@@ -334,103 +334,160 @@ function Users() {
             </div>
           )}
 
-          {/* SEARCH BY NAME */}
-          {activeTab === "name" && (
-            <div className="fb-form-section">
-              <div className="fb-form-card">
-                <h3 className="fb-form-title"><i className="bi bi-search" /> Escriba un nombre del usuario</h3>
-                <form onSubmit={handleSearch} className="fb-search-form">
-                  <div className="fb-search-input-wrap">
-                    <i className="bi bi-person fb-search-icon" />
-                    <input type="text" className="fb-search-input" placeholder="Ej: Martin Antonio"
-                      value={search} onChange={e => setSearch(e.target.value)} />
-                  </div>
-                  <button type="submit" className="fb-search-btn">
-                    <i className="bi bi-search" /> Buscar usuario
-                  </button>
-                </form>
-              </div>
-              {usersByName.length > 0 && (
-                <div className="fb-results-grid">
-                  {usersByName.map(u2 => (
-                    <div key={u2.id} className="fb-user-card">
-                      <div>
-                        <p className="fb-user-card-name">{u2.name} {u2.lastName}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {u2.email}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {u2.phone}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {u2.role}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-globe" /> {u2.countryName || "Sin país"}</p>
-                      </div>
-                    </div>
-                  ))}
+      {/* SEARCH BY NAME */}
+      {activeTab === "name" && (
+          <div className="fb-form-section">
+            <div className="fb-form-card">
+              <h3 className="fb-form-title"><i className="bi bi-search" /> Escriba un nombre del usuario</h3>
+              <form onSubmit={handleSearch} className="fb-search-form">
+                <div className="fb-search-input-wrap">
+                  <i className="bi bi-person fb-search-icon" />
+                  <input
+                      type="text"
+                      className="fb-search-input"
+                      placeholder="Ej: Martin Antonio"
+                      value={search}
+                      onChange={e => setSearch(e.target.value)}
+                  />
                 </div>
-              )}
+                <button type="submit" className="fb-search-btn">
+                  <i className="bi bi-search" /> Buscar usuario
+                </button>
+              </form>
             </div>
-          )}
-
-          {/* SEARCH BY ID */}
-          {activeTab === "id" && (
-            <div className="fb-form-section">
-              <div className="fb-form-card">
-                <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID del usuario</h3>
-                <form onSubmit={handleSearchById} className="fb-search-form">
-                  <div className="fb-search-input-wrap">
-                    <i className="bi bi-person fb-search-icon" />
-                    <input type="number" className="fb-search-input" placeholder="Ingrese ID"
-                      value={searchId} onChange={e => setSearchId(e.target.value)} />
-                  </div>
-                  <button type="submit" className="fb-search-btn">
-                    <i className="bi bi-search" /> Buscar usuario
-                  </button>
-                </form>
-              </div>
-              {userById && (
-                    <div className="fb-results-grid">
-                      <div className="fb-user-card">
-                        <div>
-                          <p className="fb-user-card-name">{userById.name} {userById.lastName}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {userById.email}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {userById.phone}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-person-badge" /> {userById.role}</p>
-                          <p className="fb-user-card-detail"><i className="bi bi-globe" /> {userById.countryName || "Sin país"}</p>
+            {usersByName.length > 0 && (
+                <div className="fb-results-grid fb-users-cards-margin" style={{ marginTop: '20px' }}>
+                  {usersByName.map(u2 => (
+                      <div key={u2.id} className="fb-user-display-card">
+                        <div className="fb-card-user-info">
+                          <h4 className="fb-card-user-title">
+                            {u2.name} {u2.lastName || ""}
+                          </h4>
+                          <span className="fb-card-user-id">ID: {u2.id}</span>
+                        </div>
+                        <div className="fb-card-user-body">
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-envelope" />  {u2.email || "Sin correo"}
+                          </p>
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-telephone" />  {u2.phone || "Sin teléfono"}
+                          </p>
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-person-badge" />  {u2.role || "Sin rol"} {/* CORREGIDO: Ícono bi-person-badge */}
+                          </p>
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-globe" /> {" "}
+                            <span className="fb-country">
+                           {u2.countryName || "Sin país"}
+                           </span>
+                          </p>
                         </div>
                       </div>
-                    </div>
-                  )}
+                  ))}
                 </div>
-              )}
+            )}
+          </div>
+      )}
 
-          {/* CREATE USER */}
-          {activeTab === "create" && (
-            <div className="fb-form-section fb-tab-create">
-              <div className="fb-form-card">
-                <h3 className="fb-form-title">
-                  <i className="bi bi-person-plus-fill" /> Introduzca los datos del nuevo usuario
-                </h3>
-                <form onSubmit={handleCreateSubmit} className="fb-crud-form">
-                  <div className="fb-crud-grid">
-                    {[
-                      { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
-                      { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
-                      { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "7777-7777" },
-                      { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "correo@ejemplo.com" },
-                      { label: "Credenciales", name: "role", icon: "bi-person", placeholder: "Credenciales de" },
-                      { label: "Contraseña", name: "password", icon: "bi-lock", type: "password", placeholder: "••••••••" },
-                    ].map((f) => (
+      {/* SEARCH BY ID */}
+      {activeTab === "id" && (
+          <div className="fb-form-section">
+            <div className="fb-form-card">
+              <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID del usuario</h3>
+              <form onSubmit={handleSearchById} className="fb-search-form">
+                <div className="fb-search-input-wrap">
+                  <i className="bi bi-person fb-search-icon" />
+                  <input
+                      type="number"
+                      className="fb-search-input"
+                      placeholder="Ingrese ID"
+                      value={searchId}
+                      onChange={e => setSearchId(e.target.value)}
+                  />
+                </div>
+                <button type="submit" className="fb-search-btn">
+                  <i className="bi bi-search" /> Buscar usuario
+                </button>
+              </form>
+            </div>
+            {userById && (
+                <div className="fb-results-grid fb-users-cards-margin" style={{ marginTop: '20px' }}>
+                  <div className="fb-user-display-card">
+                    <div className="fb-card-user-info">
+                      <h4 className="fb-card-user-title">
+                        {userById.name} {userById.lastName || ""}
+                      </h4>
+                      <span className="fb-card-user-id">ID: {userById.id}</span>
+                    </div>
+                    <div className="fb-card-user-body">
+                      <p className="fb-card-user-detail">
+                        <i className="bi bi-envelope" />  {userById.email || "Sin correo"}
+                      </p>
+                      <p className="fb-card-user-detail">
+                        <i className="bi bi-telephone" />  {userById.phone || "Sin teléfono"}
+                      </p>
+                      <p className="fb-card-user-detail">
+                        <i className="bi bi-person-badge" />  {userById.role || "Sin rol"}
+                      </p>
+                      <p className="fb-card-user-detail">
+                        <i className="bi bi-globe" /> {" "}
+                        <span className="fb-country">
+                        {userById.countryName || "Sin país"}
+                       </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+            )}
+          </div>
+      )}
+
+      {/* CREATE USER */}
+      {activeTab === "create" && (
+          <div className="fb-form-section fb-tab-create">
+            <div className="fb-form-card">
+              <h3 className="fb-form-title">
+                <i className="bi bi-person-plus-fill" /> Introduzca los datos del nuevo usuario
+              </h3>
+              <form onSubmit={handleCreateSubmit} className="fb-crud-form">
+                <div className="fb-crud-grid">
+                  {[
+                    { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
+                    { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
+                    { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "7777-7777" },
+                    { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "correo@ejemplo.com" },
+                    { label: "Credenciales", name: "role", icon: "bi-person-badge", placeholder: "Seleccione o escriba un rol" }, // Ícono actualizado
+                    { label: "Contraseña", name: "password", icon: "bi-lock", type: "password", placeholder: "••••••••" },
+                  ].map((f) => (
                       <div key={f.name} className="fb-crud-field">
                         <label className="fb-crud-label">{f.label}</label>
                         <div className="fb-crud-input-wrap">
                           <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                          <input type={f.type || "text"} name={f.name} className="fb-crud-input" placeholder={f.placeholder} required />
+                          <input
+                              type={f.type || "text"}
+                              name={f.name}
+                              className="fb-crud-input"
+                              placeholder={f.placeholder}
+                              required
+                              {...(f.name === "role" ? { list: "roles-list" } : {})} // Vincula el datalist al input de rol
+                          />
+                          {f.name === "role" && (
+                              <datalist id="roles-list">
+                                <option value="CLIENTE" />
+                                <option value="ADMINISTRADOR" />
+                                <option value="SOPORTE" />
+                                <option value="EMPLEADO" />
+                              </datalist>
+                          )}
                         </div>
                       </div>
-                    ))}
+                  ))}
 
-                    <div className="fb-crud-field">
-                      <label className="fb-crud-label">País</label>
-                      <div className="fb-crud-input-wrap">
-                        <i className="bi bi-globe fb-crud-input-icon" />
-                        <input
+                  <div className="fb-crud-field">
+                    <label className="fb-crud-label">País</label>
+                    <div className="fb-crud-input-wrap">
+                      <i className="bi bi-globe fb-crud-input-icon" />
+                      <input
                           type="text"
                           name="countryName"
                           list={`countries-options-${countriesList.length}`}
@@ -438,23 +495,22 @@ function Users() {
                           placeholder="Selecciona o escribe un país"
                           required
                           autoComplete="off"
-                        />
-                        <datalist id={`countries-options-${countriesList.length}`}>
-                          {Array.isArray(countriesList) && countriesList.map((c, idx) => (
+                      />
+                      <datalist id={`countries-options-${countriesList.length}`}>
+                        {Array.isArray(countriesList) && countriesList.map((c, idx) => (
                             <option key={c.id || c.country_id || idx} value={c.name} />
-                          ))}
-                        </datalist>
-                      </div>
+                        ))}
+                      </datalist>
                     </div>
                   </div>
-
-                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
-                    <i className="bi bi-person-check-fill" /> Crear usuario
-                  </button>
-                </form>
-              </div>
+                </div>
+                <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
+                  <i className="bi bi-person-check-fill" /> Registrar usuario
+                </button>
+              </form>
             </div>
-          )}
+          </div>
+      )}
 
           {/* UPDATE USER */}
           {activeTab === "update" && (
@@ -481,7 +537,8 @@ function Users() {
                         <button
                           type="button"
                           className="fb-search-btn"
-                          style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
+                          style={{ padding: "0 1rem", height: "42px", marginTop: "0", display: "flex",
+                            alignItems: "center", gap: "0.25rem", cursor: "pointer" }}
                           onClick={() => handleBlurId(formData.id)}
                         >
                           Cargar
@@ -507,7 +564,6 @@ function Users() {
                         </div>
                       </div>
                     ))}
-
                     <div className="fb-crud-field">
                       <label className="fb-crud-label">País</label>
                       <div className="fb-crud-input-wrap">
@@ -531,7 +587,7 @@ function Users() {
                       </div>
                     </div>
                   </div>
-                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#b45309,#fd7e14)", marginTop: "1.5rem" }}>
+                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
                     <i className="bi bi-check-circle-fill" /> Actualizar usuario
                   </button>
                 </form>

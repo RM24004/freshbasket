@@ -301,402 +301,426 @@ function Suppliers() {
   }, [activeTab, userRole]);
 
   return (
-    <div className="fb-form-container">
-      {activeTab === "home" && showWelcome && (
-        <div className="fb-photo-section">
+      <div className="fb-form-container">
+        {activeTab === "home" && showWelcome && (
+         <div className="fb-photo-section">
           <img
-            src="/logo1.png"
-            alt="Foto principal FreshBasket"
-            className="fb-photo"
+          src="/logo1.png"
+          alt="Foto principal FreshBasket"
+          className="fb-photo"
           />
-        </div>
-      )}
-
-      {/* ALL SUPPLIERS */}
-      {activeTab === "all" && !showWelcome && (
-          <div className="fb-form-section">
-            <div className="fb-section-header">
-              <h3 className="fb-table-title">
-                <i className="bi bi-truck" /> Mostrando todos los registros
-              </h3>
-              <span className="fb-badge">{allSuppliers.length} registros</span>
-            </div>
-
-            <div className="fb-results-grid fb-users-cards-margin">
-              {Array.isArray(allSuppliers) && allSuppliers.length > 0 ? (
-               allSuppliers.map((sup) => (
-                 <div key={sup.id || sup.supplier_id} className="fb-user-display-card">
-                  <div className="fb-card-user-info">
-                   <h4 className="fb-card-user-title">
-                    {sup.name} {sup.lastName || sup.last_name}
-                     </h4>
-                      <span className="fb-card-user-id">ID: {sup.id || sup.supplier_id}</span>
-                      </div>
-                      <div className="fb-card-user-body">
-                      <p className="fb-card-user-detail">
-                      <i className="bi bi-envelope" /> {sup.email}
-                     </p>
-                    <p className="fb-card-user-detail">
-                    <i className="bi bi-telephone" /> {sup.phone}
-                    </p>
-                    <p className="fb-card-user-detail">
-                   <i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}
-                  </p>
-                 <p className="fb-card-user-detail">
-                <i className="bi bi-globe" />
-                <span className="fb-country">
-                {sup.countryName || (Array.isArray(countriesList) &&
-                countriesList.find(c => String(c.id || c.country_id) === String(
-            sup.countryId || sup.country_id))?.name) || "Sin país"}
-               </span>
-                </p>
-              </div>
-            </div>
-            ))
-           ) : (
-           <div className="fb-empty fb-grid-full-width">
-           <i className="bi bi-inbox" />
-          <p>No hay proveedores registrados</p>
          </div>
-         )}
-       </div>
-      </div>
-     )}
+        )}
+
+        {/* ALL SUPPLIERS */}
+        {activeTab === "all" && !showWelcome && (
+            <div className="fb-form-section">
+              <div className="fb-section-header">
+                <h3 className="fb-table-title">
+                  <i className="bi bi-truck" /> Mostrando todos los registros
+                </h3>
+                <span className="fb-badge">{allSuppliers.length} registros</span>
+              </div>
+              <div className="fb-results-grid fb-users-cards-margin">
+                {Array.isArray(allSuppliers) && allSuppliers.length > 0 ? (
+                    allSuppliers.map((sup) => (
+                        <div key={sup.id || sup.supplier_id} className="fb-user-display-card">
+                          <div className="fb-card-user-info">
+                            <h4 className="fb-card-user-title">
+                              {sup.name} {sup.lastName || sup.last_name || ""}
+                            </h4>
+                            <span className="fb-card-user-id">ID: {sup.id || sup.supplier_id}</span>
+                          </div>
+                          <div className="fb-card-user-body">
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-envelope" /> {sup.email || "Sin correo"}
+                            </p>
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-telephone" /> {sup.phone || "Sin teléfono"}
+                            </p>
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}
+                            </p>
+                            <p className="fb-card-user-detail">
+                              <i className="bi bi-globe" />{" "}
+                              <span className="fb-country">
+                                {sup.countryName ||
+                                (typeof countriesList !== "undefined" && Array.isArray(countriesList) &&
+                               countriesList.find(c => String(c.id || c.country_id) === String(sup.countryId || sup.country_id))?.name) ||
+                              sup.country || "Sin país"}
+                           </span>
+                         </p>
+                      </div>
+                    </div>
+                    ))
+                   ) : (
+                  <div className="fb-empty fb-grid-full-width">
+                   <i className="bi bi-inbox" />
+                  <p>No hay proveedores registrados</p>
+               </div>
+              )}
+           </div>
+         </div>
+        )}
 
         {/* SEARCH BY NAME */}
         {activeTab === "name" && !showWelcome && (
-          <div className="fb-form-section">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title"><i className="bi bi-search" /> Escriba un nombre del proveedor</h3>
-              <form onSubmit={handleSearch} className="fb-search-form">
-                <div className="fb-search-input-wrap">
-                  <i className="bi bi-person fb-search-icon" />
-                  <input type="text" className="fb-search-input" placeholder="Ej: Distribuidora"
-                    value={search} onChange={e => setSearch(e.target.value)} />
-                </div>
-                <button type="submit" className="fb-search-btn">
-                  <i className="bi bi-search" /> Buscar proveedor
-                </button>
-              </form>
-            </div>
-
-            {suppliersByName.length > 0 && (
-              <div className="fb-results-grid">
-                {suppliersByName.map(sup => {
-                  const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
-                    (c) => (c.id === sup.countryId || c.country_id === sup.countryId)
-                  );
-
-                  return (
-                    <div key={sup.id || sup.supplier_id} className="fb-user-card">
-                      <div>
-                        <p className="fb-user-card-name">{sup.name} {sup.lastName || sup.last_name}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-envelope" /> {sup.email}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-telephone" /> {sup.phone}</p>
-                        <p className="fb-user-card-detail"><i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}</p>
-                        <p className="fb-user-card-detail">
-                          <i className="bi bi-globe" />
-                          {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+            <div className="fb-form-section">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title">
+                  <i className="bi bi-search" /> Escriba el nombre del proveedor
+                </h3>
+                <form onSubmit={handleSearch} className="fb-search-form">
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-person fb-search-icon" />
+                    <input
+                        type="text"
+                        className="fb-search-input"
+                        placeholder="Ej: Distribuidora..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                  </div>
+                  <button type="submit" className="fb-search-btn">
+                    <i className="bi bi-search" /> Buscar proveedor
+                  </button>
+                </form>
               </div>
+              {suppliersByName.length > 0 && (
+                  <div className="fb-form-section">
+                    <div className="fb-results-grid fb-users-cards-margin">
+                      {suppliersByName.map((sup) => (
+                          <div key={sup.id || sup.supplier_id} className="fb-user-display-card">
+                            <div className="fb-card-user-info">
+                              <h4 className="fb-card-user-title">
+                                {sup.name} {sup.lastName || sup.last_name || ""}
+                              </h4>
+                              <span className="fb-card-user-id">ID: {sup.id || sup.supplier_id}</span>
+                            </div>
+                            <div className="fb-card-user-body">
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-envelope" /> {sup.email || "Sin correo"}
+                              </p>
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-telephone" /> {sup.phone || "Sin teléfono"}
+                              </p>
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-geo-alt" /> {sup.address || "Sin dirección"}
+                              </p>
+                              <p className="fb-card-user-detail">
+                                <i className="bi bi-globe" />{" "}
+                                <span className="fb-country">
+                                {sup.countryName ||
+                              (typeof countriesList !== "undefined" && Array.isArray(countriesList) &&
+                             countriesList.find(c => String(c.id || c.country_id) === String(sup.countryId || sup.country_id))?.name) ||
+                           sup.country || "Sin país"}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+             </div>
             )}
-          </div>
+         </div>
         )}
 
         {/* SEARCH BY ID */}
         {activeTab === "id" && !showWelcome && (
-          <div className="fb-form-section">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID del proveedor</h3>
-              <form onSubmit={handleSearchById} className="fb-search-form">
-                <div className="fb-search-input-wrap">
-                  <i className="bi bi-person fb-search-icon" />
-                  <input type="number" className="fb-search-input" placeholder="Ingrese ID"
-                    value={searchId} onChange={e => setSearchId(e.target.value)} />
-                </div>
-                <button type="submit" className="fb-search-btn">
-                  <i className="bi bi-search" /> Buscar proveedor
-                </button>
-              </form>
-            </div>
-
-            {supplierById && (() => {
-              const countryCorrespondiente = Array.isArray(countriesList) && countriesList.find(
-                (c) => (c.id === supplierById.countryId || c.country_id === supplierById.countryId)
-              );
-
-              return (
-                <div className="fb-results-grid">
-                  <div className="fb-user-card">
-                    <div>
-                      <p className="fb-user-card-name">
-                        {supplierById?.name} {supplierById?.lastName || supplierById?.last_name}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-envelope" /> {supplierById?.email}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-telephone" /> {supplierById?.phone}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-geo-alt" /> {supplierById?.address || "Sin dirección"}
-                      </p>
-                      <p className="fb-user-card-detail">
-                        <i className="bi bi-globe" />{" "}
-                        {countryCorrespondiente ? countryCorrespondiente.name : "Sin país"}
-                      </p>
-                    </div>
+            <div className="fb-form-section">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title">
+                  <i className="bi bi-search" /> Introduzca el ID del proveedor
+                </h3>
+                <form onSubmit={handleSearchById} className="fb-search-form">
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-hash fb-search-icon" />
+                    <input
+                        type="number"
+                        className="fb-search-input"
+                        placeholder="Ingrese ID"
+                        value={searchId}
+                        onChange={(e) => setSearchId(e.target.value)}
+                    />
                   </div>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-
-      {/* CREATE SUPPLIER */}
-      {activeTab === "create" && !showWelcome && (
-          <div className="fb-form-section fb-tab-create">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title">
-                <i className="bi bi-person-plus-fill" /> Introduzca los datos del nuevo proveedor
-              </h3>
-              <form onSubmit={handleCreateSubmit} className="fb-crud-form">
-                <div className="fb-crud-grid">
-                  {[
-                    { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
-                    { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
-                    { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "7777-7777" },
-                    { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "correo@ejemplo.com" },
-                    { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección completa" },
-                  ].map((f) => (
-                      <div key={f.name} className="fb-crud-field">
-                        <label className="fb-crud-label">{f.label}</label>
-                        <div className="fb-crud-input-wrap">
-                          <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                          <input
-                              type={f.type || "text"}
-                              name={f.name}
-                              className="fb-crud-input"
-                              placeholder={f.placeholder}
-                              required
-                          />
+                  <button type="submit" className="fb-search-btn">
+                    <i className="bi bi-search" /> Buscar proveedor
+                  </button>
+                </form>
+              </div>
+              {supplierById && (
+                  <div className="fb-form-section">
+                    <div className="fb-results-grid fb-users-cards-margin">
+                      <div key={supplierById.id || supplierById.supplier_id} className="fb-user-display-card">
+                        <div className="fb-card-user-info">
+                          <h4 className="fb-card-user-title">
+                            {supplierById.name} {supplierById.lastName || supplierById.last_name || ""}
+                          </h4>
+                          <span className="fb-card-user-id">ID: {supplierById.id || supplierById.supplier_id}</span>
+                        </div>
+                        <div className="fb-card-user-body">
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-envelope" /> {supplierById.email || "Sin correo"}
+                          </p>
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-telephone" /> {supplierById.phone || "Sin teléfono"}
+                          </p>
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-geo-alt" /> {supplierById.address || "Sin dirección"}
+                          </p>
+                          <p className="fb-card-user-detail">
+                            <i className="bi bi-globe" />{" "}
+                            <span className="fb-country">
+                              {supplierById.countryName ||
+                               (typeof countriesList !== "undefined" && Array.isArray(countriesList) &&
+                               countriesList.find(c => String(c.id || c.country_id) === String(supplierById.countryId || supplierById.country_id))?.name) ||
+                              supplierById.country || "Sin país"}
+                             </span>
+                          </p>
                         </div>
                       </div>
-                  ))}
-
-                  <div className="fb-crud-field">
-                    <label className="fb-crud-label">País</label>
-                    <div className="fb-crud-input-wrap">
-                      <i className="bi bi-globe fb-crud-input-icon" />
-                      <input
-                          type="text"
-                          name="countryName"
-                          list="suppliers-countries-datalist" // ID Estático corregido
-                          className="fb-crud-input"
-                          placeholder="Selecciona o escribe un país"
-                          required
-                          autoComplete="off"
-                      />
-                      <datalist id="suppliers-countries-datalist"> {/* Coincide exactamente con el list de arriba */}
-                        {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                            <option key={c.id || c.country_id || idx} value={c.name} />
-                        ))}
-                      </datalist>
                     </div>
                   </div>
-                </div>
-
-                <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
-                  <i className="bi bi-person-check-fill" /> Crear proveedor
-                </button>
-              </form>
+              )}
             </div>
-          </div>
-      )}
+        )}
+
+        {/* CREATE SUPPLIER */}
+        {activeTab === "create" && !showWelcome && (
+            <div className="fb-form-section fb-tab-create">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title">
+                  <i className="bi bi-person-plus-fill" /> Introduzca los datos del nuevo proveedor
+                </h3>
+                <form onSubmit={handleCreateSubmit} className="fb-crud-form">
+                  <div className="fb-crud-grid">
+                    {[
+                      { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
+                      { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
+                      { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "7777-7777" },
+                      { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "correo@ejemplo.com" },
+                      { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección completa" },
+                    ].map((f) => (
+                        <div key={f.name} className="fb-crud-field">
+                          <label className="fb-crud-label">{f.label}</label>
+                          <div className="fb-crud-input-wrap">
+                            <i className={`bi ${f.icon} fb-crud-input-icon`} />
+                            <input
+                                type={f.type || "text"}
+                                name={f.name}
+                                className="fb-crud-input"
+                                placeholder={f.placeholder}
+                                required
+                            />
+                          </div>
+                        </div>
+                    ))}
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">País</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-globe fb-crud-input-icon" />
+                        <input
+                            type="text"
+                            name="countryName"
+                            list="suppliers-countries-datalist"
+                            className="fb-crud-input"
+                            placeholder="Selecciona o escribe un país"
+                            required
+                            autoComplete="off"
+                        />
+                        <datalist id="suppliers-countries-datalist">
+                          {Array.isArray(countriesList) && countriesList.map((c, idx) => (
+                              <option key={c.id || c.country_id || idx} value={c.name} />
+                          ))}
+                        </datalist>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
+                    <i className="bi bi-person-check-fill" /> Crear proveedor
+                  </button>
+                </form>
+              </div>
+            </div>
+        )}
 
         {/* UPDATE SUPPLIER */}
         {activeTab === "update" && !showWelcome && (
-          <div className="fb-form-section fb-tab-update">
-            <div className="fb-form-card">
-              <h3 className="fb-form-title"><i className="bi bi-pencil-square" /> Actualice el dato o los datos del proveedor</h3>
-              <form onSubmit={handleUpdateSubmit} onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()} className="fb-crud-form">
-                <div className="fb-crud-grid">
-                  <div className="fb-crud-field">
-                    <label className="fb-crud-label">ID proveedor</label>
-                    <div className="fb-crud-input-wrap" style={{ display: "flex", gap: "0.5rem" }}>
-                      <div style={{ position: "relative", flex: 1 }}>
-                        <i className="bi bi-hash fb-crud-input-icon" style={{ zIndex: 5 }} />
-                        <input
-                          type="number"
-                          name="id"
-                          className="fb-crud-input"
-                          placeholder="ID del proveedor"
-                          value={formData.id || ""}
-                          onChange={handleChange}
-                          required
-                        />
+            <div className="fb-form-section fb-tab-update">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title"><i className="bi bi-pencil-square" /> Actualice el dato o los datos del proveedor</h3>
+                <form onSubmit={handleUpdateSubmit} onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()} className="fb-crud-form">
+                  <div className="fb-crud-grid">
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">ID proveedor</label>
+                      <div className="fb-crud-input-wrap" style={{ display: "flex", gap: "0.5rem" }}>
+                        <div style={{ position: "relative", flex: 1 }}>
+                          <i className="bi bi-hash fb-crud-input-icon" style={{ zIndex: 5 }} />
+                          <input
+                              type="number"
+                              name="id"
+                              className="fb-crud-input"
+                              placeholder="ID del proveedor"
+                              value={formData.id || ""}
+                              onChange={handleChange}
+                              required
+                          />
+                        </div>
+                        <button
+                            type="button"
+                            className="fb-search-btn"
+                            style={{ padding: "0 1rem", height: "42px", marginTop: "0", display: "flex",
+                              alignItems: "center", gap: "0.25rem", cursor: "pointer" }}
+                            onClick={() => handleBlurId(formData.id)}
+                        >
+                          Cargar
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        className="fb-search-btn"
-                        style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
-                        onClick={() => handleBlurId(formData.id)}
-                      >
-                        Cargar
-                      </button>
                     </div>
-                  </div>
 
-                  {[
-                    { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
-                    { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
-                    { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "Teléfono" },
-                    { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "Email" },
-                    { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección" },
-                  ].map((f) => (
-                    <div key={f.name} className="fb-crud-field">
-                      <label className="fb-crud-label">{f.label}</label>
+                    {[
+                      { label: "Nombre", name: "name", icon: "bi-person", placeholder: "Nombre" },
+                      { label: "Apellido", name: "lastName", icon: "bi-person", placeholder: "Apellido" },
+                      { label: "Teléfono", name: "phone", icon: "bi-telephone", placeholder: "Teléfono" },
+                      { label: "Email", name: "email", icon: "bi-envelope", type: "email", placeholder: "Email" },
+                      { label: "Dirección", name: "address", icon: "bi-geo-alt", placeholder: "Dirección" },
+                    ].map((f) => (
+                        <div key={f.name} className="fb-crud-field">
+                          <label className="fb-crud-label">{f.label}</label>
+                          <div className="fb-crud-input-wrap">
+                            <i className={`bi ${f.icon} fb-crud-input-icon`} />
+                            <input type={f.type || "text"} name={f.name} className="fb-crud-input"
+                                   placeholder={f.placeholder} value={formData[f.name] || ""}
+                                   onChange={handleChange} required />
+                          </div>
+                        </div>
+                    ))}
+
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">País</label>
                       <div className="fb-crud-input-wrap">
-                        <i className={`bi ${f.icon} fb-crud-input-icon`} />
-                        <input type={f.type || "text"} name={f.name} className="fb-crud-input"
-                          placeholder={f.placeholder} value={formData[f.name] || ""}
-                          onChange={handleChange} required />
+                        <i className="bi bi-globe fb-crud-input-icon" />
+                        <input
+                            type="text"
+                            name="countryName"
+                            list="suppliers-update-countries-datalist"
+                            className="fb-crud-input"
+                            placeholder="Selecciona o escribe un país"
+                            value={formData.countryName || ""}
+                            onChange={handleChange}
+                            required
+                            autoComplete="off"
+                        />
+                        <datalist id="suppliers-update-countries-datalist">
+                          {Array.isArray(countriesList) && countriesList.map((c, idx) => (
+                              <option key={c.id || c.country_id || idx} value={c.name} />
+                          ))}
+                        </datalist>
                       </div>
                     </div>
-                  ))}
-
-                  <div className="fb-crud-field">
-                    <label className="fb-crud-label">País</label>
-                    <div className="fb-crud-input-wrap">
-                      <i className="bi bi-globe fb-crud-input-icon" />
-                      <input
-                        type="text"
-                        name="countryName"
-                        list={`countries-update-options-${countriesList.length}`}
-                        className="fb-crud-input"
-                        placeholder="Selecciona o escribe un país"
-                        value={formData.countryName || ""}
-                        onChange={handleChange}
-                        required
-                        autoComplete="off"
-                      />
-                      <datalist id={`countries-update-options-${countriesList.length}`}>
-                        {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                          <option key={c.id || c.country_id || idx} value={c.name} />
-                        ))}
-                      </datalist>
-                    </div>
                   </div>
-                </div>
-                <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#b45309,#fd7e14)", marginTop: "1.5rem" }}>
-                  <i className="bi bi-check-circle-fill" /> Actualizar proveedor
-                </button>
-              </form>
+                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
+                    <i className="bi bi-check-circle-fill" /> Actualizar proveedor
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
         )}
 
-      {/* DELETE SUPPLIER */}
-      {activeTab === "delete" && !showWelcome && (
-          <div className="fb-form-section">
-            <div className="fb-form-card" style={{ borderTop: "4px solid #dc3545" }}>
-              <h3 className="fb-form-title" style={{ color: "#dc3545" }}>
-                <i className="bi bi-trash3-fill" /> Introduzca el ID del proveedor
-              </h3>
-              <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
-                ⚠️ Al eliminar el proveedor se borrará permanentemente de su base de datos ⚠️
-              </p>
+        {/* DELETE SUPPLIER */}
+        {activeTab === "delete" && !showWelcome && (
+            <div className="fb-form-section">
+              <div className="fb-form-card" style={{ borderTop: "4px solid #dc3545" }}>
+                <h3 className="fb-form-title" style={{ color: "#dc3545" }}>
+                  <i className="bi bi-trash3-fill" /> Introduzca el ID del proveedor
+                </h3>
+                <p style={{ color: "#7a8694", fontSize: "0.9rem", marginBottom: "1.2rem" }}>
+                  ⚠️ Al eliminar este proveedor se borrará permanentemente de su base de datos ⚠️
+                </p>
+                <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const currentForm = e.currentTarget;
+                      const idValue = currentForm.id.value;
 
-              <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    const formInstance = e.target;
-                    const idValue = formInstance.id.value;
-
-                    if (!idValue || String(idValue).trim() === "") {
-                      toast.error("Por favor, ingresa un ID válido.");
-                      return;
-                    }
-
-                    try {
-                      const supplier = await getSupplierById(idValue);
-
-                      if (!supplier) {
-                        toast.error(`No se puede eliminar el proveedor con ID ${idValue}.`);
+                      if (!idValue || String(idValue).trim() === "") {
+                        toast.error("Por favor, ingresa un ID válido.");
                         return;
                       }
+                      try {
+                        const supplier = await getSupplierById(idValue);
+                        if (!supplier) {
+                          toast.error(`No se puede eliminar el proveedor con ID ${idValue}.`);
+                          return;
+                        }
 
-                      const supplierName = supplier?.name || "";
-                      const supplierLastName = supplier?.lastName || supplier?.last_name || "";
-                      const displayName = supplierName ? `${supplierName} ${supplierLastName}`.trim() : `ID: ${idValue}`;
+                        const fullName = `${supplier.name || ""} ${supplier.lastName || supplier.last_name || ""}`.trim() || idValue;
 
-                      toast((t) => (
-                          <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
-                      <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
-                     ¿Está seguro de que desea eliminar al proveedor <strong>{displayName}</strong>?
-                     </span>
-                     <div className="d-flex justify-content-center gap-2 mt-1">
-                     <button
-                     className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
-                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
-                   onClick={async () => {
-                  toast.dismiss(t.id);
-                 try {
-                 await deleteSupplier(idValue);
-                 toast.success(`Proveedor con ID ${idValue} eliminado correctamente.`);
-                 formInstance.reset();
-                 setTimeout(async () => {
-                 await loadSuppliers();
-                  }, 300);
-                 } catch (error) {
-                toast.error("Hubo un problema al ejecutar la eliminación.");
-                 }
-                }}
+                        toast((t) => (
+                            <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
+                        <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
+                        ¿Está seguro de que desea eliminar al proveedor <strong>{fullName}</strong>?
+                          </span>
+                              <div className="d-flex justify-content-center gap-2 mt-1">
+                                <button
+                                    className="btn btn-danger btn-sm px-3 fw-bold shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={async () => {
+                                      toast.dismiss(t.id);
+                                      try {
+                                        await deleteSupplier(idValue);
+                                        toast.success(`Proveedor con ID ${idValue} eliminado correctamente.`);
+
+                                        // Reset seguro del formulario capturado en el submit
+                                        if (currentForm) currentForm.reset();
+
+                                        setTimeout(async () => {
+                                          await loadSuppliers();
+                                        }, 300);
+                                      } catch (error) {
+                                        toast.error("Hubo un problema al ejecutar la eliminación.");
+                                      }
+                                    }}
+                                >
+                                  Eliminar
+                                </button>
+                                <button
+                                    className="btn btn-light btn-sm px-3 border shadow-sm"
+                                    style={{ borderRadius: "12px", fontSize: "0.85rem" }}
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </div>
+                        ), {
+                          duration: Infinity,
+                          position: "top-center"
+                        });
+                      } catch (error) {
+                        toast.error(`No se encontró el proveedor con ID ${idValue}.`);
+                      }
+                    }}
+                    className="fb-search-form"
                 >
-               Eliminar
-              </button>
-              <button
-              className="btn btn-light btn-sm px-3 border shadow-sm"
-              style={{ borderRadius: "12px", fontSize: "0.85rem" }}
-              onClick={() => toast.dismiss(t.id)}
-             >
-            Cancelar
-           </button>
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-hash fb-search-icon" />
+                    <input
+                        type="number"
+                        name="id"
+                        className="fb-search-input"
+                        placeholder="ID del proveedor a eliminar"
+                        required
+                    />
+                  </div>
+                  <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
+                  <i className="bi bi-trash3" /> Eliminar proveedor
+                 </button>
+               </form>
+             </div>
           </div>
-          </div>
-         ), {
-          duration: Infinity,
-           position: "top-center"
-            });
-           } catch (error) {
-          toast.error(`No se encontró el proveedor con ID ${idValue}.`);
-         }
-         }}
-         className="fb-search-form"
-          >
-          <div className="fb-search-input-wrap">
-          <i className="bi bi-hash fb-search-icon" />
-           <input
-           type="number"
-           name="id"
-           className="fb-search-input"
-           placeholder="ID del proveedor a eliminar"
-           required
-          />
-         </div>
-        <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
-       <i className="bi bi-trash3" /> Eliminar proveedor
-     </button>
-    </form>
+        )}
    </div>
-   </div>
-   )}
-  </div>
   );
 }
-
 export default Suppliers;

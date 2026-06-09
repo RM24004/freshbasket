@@ -1,61 +1,93 @@
 .home-container {
   position: relative;
   width: 100%;
-  height: 100vh;          /* Ocupa toda la pantalla */
+  height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
 }
 
-/* Imagen de fondo */
 .home-background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;    /* Mantiene proporciones */
+  object-fit: cover;
   z-index: 0;
+
+  animation: movimientoSuave 20s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 /* Contenedor overlay */
 .overlay-content {
   position: absolute;
-  bottom: 20%;            /* Ajusta la altura relativa a la imagen */
+  bottom: 12%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
   text-align: center;
+  width: 100%;
+  padding: 0 1rem;
 }
 
-/* Botón Inicio - mobile first */
+/* Botón Inicio */
 .btn-home {
+  display: inline-block;
   text-decoration: none;
   border-radius: 40px;
   background: linear-gradient(135deg, #116237 0%, #2ecc71 100%);
-  border: #000;
+  border: none;
   color: #fff;
-  font-weight: #000;
-  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
   font-size: 1rem;
-  transition: all 0.3s ease;
-  width: 80%;             /* Botón ancho en móvil */
-  max-width: 280px;       /* Límite en desktop */
+  box-shadow: 0 4px 15px rgba(17, 98, 55, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  width: 85%;
+  max-width: 280px;
 }
 
 /* Hover en desktop */
 .btn-home:hover {
-  background-color: rgba(20, 108, 67, 0.95);
-  border-color: rgba(15, 81, 50, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(17, 98, 55, 0.4);
+  color: #fff;
+  opacity: 0.95;
 }
 
 /* Ajustes responsive */
 @media (min-width: 768px) {
+  .home-background {
+    object-fit: contain;
+    height: 85%;
+    top: 5%;
+  }
+
   .overlay-content {
-    bottom: 10%;          /* Ajusta posición en pantallas grandes */
+    bottom: 8%;
   }
 
   .btn-home {
     width: auto;
-    padding: 0.8rem 2rem;
+    max-width: none;
+    padding: 0.8rem 2.5rem;
     font-size: 1.1rem;
+  }
+
+  @keyframes movimientoSuave {
+    0% {
+      transform: scale(1) translate(0, 0);
+    }
+    50% {
+      transform: scale(1.04) translate(-1%, 1%);
+    }
+    100% {
+      transform: scale(1.02) translate(1%, -0.5%);
+    }
   }
 }

@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/exits")
 @Tag(name = "Exits", description = "API para la gestión de salidas del inventario FreshBasket")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ExitController {
 
     private final ExitService exitService;

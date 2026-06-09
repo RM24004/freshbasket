@@ -360,92 +360,102 @@ function Products() {
         </div>
       )}
 
-      {/* CREATE PRODUCT */}
-      {activeTab === "create" && tieneAcceso(userRole, "crear") && (
-        <div className="fb-form-section fb-tab-create">
-          <div className="fb-form-card">
-            <h3 className="fb-form-title"><i className="bi bi-plus-circle-fill" /> Ingresar un nuevo producto</h3>
-            <form onSubmit={handleCreateSubmit} className="fb-crud-form">
-              <div className="fb-crud-grid">
-                <div className="fb-crud-field">
-                  <label className="fb-crud-label">Nombre del producto</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-box-seam fb-crud-input-icon" />
-                    <input type="text" name="name" className="fb-crud-input" placeholder="Ej: Carne de Res" required />
+        {/* CREATE PRODUCT */}
+        {activeTab === "create" && tieneAcceso(userRole, "crear") && (
+            <div className="fb-form-section fb-tab-create">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title"><i className="bi bi-plus-circle-fill" /> Ingresar un nuevo producto</h3>
+                <form onSubmit={handleCreateSubmit} className="fb-crud-form">
+                  <div className="fb-crud-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem" }}>
+
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">Nombre del producto</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-box-seam fb-crud-input-icon" />
+                        <input type="text" name="name" className="fb-crud-input" placeholder="Ej: Carne de Res" required />
+                      </div>
+                    </div>
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">Precio</label>
+                      <div className="fb-crud-input-wrap" style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                        <span
+                            style={{position: "absolute", left: "14px", color: "#6c757d", fontWeight: "600",
+                              fontSize: "0.85rem", pointerEvents: "none"}}>$</span>
+                        <input
+                            type="number" step="0.01" name="price" className="fb-crud-input" placeholder="0.00"
+                            required
+                            style={{ paddingLeft: "30px" }}/>
+                      </div>
+                    </div>
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">Stock inicial</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-hash fb-crud-input-icon" />
+                        <input type="number" name="currentStock" className="fb-crud-input" placeholder="25" required />
+                      </div>
+                    </div>
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">URL de imagen</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-image fb-crud-input-icon" />
+                        <input type="text" name="imageUrl" className="fb-crud-input" placeholder="http://...jpg" />
+                      </div>
+                    </div>
+
+                    {/* FILA 3: Categoría y Proveedor */}
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">Categoría del producto</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-bookmark-star fb-crud-input-icon" />
+                        <input type="text" name="categoryName" list="cats-options" className="fb-crud-input" placeholder="Seleccione o escriba" required autoComplete="off"/>
+                        <datalist id="cats-options">
+                          {categoriesList.map((c, i) => <option key={i} value={c.name} />)}
+                        </datalist>
+                      </div>
+                    </div>
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">Proveedor del producto</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-truck fb-crud-input-icon" />
+                        <input type="text" name="supplierName" list="sups-options" className="fb-crud-input" placeholder="Seleccione o escriba" required autoComplete="off" />
+                        <datalist id="sups-options">
+                          {suppliersList.map((s, i) => <option key={i} value={`${s.name || ""} ${s.lastName || ""}`.trim()} />)}
+                        </datalist>
+                      </div>
+                    </div>
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">Descripción del producto</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-justify-left fb-crud-input-icon" />
+                        <input type="text" name="description" className="fb-crud-input" placeholder="Detalles del producto" required />
+                      </div>
+                    </div>
+                    <div className="fb-crud-field">
+                      <label className="fb-crud-label">Usuario que registra</label>
+                      <div className="fb-crud-input-wrap">
+                        <i className="bi bi-person-badge fb-crud-input-icon" />
+                        <input
+                            type="text"
+                            name="userName"
+                            className="fb-crud-input"
+                            style={{ backgroundColor: "#f8f9fa", cursor: "not-allowed", fontWeight: "bold" }}
+                            value={userLogin}
+                            disabled
+                            readOnly
+                            required
+                        />
+                      </div>
+                    </div>
+
                   </div>
-                </div>
-                <div className="fb-crud-field">
-                  <label className="fb-crud-label">Precio ($)</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-currency-dollar fb-crud-input-icon" />
-                    <input type="number" step="0.01" name="price" className="fb-crud-input" placeholder="0.00" required />
-                  </div>
-                </div>
-                <div className="fb-crud-field">
-                  <label className="fb-crud-label">Stock inicial</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-hash fb-crud-input-icon" />
-                    <input type="number" name="currentStock" className="fb-crud-input" placeholder="25" required />
-                  </div>
-                </div>
-                <div className="fb-crud-field" style={{ gridColumn: "span 2" }}>
-                  <label className="fb-crud-label">URL de imagen</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-image fb-crud-input-icon" />
-                    <input type="text" name="imageUrl" className="fb-crud-input" placeholder="http://...jpg" />
-                  </div>
-                </div>
-                <div className="fb-crud-field" style={{ gridColumn: "span 2" }}>
-                  <label className="fb-crud-label">Descripción del producto</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-justify-left fb-crud-input-icon" />
-                    <input type="text" name="description" className="fb-crud-input" placeholder="Detalles del producto" required />
-                  </div>
-                </div>
-                <div className="fb-crud-field">
-                  <label className="fb-crud-label">Categoría del producto</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-bookmark-star fb-crud-input-icon" />
-                    <input type="text" name="categoryName" list="cats-options" className="fb-crud-input" placeholder="Seleccione o escriba" required autoComplete="off"/>
-                    <datalist id="cats-options">
-                      {categoriesList.map((c, i) => <option key={i} value={c.name} />)}
-                    </datalist>
-                  </div>
-                </div>
-                <div className="fb-crud-field">
-                  <label className="fb-crud-label">Proveedor del producto</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-truck fb-crud-input-icon" />
-                    <input type="text" name="supplierName" list="sups-options" className="fb-crud-input" placeholder="Seleccione o escriba" required autoComplete="off" />
-                    <datalist id="sups-options">
-                      {suppliersList.map((s, i) => <option key={i} value={`${s.name || ""} ${s.lastName || ""}`.trim()} />)}
-                    </datalist>
-                  </div>
-                </div>
-                <div className="fb-crud-field">
-                  <label className="fb-crud-label">Usuario que registra</label>
-                  <div className="fb-crud-input-wrap">
-                    <i className="bi bi-person-badge fb-crud-input-icon" />
-                    <input
-                        type="text"
-                        name="userName"
-                        className="fb-crud-input"
-                        style={{ backgroundColor: "#f8f9fa", cursor: "not-allowed", fontWeight: "bold" }} // Le da el toque grisáceo de bloqueado
-                        value={userLogin}
-                        disabled
-                        readOnly
-                        required
-                    />
-                  </div>
-                </div>
+
+                  <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem", width: "100%" }}>
+                    <i className="bi bi-check-circle" /> Registrar producto
+                  </button>
+                </form>
               </div>
-              <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
-                <i className="bi bi-check-circle" /> Registrar producto
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+        )}
 
       {/* UPDATE PRODUCT */}
       {activeTab === "update" && tieneAcceso(userRole, "actualizar") && (
@@ -481,7 +491,8 @@ function Products() {
                     <button
                       type="button"
                       className="fb-search-btn"
-                      style={{ padding: "0 1rem", height: "42px", marginTop: "0", display: "flex", alignItems: "center", gap: "0.25rem", cursor: "pointer" }}
+                      style={{ padding: "0 1rem", height: "42px", marginTop: "0", display: "flex",
+                        alignItems: "center", gap: "0.25rem", cursor: "pointer" }}
                       onClick={(e) => {
                         e.preventDefault();
                         handleBlurId(editSearchId);
@@ -660,7 +671,7 @@ function Products() {
                     <input type="number" name="id" className="fb-search-input" placeholder="ID del producto" required />
                   </div>
                   <button type="submit" className="fb-search-btn" style={{ background: "#dc3545" }}>
-                    <i className="bi bi-trash3" /> Eliminar
+                    <i className="bi bi-trash3" /> Eliminar producto
                   </button>
                 </form>
               </div>
@@ -703,7 +714,7 @@ function ProductCard({ p }) {
       <div className="fb-card-user-body">
         {/* INFO SIEMPRE VISIBLE */}
         <p className="fb-card-user-detail">
-          <i className="bi bi-currency-dollar" /> <strong>Precio:</strong> ${p.price}
+          <i className="bi bi-currency-dollar" /> <strong>Precio:</strong> ${Number(p.price).toFixed(2)}
         </p>
         <p className="fb-card-user-detail">
           <i className="bi bi-justify-left" /> <strong>Descripción:</strong> {p.description}

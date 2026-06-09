@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "Users", description = "API para la gestión de usuarios de FreshBasket")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
     private final UserService userService;
 

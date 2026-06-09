@@ -6,12 +6,10 @@
   align-items: center;
   justify-content: center;
   font-family: 'Segoe UI', Roboto, sans-serif;
-  /* El padding aquí actúa como un colchón inflable para que la tarjeta nunca toque los bordes */
   padding: 1.25rem !important;
   box-sizing: border-box;
 }
 
-/* Estilos por defecto para móviles (Pantallas pequeñas) */
 .register-card {
   width: 100% !important;
   margin: 0 auto !important;
@@ -21,11 +19,11 @@
 
 .register-side {
   padding: 2rem 1.5rem !important;
-  border-radius: 20px 20px 0 0 !important; /* Redondeado superior en móvil */
+  border-radius: 20px 20px 0 0 !important;
 }
 
 .register-form {
-  padding: 0 !important; /* Dejamos que el card-body de Bootstrap controle el espacio interno */
+  padding: 0 !important;
 }
 
 /* ==========================================================================
@@ -38,20 +36,11 @@
   }
 
   .register-card {
-    flex-direction: row !important;
-    max-width: 650px !important;
+    border-radius: 25px !important;
   }
 
   .register-side {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
     padding: 2.5rem !important;
-    border-radius: 20px 0 0 20px !important; /* Redondeado izquierdo en escritorio */
-  }
-
-  .register-form {
-    flex: 2 !important;
+    border-radius: 25px 0 0 25px !important;
   }
 }

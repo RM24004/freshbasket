@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 @Tag(name = "Products", description = "API para la gestión de productos del inventario FreshBasket")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
 
     private final ProductService productService;

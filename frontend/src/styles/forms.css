@@ -162,7 +162,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.1rem;
   border-bottom: 1px solid #f5f5f5;
   padding-bottom: 0.8rem;
 }
@@ -530,14 +530,18 @@
 
 .fb-search-form {
   display: flex;
-  gap: 0.6rem;
+  align-items: stretch;
+  gap: 0.7rem;
+  width: 100%;
 }
 
 .fb-search-input-wrap {
   flex: 1;
-  position: relative;
   display: flex;
+  height: 43px;
+  width: 100%;
   align-items: center;
+  position: relative;
 }
 
 .fb-search-icon {
@@ -567,9 +571,10 @@
 .fb-search-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
-  padding: 0.6rem 1.2rem;
-  background: linear-gradient(135deg,#1a6b3a,#2ecc71);
+  padding: 0 1rem;
+  background: linear-gradient(135deg, #1a6b3a, #2ecc71);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -578,7 +583,6 @@
   cursor: pointer;
   white-space: nowrap;
 }
-
 .fb-results-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -867,7 +871,7 @@
     gap: 1rem !important;
   }
 
-  /* 🔥 LOGO ENGRANDESIDO CON SUFICIENTE ESPACIO */
+
   .fb-photo-section {
     display: flex !important;
     justify-content: center !important;
@@ -890,10 +894,10 @@
     display: none !important;
   }
 
-  /* 🔥 BOTONES OPTIMIZADOS EN DOS COLUMNAS SIMÉTRICAS */
+
   .fb-nav {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* Fuerza el formato de 2 columnas en ambas vistas */
+    grid-template-columns: 1fr 1fr !important;
     gap: 0.6rem !important;
     padding: 0.2rem 0 !important;
     overflow-x: visible !important;
@@ -905,29 +909,12 @@
     justify-content: center !important;
     align-items: center !important;
     text-align: center !important;
-    padding: 0.7rem 0.5rem !important; /* Más cómodo para pulsar con el dedo */
+    padding: 0.7rem 0.5rem !important;
     font-size: 0.85rem !important;
-    white-space: normal !important;   /* Permite que el texto largo salte de línea si es necesario */
+    white-space: normal !important;
   }
 
   /* El contenedor del botón azul ocupa todo el ancho abajo */
-  .fb-sidebar-footer {
-    display: flex !important;
-    width: 100% !important;
-    margin-top: 1rem !important;
-    padding: 0.8rem 0 0 !important;
-    border-top: 1px solid rgba(255,255,255,0.15) !important;
-  }
-
-  .fb-logout-btn {
-    display: flex !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 0.8rem !important;
-    font-size: 0.95rem !important;
-  }
 
   /* Diseño del contenido inferior */
   .fb-main {

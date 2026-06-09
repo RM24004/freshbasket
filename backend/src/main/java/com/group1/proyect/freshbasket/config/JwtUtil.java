@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 @Component
@@ -23,7 +24,7 @@ public class JwtUtil {
                 .claim("userId", userId)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hora
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(3))) // 3 horas
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

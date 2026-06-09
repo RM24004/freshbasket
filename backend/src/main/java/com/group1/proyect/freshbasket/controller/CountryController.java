@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/countries")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Countries", description = "API para la gestión de Países de FreshBasket")
 public class CountryController {
 

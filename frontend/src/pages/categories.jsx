@@ -217,92 +217,93 @@ function Categories() {
     return (
         <div className="fb-form-container">
             {activeTab === "home" && showWelcome && (
-                <div className="fb-photo-section">
-                    <img
-                        src="/logo1.png"
-                        alt="Foto principal FreshBasket"
-                        className="fb-photo"
-                    />
-                </div>
+             <div className="fb-photo-section">
+                <img
+                src="/logo1.png"
+                alt="Foto principal FreshBasket"
+                className="fb-photo"
+                />
+            </div>
             )}
 
             {/* ALL CATEGORIES */}
             {activeTab === "all" && !showWelcome && (
-              <div className="fb-form-section">
-                <div className="fb-section-header">
-                 <h3 className="fb-table-title">
-                  <i className="bi bi-tags" /> Mostrando todos los registros
+                <div className="fb-form-section">
+                  <div className="fb-section-header">
+                    <h3 className="fb-table-title">
+                     <i className="bi bi-tags" /> Mostrando todos los registros
                     </h3>
                     <span className="fb-badge">{allCategories.length} registros</span>
-                   </div>
-                   <div className="fb-results-grid fb-users-cards-margin">
-                  {Array.isArray(allCategories) && allCategories.length > 0 ? (
-                  allCategories.map((cat) => {
-                 return (
-                  <div key={cat.id || cat.category_id} className="fb-user-display-card">
-                   <div className="fb-card-user-info">
-                     <h4 className="fb-card-user-title">
-                       {cat.name}
-                        </h4>
-                         <span className="fb-card-user-id">ID: {cat.id || cat.category_id}</span>
-                           </div>
-                          <div className="fb-card-user-body">
-                         <p className="fb-card-user-detail">
-                        <i className="bi bi-justify-left" /> {cat.description || "Sin descripción"}
-                      </p>
-                     </div>
                     </div>
-                  );
-                 })
-               ) : (
-                <div className="fb-empty fb-grid-full-width">
-                <i className="bi bi-inbox" />
-                 <p>No hay categorías registradas</p>
+                    <div className="fb-results-grid fb-users-cards-margin">
+                       {Array.isArray(allCategories) && allCategories.length > 0 ? (
+                          allCategories.map((cat) => (
+                           <div className="fb-user-display-card" key={cat.id || cat.category_id}>
+                            <div className="fb-card-user-info">
+                             <h4 className="fb-card-user-title">{cat.name}</h4>
+                             <span className="fb-card-user-id">ID: {cat.id || cat.category_id}</span>
+                             </div>
+                             <div className="fb-card-user-body">
+                             <p className="fb-card-user-detail">
+                            <i className="bi bi-justify-left" /> {cat.description || "Sin descripción"}
+                            </p>
+                          </div>
+                         </div>
+                         ))
+                        ) : (
+                      <div className="fb-empty fb-grid-full-width">
+                     <i className="bi bi-inbox" />
+                    <p>No hay categorías registradas</p>
                  </div>
                  )}
-               </div>
+              </div>
              </div>
             )}
 
             {/* SEARCH BY NAME */}
             {activeTab === "name" && !showWelcome && (
-             <div className="fb-form-section">
-               <div className="fb-form-card">
-                 <h3 className="fb-form-title"><i className="bi bi-search" /> Escriba un nombre de la categoría</h3>
-                  <form onSubmit={handleSearch} className="fb-search-form">
-                   <div className="fb-search-input-wrap">
-                    <i className="bi bi-tag fb-search-icon" />
-                     <input type="text" className="fb-search-input" placeholder="Ej: Frutas "
-                      value={search} onChange={e => setSearch(e.target.value)} />
+              <div className="fb-form-section">
+                <div className="fb-form-card">
+                  <h3 className="fb-form-title">
+                    <i className="bi bi-search" /> Escriba un nombre de la categoría
+                    </h3>
+                     <form onSubmit={handleSearch} className="fb-search-form">
+                      <div className="fb-search-input-wrap">
+                      <i className="bi bi-tag fb-search-icon" />
+                      <input
+                       type="text"
+                       className="fb-search-input"
+                        placeholder="Ej: Frutas"
+                         value={search}
+                         onChange={(e) => setSearch(e.target.value)}
+                         />
                        </div>
-                        <button type="submit" className="fb-search-btn">
-                          <i className="bi bi-search" /> Buscar categoría
-                          </button>
-                        </form>
-                    </div>
-                    {categoriesByName.length > 0 && (
-                      <div className="fb-results-grid">
-                       {categoriesByName.map(cat => {
-                        return (
-                         <div key={cat.id || cat.category_id} className="fb-user-display-card">
-                          <div className="fb-card-user-info">
-                           <h4 className="fb-card-user-title">
-                           {cat.name}
-                           </h4>
-                           <span className="fb-card-user-id">ID: {cat.id || cat.category_id}</span>
-                           </div>
+                       <button type="submit" className="fb-search-btn">
+                      <i className="bi bi-search" /> Buscar categoría
+                      </button>
+                      </form>
+                       </div>
+                         {categoriesByName.length > 0 && (
+                           <div className="fb-form-section">
+                               <div className="fb-results-grid fb-users-cards-margin">
+                               {categoriesByName.map((cat) => (
+                               <div className="fb-user-display-card" key={cat.id || cat.category_id}>
+                               <div className="fb-card-user-info">
+                              <h4 className="fb-card-user-title">{cat.name}</h4>
+                             <span className="fb-card-user-id">ID: {cat.id || cat.category_id}</span>
+                            </div>
                           <div className="fb-card-user-body">
-                        <p className="fb-card-user-detail">
-                      <i className="bi bi-justify-left" /> {cat.description || "Sin descripción"}
-                   </p>
-                  </div>
+                         <p className="fb-card-user-detail">
+                       <i className="bi bi-justify-left" /> {cat.description || "Sin descripción"}
+                     </p>
+                   </div>
                  </div>
-                 );
-                 })}
-              </div>
-               )}
+                ))}
+             </div>
             </div>
-           )}
+          )}
+         </div>
+        )}
 
         {/* SEARCH BY ID */}
          {activeTab === "id" && !showWelcome && (
@@ -365,7 +366,7 @@ function Categories() {
                        ))}
                      </div>
                    <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)" }}>
-                  <i className="bi bi-check-circle-fill" /> Crear categoría
+                  <i className="bi bi-check-circle-fill" /> Registrar categoría
                  </button>
                 </form>
                </div>
@@ -397,7 +398,8 @@ function Categories() {
                            <button
                            type="button"
                           className="fb-search-btn"
-                          style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
+                           style={{ padding: "0 1rem", height: "42px", marginTop: "0", display: "flex",
+                               alignItems: "center", gap: "0.25rem", cursor: "pointer" }}
                           onClick={() => handleBlurId(formData.id)}
                            >
                          Cargar
@@ -419,7 +421,7 @@ function Categories() {
                    </div>
                   ))}
                   </div>
-                 <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#b45309,#fd7e14)", marginTop: "1.5rem" }}>
+                 <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
                  <i className="bi bi-check-circle-fill" /> Actualizar categoría
                  </button>
                 </form>

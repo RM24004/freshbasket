@@ -324,7 +324,7 @@ return (
                        <i className="bi bi-calendar-event" /> fecha registrada: {entry.entryDate}
                      </p>
                      <p className="fb-card-user-detail">
-                       <i className="bi bi-currency-dollar" /> Costo Unitario: $ {entry.unitCost}
+                       <i className="bi bi-currency-dollar" /> Costo unitario: $ {Number(entry.unitCost).toFixed(2)}
                      </p>
                      <p className="fb-card-user-detail">
                        <i className="bi bi-layers" /> Cantidad: {entry.quantity}
@@ -348,38 +348,57 @@ return (
          </div>
        )}
 
-       {/* SEARCH BY ID */}
-       {activeTab === "id" && (
-         <div className="fb-form-section">
-           <div className="fb-form-card">
-             <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID de la entrada</h3>
-             <form onSubmit={handleSearchById} className="fb-search-form">
-               <div className="fb-search-input-wrap">
-                 <i className="bi bi-hash fb-search-icon" />
-                 <input type="number" className="fb-search-input" placeholder="Ingrese ID de entrada"
-                   value={searchId} onChange={e => setSearchId(e.target.value)} />
-               </div>
-               <button type="submit" className="fb-search-btn">
-                 <i className="bi bi-search" /> Buscar entrada
-               </button>
-             </form>
-           </div>
-           {entryById && (
-                 <div className="fb-results-grid">
-                   <div className="fb-user-card">
-                     <div>
-                       <p className="fb-user-card-name">{entryById.productName}</p>
-                       <p className="fb-user-card-detail"><i className="bi bi-calendar-event" /> Fecha registrada: {entryById.entryDate}</p>
-                       <p className="fb-user-card-detail"><i className="bi bi-currency-dollar" /> Costo Unitario: ${entryById.unitCost}</p>
-                       <p className="fb-user-card-detail"><i className="bi bi-layers" /> Cantidad: {entryById.quantity}</p>
-                       <p className="fb-user-card-detail"><i className="bi bi-building" /> Proveedor: {entryById.supplierName || "Sin proveedor"}</p>
-                       <p className="fb-user-card-detail"><i className="bi bi-person" /> Usuario: {entryById.userName || "Sin usuario"}</p>
-                     </div>
-                   </div>
-                 </div>
-               )}
-             </div>
-           )}
+        {/* SEARCH BY ID */}
+        {activeTab === "id" && (
+            <div className="fb-form-section">
+              <div className="fb-form-card">
+                <h3 className="fb-form-title"><i className="bi bi-search" /> Introduzca el ID de la entrada</h3>
+                <form onSubmit={handleSearchById} className="fb-search-form">
+                  <div className="fb-search-input-wrap">
+                    <i className="bi bi-hash fb-search-icon" />
+                    <input
+                        type="number"
+                        className="fb-search-input"
+                        placeholder="Ingrese ID de entrada"
+                        value={searchId}
+                        onChange={e => setSearchId(e.target.value)}
+                    />
+                  </div>
+                  <button type="submit" className="fb-search-btn">
+                    <i className="bi bi-search" /> Buscar entrada
+                  </button>
+                </form>
+              </div>
+              {entryById && (
+                  <div className="fb-results-grid fb-users-cards-margin" style={{ marginTop: '20px' }}>
+                    <div className="fb-user-display-card">
+                      <div className="fb-card-user-info">
+                        <h4 className="fb-card-user-title">
+                          {entryById.productName}
+                        </h4>
+                      </div>
+                      <div className="fb-card-user-body">
+                        <p className="fb-card-user-detail">
+                          <i className="bi bi-calendar-event" /> Fecha registro: {entryById.entryDate}
+                        </p>
+                        <p className="fb-card-user-detail">
+                          <i className="bi bi-currency-dollar" /> Costo unitario: ${Number(entryById.unitCost).toFixed(2)}
+                        </p>
+                        <p className="fb-card-user-detail">
+                          <i className="bi bi-layers" /> Cantidad: {entryById.quantity}
+                        </p>
+                        <p className="fb-card-user-detail">
+                          <i className="bi bi-building" /> Proveedor: {entryById.supplierName || "Sin proveedor"}
+                        </p>
+                        <p className="fb-card-user-detail">
+                          <i className="bi bi-person" /> Usuario: {entryById.userName || "Sin usuario"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+              )}
+            </div>
+        )}
 
        {/* CREATE ENTRY */}
         {activeTab === "create" && (
@@ -507,9 +526,10 @@ return (
                        />
                      </div>
                      <button
-                       type="button"
-                       className="fb-search-btn"
-                       style={{ padding: "0 15px", whiteSpace: "nowrap", borderRadius: "8px" }}
+                         type="button"
+                         className="fb-search-btn"
+                         style={{ padding: "0 1rem", height: "42px", marginTop: "0", display: "flex",
+                           alignItems: "center", gap: "0.25rem", cursor: "pointer" }}
                        onClick={() => handleBlurId(formData.entryId)}
                      >
                        Cargar
@@ -612,7 +632,7 @@ return (
                  </div>
                </div>
 
-               <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#b45309,#fd7e14)", marginTop: "1.5rem" }}>
+               <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
                  <i className="bi bi-check-circle-fill" /> Actualizar entrada
                </button>
              </form>
