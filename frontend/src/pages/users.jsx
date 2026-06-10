@@ -11,7 +11,7 @@ import {
 
 function Users() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole") || "CLIENTE";
+  const userRole = localStorage.getItem("userRole") || "USUARIO";
 
   // Lee la opción elegida desde el menú desplegable de usuarios
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem("activeUserTab") || "home");

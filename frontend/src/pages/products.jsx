@@ -11,7 +11,7 @@ import {
 
 function Products() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole") || "CLIENTE";
+  const userRole = localStorage.getItem("userRole") || "USUARIO";
 
   const userLogin = localStorage.getItem("userName") || localStorage.getItem("userEmail") || "";
 

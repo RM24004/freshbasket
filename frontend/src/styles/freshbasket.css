@@ -482,28 +482,33 @@ body {
   margin-bottom: 0.8rem;
 }
 
-/* Insignia / Badge de Roles */
 .fb-role-badge {
+  padding: 3px 10px;
+  border-radius: 5px;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 6px;
-  display: inline-block;
 }
 
-/* Colores para Administrador */
-.fb-role-badge.admin {
-  background-color: #fee2e2;
-  color: #991b1b;
+.fb-role-badge.ADMINISTRADOR {
+  background-color: #fef3c7;
+  color: #92400e;
 }
 
-/* Colores para Usuario */
-.fb-role-badge.usuario {
+.fb-role-badge.CLIENTE {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.fb-role-badge.SOPORTE {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.fb-role-badge.EMPLEADO {
   background-color: #dcfce7;
   color: #166534;
 }
-
 /* Texto de Correo Electrónico */
 .fb-profile-email {
   margin: 0.6rem 0 0 0;
@@ -520,23 +525,23 @@ body {
   padding: 6px 12px;
   font-size: 0.95rem;
   font-weight: 500;
-  background: #198754 !important;
-  background-color: #198754 !important;
-  color: #ffffff !important;
-  border: 1px solid #ccccff;
+  background: #ffffff;
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cccccc;
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-
-.fb-profile-edit-action-btn:hover {
-  background-color: #f3f4f6;
-  border-color: #999999;
+.fb-profile-edit-btn:hover {
+  background-color: #198754;
+  border-color: #198754;
+  color: #ffffff;
 }
 
 button.fb-logout-btn.fb-profile-logout-action-btn,
@@ -548,11 +553,20 @@ button.fb-logout-btn.fb-profile-logout-action-btn,
   align-items: center !important;
   padding: 0.3rem !important;
   font-size: 0.95rem !important;
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  border-color: #1e293b !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, background-color 0.3s ease, border-color 0.3s ease !important;
+}
+
+button.fb-logout-btn.fb-profile-logout-action-btn:hover,
+.fb-logout-btn.fb-profile-logout-action-btn:hover {
   background: #dc3545 !important;
   background-color: #dc3545 !important;
   border-color: #dc3545 !important;
-  color: #ffffff !important;
 }
+
 /* Animación de entrada para el menú */
 @keyframes fbFadeInDropdown {
   from {

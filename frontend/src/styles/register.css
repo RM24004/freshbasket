@@ -1,46 +1,55 @@
 .login-screen-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-family: 'Segoe UI', Roboto, sans-serif;
-  padding: 1.25rem !important;
+  padding: 1rem;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
+
 
 .register-card {
-  width: 100% !important;
-  margin: 0 auto !important;
-  border-radius: 20px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+  width: 100%;
+  max-width: 95%;
+  margin: 0 auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.register-side {
-  padding: 2rem 1.5rem !important;
-  border-radius: 20px 20px 0 0 !important;
-}
 
-.register-form {
-  padding: 0 !important;
-}
-
-/* ==========================================================================
-   MEDIA QUERIES: RESPONSIVE PARA EL REGISTRO
-   ========================================================================== */
-
-@media (min-width: 768px) {
+@media (min-width: 768px) and (max-width: 1366px) {
   .login-screen-container {
-    padding: 2rem !important;
+    padding: 2rem 1rem;
   }
 
   .register-card {
-    border-radius: 25px !important;
+    max-width: 780px;
+    width: 90%;
+    margin: auto;
+
+    .register-form {
+      overflow-y: auto;
+    }
   }
 
-  .register-side {
-    padding: 2.5rem !important;
-    border-radius: 25px 0 0 25px !important;
+  @media (min-width: 1920px) {
+    .login-screen-container {
+      padding: 3rem 1rem;
+    }
+
+    .register-card {
+      max-width: 960px;
+      width: 60%;
+      margin: auto;
+    }
+
+    .register-form,
+    .register-side {
+      padding: 2.5rem;
+    }
   }
 }

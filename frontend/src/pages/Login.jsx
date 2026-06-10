@@ -22,7 +22,7 @@ function Login() {
 
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("userEmail", data.email || email);
-                localStorage.setItem("userRole", data.role ? data.role.toUpperCase() : "CLIENTE");
+                localStorage.setItem("userRole", data.role ? data.role.toUpperCase() : "USUARIO");
 
                 const nombreCompleto = data.name
                     ? `${data.name} ${data.lastName || ""}`.trim()

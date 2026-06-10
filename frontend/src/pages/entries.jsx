@@ -69,12 +69,12 @@ function Entries () {
     try {
 
       const promesas = [
-        axios.get("http://192.168.1.60:8080/api/products"),
-        axios.get("http://192.168.1.60:8080/api/suppliers")
+        axios.get("http://localhost:8080/api/products"),
+        axios.get("http://localhost:8080/api/suppliers")
       ];
 
       if (isAdminOrSupport) {
-        promesas.push(axios.get("http://192.168.1.60:8080/api/users"));
+        promesas.push(axios.get("http://localhost:8080/api/users"));
       }
 
       const resultados = await Promise.all(promesas);
@@ -674,7 +674,8 @@ return (
                       toast((t) => (
                        <div className="d-flex flex-column gap-2 text-center" style={{ minWidth: "250px" }}>
                         <span className="fw-semibold text-dark" style={{ fontSize: "0.95rem" }}>
-                         ¿Está seguro de que desea eliminar la entrada con el ID <strong>{idValue}</strong>?
+                         ¿Está seguro de que desea eliminar la entrada del producto
+                             <strong> {nombreProducto}</strong> con el ID <strong>{idValue}</strong>?
                           </span>
                             <div className="d-flex justify-content-center gap-2 mt-1">
                               <button

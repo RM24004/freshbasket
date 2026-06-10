@@ -379,7 +379,7 @@ function Freshbasket({ onLogout }) {
               {showProfileMenu && (
                   <div className="fb-profile-dropdown">
                     <div className="fb-profile-header">
-                     <span className={`fb-role-badge ${userRole.toUpperCase() === "ADMINISTRADOR" ? "admin" : "CLIENTE"}`}>
+                     <span className={`fb-role-badge ${userRole.toUpperCase()}`}>
                      {userRole}
                      </span>
                       <h6 className="fb-profile-name fw-bold text-dark mt-2 mb-1" style={{ fontSize: "0.95rem" }}>

@@ -65,7 +65,7 @@ function Register() {
   };
 
   return (
-      <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-light position-relative login-screen-container py-4">
+      <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-light position-relative login-screen-container py-3">
 
         {/* Botón Inicio fijo en desktop */}
         <div className="position-absolute top-0 start-0 p-3 d-none d-md-block">
@@ -79,7 +79,7 @@ function Register() {
         </div>
 
         {/* Botón Inicio integrado en mobile */}
-        <div className="w-100 p-3 d-block d-md-none">
+        <div className="w-100 px-3 pb-2 d-block d-md-none">
           <button
               onClick={() => navigate("/")}
               className="btn btn-outline-success w-100"
@@ -101,40 +101,40 @@ function Register() {
           <div className="row g-0">
 
             {/* Panel lateral verde */}
-            <div className="col-md-3 bg-success d-flex align-items-center justify-content-center p-4 text-white text-center register-side">
-              <div className="py-3">
-                <i className="bi bi-person-plus display-3 mb-3 d-none d-md-block opacity-90"></i>
-                <h3 className="fw-bold mb-2">UNIRSE</h3>
+            <div className="col-md-4 bg-success d-flex align-items-center justify-content-center p-3 text-white text-center register-side">
+              <div>
+                <i className="bi bi-person-plus display-4 mb-2 d-none d-md-block opacity-90"></i>
+                <h3 className="fw-bold mb-1">UNIRSE</h3>
                 <p className="small opacity-75 mb-0">Crea tu cuenta en FreshBasket y gestiona tu stock.</p>
               </div>
             </div>
 
             {/* Panel formulario */}
-            <div className="col-md-9 bg-white register-form">
-              <div className="card-body p-4 p-md-5">
-                <h2 className="text-center mb-4 text-success fw-bold">Crear Cuenta</h2>
+            <div className="col-md-8 bg-white register-form">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="text-center mb-3 text-success fw-bold">Crear Cuenta</h2>
 
                 <form onSubmit={handleSubmit}>
                   {/* Fila: Nombre y Apellido */}
                   <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label fw-semibold small text-secondary">Nombre</label>
+                    <div className="col-md-6 mb-2">
+                      <label className="form-label fw-semibold small text-secondary mb-1">Nombre</label>
                       <input type="text" name="name" className="form-control bg-light py-2 rounded-3" placeholder="Ej: Juan" required />
                     </div>
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label fw-semibold small text-secondary">Apellido</label>
+                    <div className="col-md-6 mb-2">
+                      <label className="form-label fw-semibold small text-secondary mb-1">Apellido</label>
                       <input type="text" name="lastName" className="form-control bg-light py-2 rounded-3" placeholder="Ej: Pérez" required />
                     </div>
                   </div>
 
                   {/* Fila: Teléfono y País */}
                   <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label fw-semibold small text-secondary">Teléfono</label>
+                    <div className="col-md-6 mb-2">
+                      <label className="form-label fw-semibold small text-secondary mb-1">Teléfono</label>
                       <input type="text" name="phone" className="form-control bg-light py-2 rounded-3" placeholder="7777-7777" required />
                     </div>
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label fw-semibold small text-secondary">País</label>
+                    <div className="col-md-6 mb-2">
+                      <label className="form-label fw-semibold small text-secondary mb-1">País</label>
                       <div>
                         <input
                             type="text"
@@ -155,14 +155,14 @@ function Register() {
                   </div>
 
                   {/* Correo */}
-                  <div className="mb-3">
-                    <label className="form-label fw-semibold small text-secondary">Correo Electrónico</label>
+                  <div className="mb-2">
+                    <label className="form-label fw-semibold small text-secondary mb-1">Correo Electrónico</label>
                     <input type="email" name="email" className="form-control bg-light py-2 rounded-3" placeholder="correo@ejemplo.com" required />
                   </div>
 
                   {/* Contraseña */}
-                  <div className="mb-4">
-                    <label className="form-label fw-semibold small text-secondary">Contraseña</label>
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold small text-secondary mb-1">Contraseña</label>
                     <input type="password" name="password" className="form-control bg-light py-2 rounded-3" placeholder="••••••••" required />
                   </div>
 
@@ -182,13 +182,13 @@ function Register() {
                 </form>
 
                 {/* Enunciado de login */}
-                <div className="text-center mt-4">
+                <div className="text-center mt-3">
                   <p className="text-muted small mb-0">
                     ¿Ya tienes cuenta?{" "}
                     <button
                         type="button"
                         onClick={() => navigate("/login")}
-                        className="btn btn-link text-success fw-bold text-decoration-none p-0 basic-align-baseline"
+                        className="btn btn-link text-success fw-bold text-decoration-none p-0"
                     >
                       Inicia sesión aquí
                     </button>

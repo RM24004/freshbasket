@@ -12,7 +12,7 @@ import { createCountry } from "../services/countryService.js";
 
 function Suppliers() {
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("userRole") || "CLIENTE";
+  const userRole = localStorage.getItem("userRole") || "USUARIO";
 
   const [activeTab, setActiveTab] = useState(localStorage.getItem("activeSupplierTab") || "all");
   const [showWelcome, setShowWelcome] = useState(true);

@@ -11,7 +11,7 @@ import {
 
 function Exits () {
     const navigate = useNavigate();
-    const userRole = localStorage.getItem("userRole") || "CLIENTE";
+    const userRole = localStorage.getItem("userRole") || "USUARIO";
 
     const userLogin = localStorage.getItem("userName") || localStorage.getItem("userEmail") || "";
     const isAdminOrSupport = ["ADMINISTRADOR", "ADMIN", "SOPORTE"].includes(userRole.toUpperCase());
