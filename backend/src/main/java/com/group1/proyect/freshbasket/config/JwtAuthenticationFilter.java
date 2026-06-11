@@ -12,6 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+import java.util.Map;
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -46,11 +48,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(token)) {
                 String email = jwtUtil.extractEmail(token);
                 String role = jwtUtil.extractRole(token);
+                Long userId = jwtUtil.extractUserId(token);
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
+
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
+                    
+                    authToken.setDetails(Map.of("userId", userId));
+
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } else {
@@ -62,7 +69,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String jsonResponse = "{\"message\": \"Sesión expirada o no válida. Por favor, inicia sesión de nuevo.\"}";
                 response.getWriter().write(jsonResponse);
-
                 return;
             }
         }

@@ -11,6 +11,8 @@ import com.group1.proyect.freshbasket.repository.CountryRepository;
 import com.group1.proyect.freshbasket.service.AuthService;
 import com.group1.proyect.freshbasket.config.JwtUtil;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,9 @@ public class AuthServiceImpl implements AuthService {
     private final CountryRepository countryRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public AuthServiceImpl(
             UserRepository userRepository,
@@ -76,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
 
                     Country newCountry = new Country();
                     newCountry.setName(countryNameClean);
-                    newCountry.setDescription("País registrado automáticamente: " + countryNameClean);
+                    newCountry.setDescription("País registrado automáticamente desde la pagina de registro publico.");
 
                     return countryRepository.save(newCountry);
                 });

@@ -138,6 +138,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponseDTO createProduct(ProductRequestDTO requestDTO) {
 
         Product product = convertToEntity(requestDTO);
@@ -168,6 +169,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO requestDTO) {
         return productRepository.findById(id)
                 .map(existingProduct -> {
@@ -201,6 +203,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ese ID: " + id));
