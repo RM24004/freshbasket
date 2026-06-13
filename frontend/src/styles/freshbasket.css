@@ -372,7 +372,7 @@ body {
   font-weight: 600;
 }
 
-/* Grillas de usuarios por defecto (1 sola columna en móvil) */
+/* Grillas de usuarios por defecto*/
 .fb-results-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -442,7 +442,6 @@ body {
   position: relative;
 }
 
-/* Botón disparador */
 .fb-profile-trigger-btn {
   display: flex;
   align-items: center;
@@ -596,22 +595,20 @@ button.fb-logout-btn.fb-profile-logout-action-btn:hover,
     top: 0;
   }
 
-  /* NUEVO: Compactamos el contenedor del logo reduciendo su padding vertical */
+
   .fb-sidebar-brand {
     padding: 0.6rem 1rem;
   }
 
-  /* NUEVO: Reducimos el espacio superior de la palabra "MÓDULOS" */
   .fb-sidebar-section {
     display: block;
     padding: 0.75rem 1rem 0.25rem 1rem;
   }
 
-  /* CORREGIDO Y REDUCIDO: Se arregló el espacio 'padding 1 rem' que tenía un error de sintaxis */
   .fb-nav {
     flex-direction: column;
     overflow-x: visible;
-    padding: 0.25rem 1rem 1rem 1rem; /* El 0.25rem de arriba pega los botones a "MÓDULOS" */
+    padding: 0.25rem 1rem 1rem 1rem;
   }
 
   .fb-nav-item {
@@ -620,7 +617,6 @@ button.fb-logout-btn.fb-profile-logout-action-btn:hover,
     padding: 0.75rem 1rem;
   }
 
-  /* ... El resto de tus estilos dentro de la media query se mantienen exactamente igual ... */
   .fb-topbar {
     flex-direction: row;
     padding: 1.25rem 2rem;

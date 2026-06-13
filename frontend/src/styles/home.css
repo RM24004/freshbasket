@@ -39,7 +39,7 @@
 .btn-home {
   display: inline-block;
   text-decoration: none;
-  border-radius: 40px;
+  border-radius: 10px;
   background: linear-gradient(135deg, #116237 0%, #2ecc71 100%);
   border: none;
   color: #fff;

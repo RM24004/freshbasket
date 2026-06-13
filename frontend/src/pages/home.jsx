@@ -11,7 +11,6 @@ function Home() {
                 draggable="false"
                 loading="eager"
             />
-
             {/* Contenedor overlay para las acciones */}
             <div className="overlay-content">
                 <Link to="/login" className="btn-home">

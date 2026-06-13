@@ -1,11 +1,9 @@
-// Página de registro, en el caso de que un usuario no tenga cuenta.
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../services/axiosConfig.js";
 import toast from "react-hot-toast";
 import "../styles/register.css";
-import { registerUserPublic } from "../services/userService.js";
 
 function Register() {
   const navigate = useNavigate();
@@ -16,7 +14,7 @@ function Register() {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/countries");
+        const response = await axios.get("/api/countries");
         setCountriesList(response.data || []);
       } catch (error) {
         console.error("No se pudo cargar la lista de países dinámicamente:", error);
@@ -49,7 +47,7 @@ function Register() {
     };
 
     try {
-      await axios.post("http://localhost:8080/api/auth/register", newUser);
+      await axios.post("/api/auth/register", newUser);
 
       toast.success("¡Cuenta creada correctamente! Redirigiendo...");
 
@@ -113,7 +111,6 @@ function Register() {
             <div className="col-md-8 bg-white register-form">
               <div className="card-body p-3 p-md-4">
                 <h2 className="text-center mb-3 text-success fw-bold">Crear Cuenta</h2>
-
                 <form onSubmit={handleSubmit}>
                   {/* Fila: Nombre y Apellido */}
                   <div className="row">
@@ -147,7 +144,7 @@ function Register() {
                         />
                         <datalist id={`countries-options-${countriesList.length}`}>
                           {Array.isArray(countriesList) && countriesList.map((c, idx) => (
-                              <option key={c.id || c.country_id || idx} value={c.name} />
+                              <option key={c.id || c.countryId || c.country_id || idx} value={c.name || c.countryName} />
                           ))}
                         </datalist>
                       </div>
@@ -157,13 +154,13 @@ function Register() {
                   {/* Correo */}
                   <div className="mb-2">
                     <label className="form-label fw-semibold small text-secondary mb-1">Correo Electrónico</label>
-                    <input type="email" name="email" className="form-control bg-light py-2 rounded-3" placeholder="correo@ejemplo.com" required />
+                    <input type="email" name="email" autocomplete="username" className="form-control bg-light py-2 rounded-3" placeholder="correo@ejemplo.com" required />
                   </div>
 
                   {/* Contraseña */}
                   <div className="mb-3">
                     <label className="form-label fw-semibold small text-secondary mb-1">Contraseña</label>
-                    <input type="password" name="password" className="form-control bg-light py-2 rounded-3" placeholder="••••••••" required />
+                    <input type="password" name="password" autocomplete="new-password" className="form-control bg-light py-2 rounded-3" placeholder="••••••••" required />
                   </div>
 
                   {/* Botón de Enviar */}
@@ -196,7 +193,6 @@ function Register() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

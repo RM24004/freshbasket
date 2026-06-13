@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getMyProfileData, updateMyProfileData } from "../services/profileService.js";
+import { profileService } from "../services/apiService.js";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -20,8 +20,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await getMyProfileData();
-
+                const response = await profileService.getMyProfile();
 
                 setProfileData({
                     id: response.id || "",
@@ -32,6 +31,7 @@ const Profile = () => {
                     role: response.role || "",
                     countryName: response.countryName || (response.country ? response.country.name : ""),
                     password: ""
+
                 });
             } catch (error) {
                 console.error("Error al cargar los datos del perfil:", error);
@@ -61,6 +61,7 @@ const Profile = () => {
             return;
         }
 
+        // Envía la misma contraseña si el usuario decide no cambiarla en la actualización desde el perfil
         const finalPassword = (password && password.trim() !== "")
             ? password.trim()
             : "DUMMY_PASSWORD_NOT_CHANGED";
@@ -76,7 +77,8 @@ const Profile = () => {
         };
 
         try {
-            await updateMyProfileData(payload);
+            // Ejecuta la mutación usando el método del apiService
+            await profileService.updateMyProfile(payload);
             toast.success("Tu perfil ha sido actualizado con éxito");
             navigate("/freshbasket");
         } catch (error) {
@@ -91,10 +93,8 @@ const Profile = () => {
                 <h3 className="fb-form-title">
                     <i className="bi bi-person-bounding-box" /> Actualizar perfil
                 </h3>
-
                 <form onSubmit={handleSelfUpdateSubmit} className="fb-crud-form">
                     <div className="fb-crud-grid">
-
                         <div className="fb-crud-field">
                             <label className="fb-crud-label">Nombre</label>
                             <div className="fb-crud-input-wrap">
@@ -102,7 +102,6 @@ const Profile = () => {
                                 <input type="text" name="name" className="fb-crud-input" value={profileData.name} onChange={handleProfileChange} required />
                             </div>
                         </div>
-
                         <div className="fb-crud-field">
                             <label className="fb-crud-label">Apellido</label>
                             <div className="fb-crud-input-wrap">
@@ -110,7 +109,6 @@ const Profile = () => {
                                 <input type="text" name="lastName" className="fb-crud-input" value={profileData.lastName} onChange={handleProfileChange} required />
                             </div>
                         </div>
-
                         <div className="fb-crud-field">
                             <label className="fb-crud-label">Teléfono</label>
                             <div className="fb-crud-input-wrap">
@@ -118,15 +116,13 @@ const Profile = () => {
                                 <input type="text" name="phone" className="fb-crud-input" value={profileData.phone} onChange={handleProfileChange} required />
                             </div>
                         </div>
-
                         <div className="fb-crud-field">
                             <label className="fb-crud-label">Email</label>
                             <div className="fb-crud-input-wrap">
                                 <i className="bi bi-envelope fb-crud-input-icon" />
-                                <input type="email" name="email" className="fb-crud-input field-disabled" value={profileData.email} disabled />
+                                <input type="email" name="email" autocomplete="username" className="fb-crud-input field-disabled" value={profileData.email} disabled />
                             </div>
                         </div>
-
                         <div className="fb-crud-field">
                             <label className="fb-crud-label">¿Quieres actualizar tu contraseña?</label>
                             <div className="fb-crud-input-wrap">
@@ -134,6 +130,7 @@ const Profile = () => {
                                 <input
                                     type="password"
                                     name="password"
+                                    autocomplete="new-password"
                                     className="fb-crud-input"
                                     placeholder="Sino dejar en blanco para mantener la actual"
                                     value={profileData.password}
@@ -141,7 +138,6 @@ const Profile = () => {
                                 />
                             </div>
                         </div>
-
                         <div className="fb-crud-field">
                             <label className="fb-crud-label">Rol / Credenciales</label>
                             <div className="fb-crud-input-wrap">
@@ -149,7 +145,6 @@ const Profile = () => {
                                 <input type="text" name="role" className="fb-crud-input field-disabled" value={profileData.role} disabled />
                             </div>
                         </div>
-
                         <div className="fb-crud-field">
                             <label className="fb-crud-label">País</label>
                             <div className="fb-crud-input-wrap">
@@ -157,9 +152,7 @@ const Profile = () => {
                                 <input type="text" name="countryName" className="fb-crud-input" value={profileData.countryName} onChange={handleProfileChange} required />
                             </div>
                         </div>
-
                     </div>
-
                     <button type="submit" className="fb-action-btn" style={{ background: "linear-gradient(135deg,#1a6b3a,#2ecc71)", marginTop: "1.5rem" }}>
                         <i className="bi bi-save-fill" /> Guardar Cambios
                     </button>

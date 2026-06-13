@@ -4,7 +4,6 @@ import com.group1.proyect.freshbasket.dto.request.SupplierRequestDTO;
 import com.group1.proyect.freshbasket.dto.response.SupplierResponseDTO;
 import com.group1.proyect.freshbasket.entity.Country;
 import com.group1.proyect.freshbasket.entity.Supplier;
-import com.group1.proyect.freshbasket.entity.User;
 import com.group1.proyect.freshbasket.repository.CountryRepository;
 import com.group1.proyect.freshbasket.repository.SupplierRepository;
 import com.group1.proyect.freshbasket.service.SupplierService;
@@ -36,13 +35,14 @@ public class SupplierServiceImpl implements SupplierService {
         supplier.setPhone(dto.getPhone());
         supplier.setAddress(dto.getAddress());
 
-        Country country = countryRepository.findById(dto.getCountryId())
-                .orElseThrow(() -> new RuntimeException("País no encontrado con ese ID: " + dto.getCountryId()));
-
-        supplier.setCountry(country);
+        String nombrePais = dto.getCountryName();
+        if (nombrePais != null && !nombrePais.trim().isEmpty()) {
+            Country country = countryRepository.findByNameIgnoreCase(nombrePais.trim())
+                    .orElseThrow(() -> new RuntimeException("El país '" + nombrePais + "' no existe en los registros del sistema."));
+            supplier.setCountry(country);
+        }
 
         return supplier;
-
     }
 
     // Entity → DTO
@@ -57,11 +57,15 @@ public class SupplierServiceImpl implements SupplierService {
         dto.setAddress(supplier.getAddress());
         dto.setCountryId(supplier.getCountry().getId());
 
+        if (supplier.getCountry() != null) {
+            dto.setCountryName(supplier.getCountry().getName());
+        }
 
         return dto;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SupplierResponseDTO> getAllSuppliers() {
         return supplierRepository.findByActiveTrue()
                 .stream()
@@ -89,15 +93,15 @@ public class SupplierServiceImpl implements SupplierService {
     public SupplierResponseDTO updateSupplier(Long id, SupplierRequestDTO requestDTO) {
         return supplierRepository.findById(id)
                 .map(existingSupplier -> {
-
                     existingSupplier.setName(requestDTO.getName());
                     existingSupplier.setLastName(requestDTO.getLastName());
                     existingSupplier.setEmail(requestDTO.getEmail());
                     existingSupplier.setPhone(requestDTO.getPhone());
                     existingSupplier.setAddress(requestDTO.getAddress());
 
-                    Country country = countryRepository.findById(requestDTO.getCountryId())
-                            .orElseThrow(() -> new RuntimeException("País no encontrado con ese ID: " + requestDTO.getCountryId()));
+                    Country country = countryRepository.findByNameIgnoreCase(requestDTO.getCountryName())
+                            .orElseThrow(() -> new RuntimeException("País no encontrado con ese Nombre: " + requestDTO.getCountryName()));
+                    existingSupplier.setCountry(country);
 
                     return supplierRepository.save(existingSupplier);
                 })
@@ -106,9 +110,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    @Transactional // Importante: org.springframework.transaction.annotation.Transactional
     public void deleteSupplier(Long id) {
-        // Buscamos el usuario primero
         Supplier supplier = supplierRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con ese ID: " + id));
 
@@ -116,6 +118,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SupplierResponseDTO> searchSuppliersByName(String name) {
         return supplierRepository.findByNameContainingIgnoreCase(name)
                 .stream()

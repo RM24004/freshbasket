@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     // JpaRepository brinda las opciones save(), findById(), findAll(), existsById(), etc.
 
-    List<Supplier> findByNameContainingIgnoreCase(String name);
+    Optional<Supplier> findByNameContainingIgnoreCase(String name);
 
     @Query("SELECT s FROM Supplier s WHERE LOWER(TRIM(CONCAT(s.name, ' ', COALESCE(s.lastName, '')))) = LOWER(TRIM(:fullName))")
     Optional<Supplier> findByFullNameIgnoreCase(@Param("fullName") String fullName);

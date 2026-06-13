@@ -96,6 +96,8 @@ public class SecurityConfig {
 
                 // Rutas para Users
                 .requestMatchers(HttpMethod.GET, "/api/users/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
+                .requestMatchers(HttpMethod.POST, "/api/users/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
                 .requestMatchers("/api/users/**").hasAuthority("ADMINISTRADOR")
 
 
@@ -120,12 +122,13 @@ public class SecurityConfig {
                 "http://localhost",
                 "http://127.0.0.1",
                 "http://192.168.1.60",
-                "http://localhost:3000"
+                "http://localhost:81"
         ));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control", "X-Requested-With", "Accept", "Origin"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control", "X-Requested-With",
+                "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         configuration.setAllowCredentials(true);
 
         org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();

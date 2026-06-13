@@ -47,8 +47,7 @@ public class SupplierRequestDTO {
     @Schema(description = "Dirección del proveedor", example = "Av. las Amapolas #102, San Salvador")
     private String address;
 
-    @NotNull(message = "El ID del pais es obligatorio")
-    @Schema(description = "ID del país", example = "1")
-    private Long countryId;
+    @Schema(description = "nombre del país", example = " El Salvador")
+    private String countryName;
 
 }

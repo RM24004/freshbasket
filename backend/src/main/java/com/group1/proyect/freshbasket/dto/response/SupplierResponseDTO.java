@@ -31,4 +31,7 @@ public class SupplierResponseDTO {
 
     @Schema(description = "ID del país", example = "1")
     private Long countryId;
+
+    @Schema(description = "El nombre del país", example = " El Salvador")
+    private String countryName;
 }

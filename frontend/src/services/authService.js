@@ -1,46 +1,68 @@
-// servicio para decodificar el token
 
-export async function login(email, password) {
-  const response = await axios.post(API_URL, { email, password });
-  const data = response.data;
+import axios from "./axiosConfig.js";
 
-  localStorage.setItem("token", data.token);
+const API_URL = "/api/auth/login";
 
-  try {
-    const decoded = jwtDecode(data.token);
+export const authService = {
+  login: async (email, password) => {
+    const response = await axios.post(API_URL, { email, password });
+    const data = response.data;
 
-    const rawRoles = decoded.roles || decoded.role || decoded.authorities || "USUARIO";
-    const userEmail = decoded.sub || decoded.email;
-    const userName = decoded.name || decoded.username || "Usuario Registrado";
+    if (!data) throw new Error("No se recibieron datos del servidor");
 
-    let finalRole = Array.isArray(rawRoles) ? rawRoles[0] : rawRoles;
+    // Guardar el token de acceso
+    localStorage.setItem("token", data.token);
 
-    if (finalRole && typeof finalRole === 'object' && finalRole.authority) {
-      finalRole = finalRole.authority;
+    // Procesa el nombre completo
+    let nombreCompleto = "";
+    if (data.name) {
+      nombreCompleto = `${data.name} ${data.lastName || ""}`.trim();
+    } else {
+      nombreCompleto = data.email || email;
+    }
+    localStorage.setItem("userName", nombreCompleto);
+    localStorage.setItem("userEmail", data.email || email);
+
+    // Procesa el rol del usuario
+    let finalRole = "CLIENTE";
+
+    if (data.role) {
+      finalRole = data.role.toUpperCase();
+    } else if (data.token) {
+      try {
+        const { jwtDecode } = await import("jwt-decode"); // Carga dinámica por seguridad
+        const decoded = jwtDecode(data.token);
+        const rawRoles = decoded.roles || decoded.role || decoded.authorities || "CLIENTE";
+
+        let extractedRole = Array.isArray(rawRoles) ? rawRoles[0] : rawRoles;
+        if (extractedRole && typeof extractedRole === 'object' && extractedRole.authority) {
+          extractedRole = extractedRole.authority;
+        }
+
+        extractedRole = String(extractedRole)
+            .replace("ROLE_", "")
+            .toUpperCase()
+            .trim();
+
+        if (extractedRole === "ADMIN") extractedRole = "ADMINISTRADOR";
+        if (extractedRole === "USER") extractedRole = "USUARIO";
+
+        finalRole = extractedRole;
+      } catch (jwtError) {
+        console.warn("No se pudo extraer el rol del JWT fallback:", jwtError.message);
+      }
     }
 
-    finalRole = String(finalRole)
-        .replace("ROLE_", "")
-        .toUpperCase()
-        .trim();
-
-    if (finalRole === "ADMIN") finalRole = "ADMINISTRADOR";
-    if (finalRole === "USER") finalRole = "USUARIO";
-
     localStorage.setItem("userRole", finalRole);
-    localStorage.setItem("userEmail", userEmail);
-    localStorage.setItem("userName", userName);
 
-    toast.success(`¡Bienvenido! Sesión iniciada como: ${userEmail}`);
-    console.log("=== LOGIN EXITOSO ===");
-    console.log("Usuario:", userEmail);
-    console.log("Rol Procesado y Guardado:", finalRole);
+    return nombreCompleto;
+  },
 
-  } catch (jwtError) {
-    localStorage.setItem("userRole", "USUARIO");
-    toast("Sesión iniciada, pero no se pudo leer el perfil del token.", { icon: "⚠️" });
-    console.warn("No se pudo decodificar el payload del token JWT:", jwtError.message);
+  // Al cerrar la sesión se limpia el cache
+  logout: (queryClient) => {
+    localStorage.clear();
+    if (queryClient) {
+      queryClient.clear();
+    }
   }
-
-  return data;
-}
+};
