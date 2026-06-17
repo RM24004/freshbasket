@@ -20,4 +20,6 @@ public interface ProductService {
     void deleteProduct(Long id);
     
     List<ProductResponseDTO> searchProductsByName(String name);
+
+    List<ProductResponseDTO> getLowStockAlerts();
 }

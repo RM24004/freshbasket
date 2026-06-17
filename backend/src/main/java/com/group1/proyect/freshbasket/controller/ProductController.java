@@ -125,4 +125,10 @@ public class ProductController {
 
         return ResponseEntity.ok(productService.searchProductsByName(name));
     }
+
+    @GetMapping("/alerts/low-stock")
+    public ResponseEntity<List<ProductResponseDTO>> getLowStockAlerts() {
+        List<ProductResponseDTO> alerts = productService.getLowStockAlerts();
+        return ResponseEntity.ok(alerts);
+    }
 }

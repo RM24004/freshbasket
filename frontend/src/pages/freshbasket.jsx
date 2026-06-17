@@ -1,6 +1,8 @@
 import "../styles/freshbasket.css";
 import { tieneAcceso } from "../Config/permissions";
+import { NotificationBell } from "../components/NotificationBell";
 import Profile from "./profile.jsx";
+import { useStockAlerts } from "../hooks/useStockAlerts";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
@@ -20,6 +22,8 @@ function Freshbasket({ onLogout }) {
   const [openMenus, setOpenMenus] = React.useState({
     [location.pathname.split("/")[2]]: true
   });
+
+  const isAdmin = userRole === "ADMINISTRADOR" || userRole === "ADMIN";
 
   // Helper para obtener la pestaña activa real del módulo actual en el localStorage
   const getActiveTabForCurrentModule = (path) => {
@@ -396,41 +400,53 @@ function Freshbasket({ onLogout }) {
               </h2>
               <p style={{ margin: 0 }} className="fb-top-sub">Bienvenido/a </p>
             </div>
-            <div className="fb-top-right fb-profile-container" ref={profileRef}>
-              <button onClick={() => setShowProfileMenu(!showProfileMenu)} className="fb-logout-btn fb-profile-trigger-btn">
-                <i className="bi bi-person-circle fb-profile-icon" />
-                <span>Perfil</span>
-                <i className={`bi ${showProfileMenu ? "bi-chevron-up" : "bi-chevron-down"} fb-profile-arrow`} />
-              </button>
-              {showProfileMenu && (
-                  <div className="fb-profile-dropdown">
-                    <div className="fb-profile-header">
-                  <span className={`fb-role-badge ${userRole.toUpperCase()}`}>
-                    {userRole}
-                  </span>
-                      <h6 className="fb-profile-name fw-bold text-dark mt-2 mb-1" style={{ fontSize: "0.95rem" }}>
-                        {localStorage.getItem("userName") || "Usuario Registrado"}
-                      </h6>
-                      <p className="fb-profile-email">
-                        <i className="bi bi-envelope-fill" /> {userEmail}
-                      </p>
-                    </div>
-                    <button
-                        onClick={() => {
-                          navigate("my-profile");
-                          setShowProfileMenu(false);
-                        }}
-                        className="fb-profile-edit-btn fb-profile-edit-action-btn mb-2"
-                        style={{ width: "100%", textAlign: "left" }}
-                    >
-                      <i className="bi bi-gear-fill" /> Actualizar datos
-                    </button>
 
-                    <button onClick={handleLogout} className="fb-logout-btn fb-profile-logout-action-btn">
-                      <i className="bi bi-box-arrow-left" /> Cerrar sesión
-                    </button>
-                  </div>
-              )}
+            {/* SECCIÓN DERECHA DE LA TOPBAR */}
+            <div className="fb-top-right">
+              <NotificationBell isAdmin={isAdmin} />
+
+              {/* CONTENEDOR DE PERFIL */}
+              <div className="fb-profile-container" ref={profileRef} style={{ position: "relative" }}>
+                <button
+                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                    className="fb-logout-btn fb-profile-trigger-btn"
+                >
+                  <i className="bi bi-person-circle fb-profile-icon" />
+                  <span>Perfil</span>
+                  <i className={`bi ${showProfileMenu ? "bi-chevron-up" : "bi-chevron-down"} fb-profile-arrow`} />
+                </button>
+
+                {showProfileMenu && (
+                    <div className="fb-profile-dropdown">
+                      <div className="fb-profile-header">
+              <span className={`fb-role-badge ${userRole.toUpperCase()}`}>
+                {userRole}
+              </span>
+                        <h6 className="fb-profile-name fw-bold text-dark mt-2 mb-1" style={{ fontSize: "0.95rem" }}>
+                          {localStorage.getItem("userName") || "Usuario Registrado"}
+                        </h6>
+                        <p className="fb-profile-email">
+                          <i className="bi bi-envelope-fill" /> {userEmail}
+                        </p>
+                      </div>
+
+                      <button
+                          onClick={() => {
+                            navigate("my-profile");
+                            setShowProfileMenu(false);
+                          }}
+                          className="fb-profile-edit-btn fb-profile-edit-action-btn mb-2"
+                          style={{ width: "100%", textAlign: "left" }}
+                      >
+                        <i className="bi bi-gear-fill" /> Actualizar datos
+                      </button>
+
+                      <button onClick={handleLogout} className="fb-logout-btn fb-profile-logout-action-btn">
+                        <i className="bi bi-box-arrow-left" /> Cerrar sesión
+                      </button>
+                    </div>
+                )}
+              </div>
             </div>
           </div>
 

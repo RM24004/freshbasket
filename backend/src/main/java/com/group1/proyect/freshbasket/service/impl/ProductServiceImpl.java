@@ -42,6 +42,8 @@ public class ProductServiceImpl implements ProductService {
         product.setCurrentStock(dto.getCurrentStock());
         product.setDescription(dto.getDescription());
         product.setImageUrl(dto.getImageUrl());
+        product.setMinStock(dto.getMinStock());
+
 
         // Busca ignorando mayúsculas/minúsculas
         String cleanCategoryName = dto.getCategoryName() != null ? dto.getCategoryName().trim() : "";
@@ -75,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
         dto.setCurrentStock(product.getCurrentStock());
         dto.setDescription(product.getDescription());
         dto.setImageUrl(product.getImageUrl());
+        dto.setMinStock(product.getMinStock());
 
         if (product.getCategory() != null) {
             dto.setCategoryId(product.getCategory().getId());
@@ -178,6 +181,7 @@ public class ProductServiceImpl implements ProductService {
                     existingProduct.setCurrentStock(requestDTO.getCurrentStock());
                     existingProduct.setDescription(requestDTO.getDescription());
                     existingProduct.setImageUrl(requestDTO.getImageUrl());
+                    existingProduct.setMinStock(requestDTO.getMinStock());
 
                     String cleanCategoryName = requestDTO.getCategoryName() != null ? requestDTO.getCategoryName().trim() : "";
                     Category category = categoryRepository.findByNameIgnoreCase(cleanCategoryName)
@@ -216,6 +220,16 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponseDTO> searchProductsByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .filter(Product::isActive)
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponseDTO> getLowStockAlerts() {
+        return productRepository.findLowStockProducts()
                 .stream()
                 .filter(Product::isActive)
                 .map(this::convertToDTO)

@@ -100,6 +100,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/users/**").hasAnyAuthority("ADMINISTRADOR", "SOPORTE")
                 .requestMatchers("/api/users/**").hasAuthority("ADMINISTRADOR")
 
+                .requestMatchers(HttpMethod.GET, "/api/products/alerts/low-stock").hasAnyRole("ADMINISTRADOR", "SOPORTE")
 
                 // Seguridad global
                 .anyRequest().authenticated()
@@ -118,11 +119,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5173",
                 "http://127.0.0.1:5173",
-                "http://192.168.1.60:5173",
                 "http://localhost",
-                "http://127.0.0.1",
-                "http://192.168.1.60",
-                "http://localhost:81"
+                "http://127.0.0.1"
         ));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

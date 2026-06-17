@@ -111,7 +111,7 @@ function FormLayout({
         });
 
         if (filtrados.length === 0) {
-            toast.error(`${article === "la" ? "La" : "el"} ${title} con ese nombre no existe.`);
+            toast.error(`${article === "la" ? "La" : "El"} ${title} con ese nombre no existe.`);
         }
         setFilteredByName(filtrados);
     };
@@ -123,7 +123,7 @@ function FormLayout({
 
         const encontrado = dataList.find(item => String(getItemId(item)) === String(searchId.trim()));
         if (!encontrado) {
-            toast.error(`${article === "la" ? "La" : "el"} ${title} no existe con ese ID.`);
+            toast.error(`${article === "la" ? "La" : "El"} ${title} no existe con ese ID.`);
             setFilteredById(null);
         } else {
             setFilteredById(encontrado);
@@ -153,7 +153,7 @@ function FormLayout({
             toast.success(`¡${title.charAt(0).toUpperCase() + title.slice(1)} creado con éxito!`);
             e.target.reset();
         } catch (error) {
-            toast.error(`Error al registrar ${article === "la" ? "la" : "el"} ${title}`);
+            toast.error(`Error al registrar ${article === "la" ? "la" : "el"} ${title} revise los datos ingresados.`);
         }
     };
 
@@ -405,7 +405,7 @@ function FormLayout({
                        e.preventDefault();
                          const idValue = e.target.id.value;
                          const registroAEliminar = dataList.find(i => String(getItemId(i)) === String(idValue));
-                           if (!registroAEliminar) return toast.error(`No existe el ${title} con ID ${idValue}`);
+                           if (!registroAEliminar) return toast.error(`No existe ${article === "la" ? "la" : "el"} ${title} con ID ${idValue}`);
                          const apellidoStr = registroAEliminar.lastName || registroAEliminar.last_name || "";
                          const nombreVisual =
                            (registroAEliminar.name ? `${registroAEliminar.name} ${apellidoStr}`.trim() : null) ||
@@ -428,7 +428,7 @@ function FormLayout({
                     toast.dismiss(t.id);
                      try {
                       await entity.remove.mutateAsync(idValue);
-                         toast.success(`${article === "la" ? "La" : "el"} ${title} ha sido eliminado correctamente.`);
+                         toast.success(`${article === "la" ? "La" : "El"} ${title} ha sido eliminado correctamente.`);
                         e.target.reset();
                         } catch {
                          toast.error("Error al eliminar el registro.");

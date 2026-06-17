@@ -65,6 +65,15 @@ function Products() {
       placeholder: "Detalles del producto"
     },
     {
+      name: "minStock",
+      label: "Stock mínimo requerido del producto",
+      type: "number",
+      placeholder: "Ej. 5",
+      icon: "bi-exclamation-triangle",
+      required: true,
+      step: "1"
+    },
+    {
       label: isEditMode ? "Usuario que actualiza:" : "Usuario que registra:",
       name: "userName",
       icon: "bi-person-badge",

@@ -1,0 +1,200 @@
+
+.fb-notification-container {
+    display: inline-block;
+}
+
+.fb-topbar-notification-btn {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fb-topbar-notification-btn:hover {
+    background-color: #f3f4f6 !important;
+    transform: scale(1.05);
+}
+
+.fb-topbar-notification-btn i {
+    transition: color 0.2s ease;
+}
+
+.fb-topbar-notification-btn:hover i {
+    color: #1f2937 !important;
+}
+
+.fb-notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: #dc3545;
+    color: #ffffff;
+    border-radius: 50%;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+    transform: translate(20%, -20%);
+    box-shadow: 0 0 0 2px #ffffff;
+    animation: fb-pulse-red 2s infinite;
+}
+
+.fb-notification-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 320px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e5e7eb;
+    z-index: 1100;
+    margin-top: 0.75rem;
+    overflow: hidden;
+    animation: fb-fade-in-down 0.2s ease-out;
+}
+
+.fb-notification-header {
+    padding: 0.85rem 1rem;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+}
+
+.fb-notification-body {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.fb-notification-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.fb-notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.15s ease;
+}
+
+.fb-notification-item:last-child {
+    border-bottom: none;
+}
+
+.fb-notification-item:hover {
+    background-color: #f9fafb;
+}
+
+.fb-notification-item-info {
+    flex: 1;
+    padding-right: 0.85rem;
+}
+
+.fb-notification-item-info span {
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
+
+.fb-notification-body .badge {
+    font-size: 0.75rem;
+    padding: 0.40rem 0.5rem;
+    border-radius: 6px;
+}
+
+.fb-notification-footer-btn {
+    width: max-content;
+    min-width: 200px;
+    margin: 0.7rem auto;
+    padding: 0.6rem 1.5rem;
+    background-color: #dc3545;
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s ease;
+    display: block;
+}
+
+.fb-notification-footer-btn:hover {
+    background-color: #bd2130;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes fb-pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+@keyframes fb-fade-in-down {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fb-notification-body::-webkit-scrollbar {
+    width: 6px;
+}
+.fb-notification-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.fb-notification-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.fb-notification-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 576px) {
+    .fb-notification-container {
+        position: relative !important;
+    }
+
+    .fb-notification-dropdown {
+        position: absolute;
+        right: -60px !important;
+        left: auto !important;
+        width: 300px !important;
+        top: 100%;
+        margin-top: 0.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .fb-notification-item {
+        padding: 1rem;
+    }
+
+    .fb-notification-item-info span {
+        font-size: 0.88rem;
+    }
+
+    .fb-notification-body {
+        max-height: 230px;
+    }
+
+    .fb-notification-footer-btn {
+        padding: 0.75rem;
+        font-size: 0.88rem;
+    }
+}

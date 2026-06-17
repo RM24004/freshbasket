@@ -21,9 +21,14 @@ public class ProductRequestDTO {
     @DecimalMin(value = "0.0", message = "El precio debe ser mayor o igual a 0")
     private BigDecimal price;
 
+    @NotNull(message = "El stock minimo es obligatorio")
+    @Min(value = 1, message = "El stock mínimo debe ser al menos 5")
+    @Schema(description = "Stock minimo disponible", example = "5")
+    private Integer minStock;
+
     @Schema(description = "Stock disponible", example = "150")
     @NotNull(message = "El stock es obligatorio")
-    @Min(value = 0, message = "El stock debe ser mayor o igual a 0")
+    @Min(value = 1, message = "El stock debe ser mayor o igual a 0")
     private Integer currentStock;
 
     @Schema(description = "Descripción del producto", example = "Manzana fresca importada")

@@ -23,6 +23,9 @@ public class ProductResponseDTO {
     @Schema(description = "Stock disponible", example = "150")
     private Integer currentStock;
 
+    @Schema(description = "Stock minimo disponible", example = "5")
+    private Integer minStock;
+
     @Schema(description = "Descripción del producto", example = "Manzana fresca importada")
     private String description;
 

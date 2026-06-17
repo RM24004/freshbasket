@@ -63,7 +63,6 @@ function Users() {
 
   // Renderizador estético de tarjetas
   const renderUserCard = (u2) => {
-    // Blindaje de llaves primarias: Soporta variaciones del backend (id, userId, user_id)
     const userId = u2.id ?? u2.userId ?? u2.user_id ?? u2.users_id;
 
     // Extracción del nombre completo
