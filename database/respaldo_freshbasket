@@ -2,16 +2,17 @@
 -- PostgreSQL database dump
 --
 
-\restrict vgMJ5vHQrpjMrNvgDnHCmelQPg7uhxtmTB00oa7afh9J9r2sGsR3dkxfwF5ba8m
+\restrict 8QFmMVmaNvKAgRW2hETLvyzv9W8cuIF6HjxhglfR7MdYuUZc1S0iRQo10Ik5osC
 
--- Dumped from database version 17.6
+-- Dumped from database version 15.18
 -- Dumped by pg_dump version 17.6
 
--- Started on 2026-06-10 17:53:04
+-- Started on 2026-06-20 14:06:44
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-
+SET idle_in_transaction_session_timeout = 0;
+-- SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -21,7 +22,24 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 244 (class 1255 OID 91457)
+-- TOC entry 2 (class 3079 OID 16530)
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- TOC entry 3560 (class 0 OID 0)
+-- Dependencies: 2
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
+-- TOC entry 238 (class 1255 OID 16385)
 -- Name: clean_all_tables_spaces(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -64,7 +82,7 @@ $$;
 ALTER FUNCTION public.clean_all_tables_spaces() OWNER TO postgres;
 
 --
--- TOC entry 245 (class 1255 OID 83241)
+-- TOC entry 279 (class 1255 OID 16386)
 -- Name: process_auditlogs(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -157,7 +175,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 232 (class 1259 OID 58661)
+-- TOC entry 215 (class 1259 OID 16387)
 -- Name: auditlogs; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -174,7 +192,7 @@ CREATE TABLE public.auditlogs (
 ALTER TABLE public.auditlogs OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 58660)
+-- TOC entry 216 (class 1259 OID 16393)
 -- Name: auditlogs_audit_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -190,8 +208,8 @@ CREATE SEQUENCE public.auditlogs_audit_id_seq
 ALTER SEQUENCE public.auditlogs_audit_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4960 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3561 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: auditlogs_audit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -199,7 +217,7 @@ ALTER SEQUENCE public.auditlogs_audit_id_seq OWNED BY public.auditlogs.audit_id;
 
 
 --
--- TOC entry 224 (class 1259 OID 42499)
+-- TOC entry 217 (class 1259 OID 16394)
 -- Name: categories; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -214,7 +232,7 @@ CREATE TABLE public.categories (
 ALTER TABLE public.categories OWNER TO postgres;
 
 --
--- TOC entry 223 (class 1259 OID 42498)
+-- TOC entry 218 (class 1259 OID 16398)
 -- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -230,8 +248,8 @@ CREATE SEQUENCE public.categories_id_seq
 ALTER SEQUENCE public.categories_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4961 (class 0 OID 0)
--- Dependencies: 223
+-- TOC entry 3562 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -239,7 +257,7 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.category_id;
 
 
 --
--- TOC entry 218 (class 1259 OID 42458)
+-- TOC entry 219 (class 1259 OID 16399)
 -- Name: countries; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -254,7 +272,7 @@ CREATE TABLE public.countries (
 ALTER TABLE public.countries OWNER TO postgres;
 
 --
--- TOC entry 217 (class 1259 OID 42457)
+-- TOC entry 220 (class 1259 OID 16403)
 -- Name: countries_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -270,8 +288,8 @@ CREATE SEQUENCE public.countries_id_seq
 ALTER SEQUENCE public.countries_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4962 (class 0 OID 0)
--- Dependencies: 217
+-- TOC entry 3563 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: countries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -279,7 +297,7 @@ ALTER SEQUENCE public.countries_id_seq OWNED BY public.countries.country_id;
 
 
 --
--- TOC entry 228 (class 1259 OID 42527)
+-- TOC entry 221 (class 1259 OID 16404)
 -- Name: entries; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -298,7 +316,7 @@ CREATE TABLE public.entries (
 ALTER TABLE public.entries OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 42526)
+-- TOC entry 222 (class 1259 OID 16408)
 -- Name: entries_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -314,8 +332,8 @@ CREATE SEQUENCE public.entries_id_seq
 ALTER SEQUENCE public.entries_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4963 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 3564 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: entries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -323,7 +341,7 @@ ALTER SEQUENCE public.entries_id_seq OWNED BY public.entries.entry_id;
 
 
 --
--- TOC entry 230 (class 1259 OID 42544)
+-- TOC entry 223 (class 1259 OID 16409)
 -- Name: exits; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -340,7 +358,7 @@ CREATE TABLE public.exits (
 ALTER TABLE public.exits OWNER TO postgres;
 
 --
--- TOC entry 229 (class 1259 OID 42543)
+-- TOC entry 224 (class 1259 OID 16413)
 -- Name: exits_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -356,8 +374,8 @@ CREATE SEQUENCE public.exits_id_seq
 ALTER SEQUENCE public.exits_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4964 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 3565 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: exits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -365,7 +383,7 @@ ALTER SEQUENCE public.exits_id_seq OWNED BY public.exits.exit_id;
 
 
 --
--- TOC entry 226 (class 1259 OID 42508)
+-- TOC entry 225 (class 1259 OID 16414)
 -- Name: products; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -379,14 +397,15 @@ CREATE TABLE public.products (
     category_id bigint NOT NULL,
     supplier_id bigint NOT NULL,
     user_id bigint,
-    active boolean DEFAULT true
+    active boolean DEFAULT true,
+    min_stock integer DEFAULT 5 NOT NULL
 );
 
 
 ALTER TABLE public.products OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 42507)
+-- TOC entry 226 (class 1259 OID 16420)
 -- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -402,8 +421,8 @@ CREATE SEQUENCE public.products_id_seq
 ALTER SEQUENCE public.products_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4965 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 3566 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -411,7 +430,7 @@ ALTER SEQUENCE public.products_id_seq OWNED BY public.products.product_id;
 
 
 --
--- TOC entry 222 (class 1259 OID 42483)
+-- TOC entry 227 (class 1259 OID 16421)
 -- Name: suppliers; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -430,7 +449,7 @@ CREATE TABLE public.suppliers (
 ALTER TABLE public.suppliers OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 42482)
+-- TOC entry 228 (class 1259 OID 16425)
 -- Name: suppliers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -446,8 +465,8 @@ CREATE SEQUENCE public.suppliers_id_seq
 ALTER SEQUENCE public.suppliers_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4966 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 3567 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: suppliers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -455,7 +474,7 @@ ALTER SEQUENCE public.suppliers_id_seq OWNED BY public.suppliers.supplier_id;
 
 
 --
--- TOC entry 220 (class 1259 OID 42467)
+-- TOC entry 229 (class 1259 OID 16426)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -469,14 +488,14 @@ CREATE TABLE public.users (
     country_id bigint,
     role character varying(255) DEFAULT 'CLIENTE'::character varying,
     active boolean DEFAULT true,
-    CONSTRAINT chk_rol CHECK (((role)::text = ANY ((ARRAY['CLIENTE'::character varying, 'ADMINISTRADOR'::character varying, 'SOPORTE'::character varying, 'EMPLEADO'::character varying])::text[])))
+    CONSTRAINT chk_rol CHECK (((role)::text = ANY (ARRAY[('CLIENTE'::character varying)::text, ('ADMINISTRADOR'::character varying)::text, ('SOPORTE'::character varying)::text, ('EMPLEADO'::character varying)::text])))
 );
 
 
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 42466)
+-- TOC entry 230 (class 1259 OID 16434)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -492,8 +511,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 4967 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 3568 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -501,7 +520,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.user_id;
 
 
 --
--- TOC entry 4747 (class 2604 OID 58668)
+-- TOC entry 3334 (class 2604 OID 16435)
 -- Name: auditlogs audit_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -509,7 +528,7 @@ ALTER TABLE ONLY public.auditlogs ALTER COLUMN audit_id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 4739 (class 2604 OID 58613)
+-- TOC entry 3336 (class 2604 OID 16436)
 -- Name: categories category_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -517,7 +536,7 @@ ALTER TABLE ONLY public.categories ALTER COLUMN category_id SET DEFAULT nextval(
 
 
 --
--- TOC entry 4732 (class 2604 OID 58630)
+-- TOC entry 3338 (class 2604 OID 16437)
 -- Name: countries country_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -525,7 +544,7 @@ ALTER TABLE ONLY public.countries ALTER COLUMN country_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 4743 (class 2604 OID 58536)
+-- TOC entry 3340 (class 2604 OID 16438)
 -- Name: entries entry_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -533,7 +552,7 @@ ALTER TABLE ONLY public.entries ALTER COLUMN entry_id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 4745 (class 2604 OID 58543)
+-- TOC entry 3342 (class 2604 OID 16439)
 -- Name: exits exit_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -541,7 +560,7 @@ ALTER TABLE ONLY public.exits ALTER COLUMN exit_id SET DEFAULT nextval('public.e
 
 
 --
--- TOC entry 4741 (class 2604 OID 58583)
+-- TOC entry 3344 (class 2604 OID 16440)
 -- Name: products product_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -549,7 +568,7 @@ ALTER TABLE ONLY public.products ALTER COLUMN product_id SET DEFAULT nextval('pu
 
 
 --
--- TOC entry 4737 (class 2604 OID 58518)
+-- TOC entry 3347 (class 2604 OID 16441)
 -- Name: suppliers supplier_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -557,7 +576,7 @@ ALTER TABLE ONLY public.suppliers ALTER COLUMN supplier_id SET DEFAULT nextval('
 
 
 --
--- TOC entry 4734 (class 2604 OID 58550)
+-- TOC entry 3349 (class 2604 OID 16442)
 -- Name: users user_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -565,8 +584,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.u
 
 
 --
--- TOC entry 4954 (class 0 OID 58661)
--- Dependencies: 232
+-- TOC entry 3539 (class 0 OID 16387)
+-- Dependencies: 215
 -- Data for Name: auditlogs; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -575,12 +594,26 @@ COPY public.auditlogs (audit_id, entity, entity_id, user_id, action, created_at)
 2	countries	21	Sistema	RESTORE	2026-06-10 19:45:25.494403
 3	products	23	Sistema	RESTORE	2026-06-10 19:47:42.048765
 4	products	24	Sistema	RESTORE	2026-06-10 19:47:42.048765
+5	users	52	Alexander Perez (Auto-registro)	INSERT	2026-06-13 21:46:54.993198
+6	users	48	Sistema	UPDATE	2026-06-13 21:54:34.194771
+39	products	28	José Alfredo López Rivera	UPDATE	2026-06-14 16:55:46.507473
+40	products	30	José Alfredo López Rivera	UPDATE	2026-06-14 16:55:57.623385
+41	categories	16	José Alfredo López Rivera	DELETE	2026-06-14 16:56:20.562713
+42	users	45	José Alfredo López Rivera	UPDATE	2026-06-14 19:54:42.22979
+43	entries	37	José Alfredo López Rivera	INSERT	2026-06-16 22:45:56.313351
+44	products	19	José Alfredo López Rivera	UPDATE	2026-06-16 22:45:56.313351
+45	products	1	José Alfredo López Rivera	UPDATE	2026-06-16 22:48:33.050893
+46	users	9	James Alonso Smith López	UPDATE	2026-06-16 22:51:58.560687
+47	users	88	José Alfredo López Rivera	INSERT	2026-06-16 23:15:23.383635
+48	countries	23	Sistema	INSERT	2026-06-17 13:38:09.752793
+49	users	89	Macario Infantino (Auto-registro)	INSERT	2026-06-17 13:38:10.283398
+50	users	48	José Alfredo López Rivera	DELETE	2026-06-17 13:42:20.113841
 \.
 
 
 --
--- TOC entry 4946 (class 0 OID 42499)
--- Dependencies: 224
+-- TOC entry 3541 (class 0 OID 16394)
+-- Dependencies: 217
 -- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -597,15 +630,15 @@ COPY public.categories (category_id, name, description, active) FROM stdin;
 13	Granos basicos	Todo lo relacionado, con frijoles, arroz, maíz, maicillo, entre otros.	t
 14	Pan	Pan en general, importado o nacional	t
 15	Aceites	Aceite en general, importado y nacional	t
-16	Cervezas	Cervezas en todas las presentaciones, importadas y nacionales.	t
 17	Snacks	Todo tipo de snack.	t
 9	Galletas	Galletas en general, importadas o nacionales	t
+16	Cervezas	Cervezas en todas las presentaciones, importadas y nacionales.	f
 \.
 
 
 --
--- TOC entry 4940 (class 0 OID 42458)
--- Dependencies: 218
+-- TOC entry 3543 (class 0 OID 16399)
+-- Dependencies: 219
 -- Data for Name: countries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -630,12 +663,13 @@ COPY public.countries (country_id, name, description, active) FROM stdin;
 9	Italia	País de Europa, abastece pastas y harinas principalmente.	t
 20	Nicaragua	País registrado automáticamente: Nicaragua	t
 21	Uruguay	País de America del Sur, abastece principalmente bebidas.	t
+23	Suiza	País registrado automáticamente desde la pagina de registro publico.	t
 \.
 
 
 --
--- TOC entry 4950 (class 0 OID 42527)
--- Dependencies: 228
+-- TOC entry 3545 (class 0 OID 16404)
+-- Dependencies: 221
 -- Data for Name: entries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -674,12 +708,13 @@ COPY public.entries (entry_id, entry_date, quantity, unit_cost, product_id, user
 33	2026-06-10 16:25:45.566444	30	7.45	27	11	24	t
 34	2026-06-10 16:37:22.522637	25	0.75	28	11	23	t
 36	2026-06-10 17:13:22.63413	35	5.25	30	11	23	t
+37	2026-06-16 22:45:56.45251	35	3.80	19	11	18	t
 \.
 
 
 --
--- TOC entry 4952 (class 0 OID 42544)
--- Dependencies: 230
+-- TOC entry 3547 (class 0 OID 16409)
+-- Dependencies: 223
 -- Data for Name: exits; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -699,42 +734,42 @@ COPY public.exits (exit_id, exit_date, quantity, product_id, user_id, active) FR
 
 
 --
--- TOC entry 4948 (class 0 OID 42508)
--- Dependencies: 226
+-- TOC entry 3549 (class 0 OID 16414)
+-- Dependencies: 225
 -- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.products (product_id, name, price, current_stock, image_url, description, category_id, supplier_id, user_id, active) FROM stdin;
-8	Harina de maiz	3.20	15	https://walmarthn.vtexassets.com/arquivos/ids/187380/Harina-De-Maiz-Maseca-Bolsa-454-Gr-1-10138.jpg?v=637708274553530000\t	Harina de maiz en presentacion de 2 libras	7	8	9	t
-28	Cerveza pilsener 12 pack	10.75	25	https://tse1.mm.bing.net/th/id/OIP.kxLyj5FxIVMT3CYXPFsRYAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Cerveza pilsener en presentación de 12 unidades lata	16	23	11	t
-6	Mango Zazón	1.25	100	https://tse1.explicit.bing.net/th/id/OIP.yyegoUwFvJsi_MzcQmDxsAHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Mango verde nacional	1	3	18	t
-20	Carne de Res Americana	11.45	25	https://tse2.mm.bing.net/th/id/OIP.QwriN6M2F8ZfGe6XvnB0fgHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Libra de carne de res americano, Reeb eye	6	4	18	t
-14	Naranja Orange One	2.25	50	https://tse4.mm.bing.net/th/id/OIP.45JAxq9dPUnHcvZ7HRzI-AHaEA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Naranja en presentacion de 1kg	1	3	13	t
-15	Carne de Cerdo ahumado	10.50	45	https://tse3.mm.bing.net/th/id/OIP.10HOqjauptCpa0PvEaNyaAHaET?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Lomo de cerdo en presentación de 1kg	6	4	20	t
-22	Lechuga Fresh Green	1.65	76	https://tse1.mm.bing.net/th/id/OIP.ViuwTjeGQcNf08UgY3KDagAAAA?r=0&w=320&h=320&rs=1&pid=ImgDetMain&o=7&rm=3	Lechuga fresca nacional precio por unidad	3	3	11	t
-2	Pera Onn	0.75	55	https://grupodispersa.com.gt/wp-content/uploads/2016/01/1-pera-Anjou-verde.jpg	Pera importada clase A (precio por unidad)	1	3	31	t
-17	Coca Cola Original	1.00	35	https://tse1.mm.bing.net/th/id/OIP.O50AMYWjVR80Ua8LP2macgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Gaseosa Coca Cola original, presentación en lata 354 ml	8	17	11	t
-13	Galleta OREO	3.25	80	https://th.bing.com/th/id/R.83e51105157978b422492a7505ea3b0b?rik=sr0aCtA0v7TLtw&riu=http%3a%2f%2fweb.superboom.net%2fweb%2fimage%2fproduct.template%2f38639%2fimage_1024%3funique%3dce4827a&ehk=%2fWA44uiXyLEOQzE%2bcaCtaRXY7j6nJmLCo20ShL25KEo%3d&risl=&pid=ImgRaw&r=0	Galleta de chocolate en paquetes de 12 unidades	9	10	13	t
-16	Pollo Indio	6.85	37	https://tse2.mm.bing.net/th/id/OIP.RmvqQEUlhn_b9z6UpatbIwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Pollo Indio fresco en presentación entero	6	4	11	t
-25	Salsa Ranchera	1.15	70	https://walmartgt.vtexassets.com/arquivos/ids/774170/32863_01.jpg?v=638768031123630000	Salsa ranchera 180g, producto nacional	12	22	20	t
-18	Cereal Zucaritas	2.85	25	https://tse2.mm.bing.net/th/id/OIP.fDqw25mnlyS6GL1J58DxggHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	cereal en presentación de 620 g	10	16	11	t
-19	Cereal Zucaritas Clasico	3.85	0	https://tse3.mm.bing.net/th/id/OIP.5mcVa3kaGxjfCnMfJncXFgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	cereal en presentación de 620 g clasico	10	16	11	t
-3	Leche en polvo Australian 1Kg	2.55	190	https://cdn.phototourl.com/free/2026-05-19-30e9bd36-0465-4c2d-b73f-6ee0e12615e4.jpg	Leche importada desde Australia	2	1	4	t
-21	Fresa One piece	1.35	30	https://ecommerce.surtifamiliar.com/backend/admin/backend/web/archivosDelCliente/items/images/Frutas-Frutas-empacadas-FRESA-BANDEJA-313820201112180102.jpg	Bandeja de fresas en presentación de una libra	1	3	30	t
-26	Cereal Zucaritas Especial	3.75	20	https://tse4.mm.bing.net/th/id/OIP.X0eHYhdFLoH20t7ePy16qQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Cereal zucaritas presentación de 500g	10	18	11	t
-30	Cerveza Golden 6 pack	5.25	35	https://tse1.mm.bing.net/th/id/OIP.S-nN4O7RBgvAfFlplMJYgAHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Cerveza Golden lata 6 unidades	16	23	11	t
-9	Harina de trigo	2.50	85	https://convy.mx/cdn/shop/products/70501659.jpg?v=1636474778	Harina de trigo en presentacion de 1 libra	7	8	1	t
-12	Harina de Arroz	1.25	110	https://cdn.phototourl.com/free/2026-05-19-27d85ba2-7221-4e64-b2f0-32661965a0d4.jpg	Harina de arroz blanco en presentación de una libra	7	9	11	t
-27	Aceite de oliva	7.45	23	https://tse2.mm.bing.net/th/id/OIP.MmyatLNCha0NI74gzwpJ2gHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Aceite de olivas extra virgen en presentación de 250ml	15	24	11	t
-1	Manzana Roja	0.60	150	https://tse1.mm.bing.net/th/id/OIP.LAlScQZ3K4VPUUJ35dVUgQHaFl?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Manzana importada desde Estados Unidos.	1	2	9	t
-23	Papel higienico	4.50	35	https://tse4.mm.bing.net/th/id/OIP.DHipxUH3W7eOBlxXNk8SugHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	En presentación de 12 rollos extra suave	11	21	11	t
-24	Papel toalla	3.10	25	https://th.bing.com/th/id/R.09b51dddf3d9881e4e518464f8b1054e?rik=Fy9GSJwiRHHXxw&pid=ImgRaw&r=0	En presentación de 6 rollos	11	21	9	t
+COPY public.products (product_id, name, price, current_stock, image_url, description, category_id, supplier_id, user_id, active, min_stock) FROM stdin;
+8	Harina de maiz	3.20	15	https://walmarthn.vtexassets.com/arquivos/ids/187380/Harina-De-Maiz-Maseca-Bolsa-454-Gr-1-10138.jpg?v=637708274553530000\t	Harina de maiz en presentacion de 2 libras	7	8	9	t	5
+6	Mango Zazón	1.25	100	https://tse1.explicit.bing.net/th/id/OIP.yyegoUwFvJsi_MzcQmDxsAHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Mango verde nacional	1	3	18	t	5
+20	Carne de Res Americana	11.45	25	https://tse2.mm.bing.net/th/id/OIP.QwriN6M2F8ZfGe6XvnB0fgHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Libra de carne de res americano, Reeb eye	6	4	18	t	5
+14	Naranja Orange One	2.25	50	https://tse4.mm.bing.net/th/id/OIP.45JAxq9dPUnHcvZ7HRzI-AHaEA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Naranja en presentacion de 1kg	1	3	13	t	5
+15	Carne de Cerdo ahumado	10.50	45	https://tse3.mm.bing.net/th/id/OIP.10HOqjauptCpa0PvEaNyaAHaET?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Lomo de cerdo en presentación de 1kg	6	4	20	t	5
+22	Lechuga Fresh Green	1.65	76	https://tse1.mm.bing.net/th/id/OIP.ViuwTjeGQcNf08UgY3KDagAAAA?r=0&w=320&h=320&rs=1&pid=ImgDetMain&o=7&rm=3	Lechuga fresca nacional precio por unidad	3	3	11	t	5
+2	Pera Onn	0.75	55	https://grupodispersa.com.gt/wp-content/uploads/2016/01/1-pera-Anjou-verde.jpg	Pera importada clase A (precio por unidad)	1	3	31	t	5
+17	Coca Cola Original	1.00	35	https://tse1.mm.bing.net/th/id/OIP.O50AMYWjVR80Ua8LP2macgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Gaseosa Coca Cola original, presentación en lata 354 ml	8	17	11	t	5
+13	Galleta OREO	3.25	80	https://th.bing.com/th/id/R.83e51105157978b422492a7505ea3b0b?rik=sr0aCtA0v7TLtw&riu=http%3a%2f%2fweb.superboom.net%2fweb%2fimage%2fproduct.template%2f38639%2fimage_1024%3funique%3dce4827a&ehk=%2fWA44uiXyLEOQzE%2bcaCtaRXY7j6nJmLCo20ShL25KEo%3d&risl=&pid=ImgRaw&r=0	Galleta de chocolate en paquetes de 12 unidades	9	10	13	t	5
+16	Pollo Indio	6.85	37	https://tse2.mm.bing.net/th/id/OIP.RmvqQEUlhn_b9z6UpatbIwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Pollo Indio fresco en presentación entero	6	4	11	t	5
+25	Salsa Ranchera	1.15	70	https://walmartgt.vtexassets.com/arquivos/ids/774170/32863_01.jpg?v=638768031123630000	Salsa ranchera 180g, producto nacional	12	22	20	t	5
+18	Cereal Zucaritas	2.85	25	https://tse2.mm.bing.net/th/id/OIP.fDqw25mnlyS6GL1J58DxggHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	cereal en presentación de 620 g	10	16	11	t	5
+3	Leche en polvo Australian 1Kg	2.55	190	https://cdn.phototourl.com/free/2026-05-19-30e9bd36-0465-4c2d-b73f-6ee0e12615e4.jpg	Leche importada desde Australia	2	1	4	t	5
+21	Fresa One piece	1.35	30	https://ecommerce.surtifamiliar.com/backend/admin/backend/web/archivosDelCliente/items/images/Frutas-Frutas-empacadas-FRESA-BANDEJA-313820201112180102.jpg	Bandeja de fresas en presentación de una libra	1	3	30	t	5
+26	Cereal Zucaritas Especial	3.75	20	https://tse4.mm.bing.net/th/id/OIP.X0eHYhdFLoH20t7ePy16qQHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Cereal zucaritas presentación de 500g	10	18	11	t	5
+9	Harina de trigo	2.50	85	https://convy.mx/cdn/shop/products/70501659.jpg?v=1636474778	Harina de trigo en presentacion de 1 libra	7	8	1	t	5
+12	Harina de Arroz	1.25	110	https://cdn.phototourl.com/free/2026-05-19-27d85ba2-7221-4e64-b2f0-32661965a0d4.jpg	Harina de arroz blanco en presentación de una libra	7	9	11	t	5
+27	Aceite de oliva	7.45	23	https://tse2.mm.bing.net/th/id/OIP.MmyatLNCha0NI74gzwpJ2gHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Aceite de olivas extra virgen en presentación de 250ml	15	24	11	t	5
+23	Papel higienico	4.50	35	https://tse4.mm.bing.net/th/id/OIP.DHipxUH3W7eOBlxXNk8SugHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	En presentación de 12 rollos extra suave	11	21	11	t	5
+24	Papel toalla	3.10	25	https://th.bing.com/th/id/R.09b51dddf3d9881e4e518464f8b1054e?rik=Fy9GSJwiRHHXxw&pid=ImgRaw&r=0	En presentación de 6 rollos	11	21	9	t	5
+28	Cerveza pilsener 12 pack	10.75	25	https://tse1.mm.bing.net/th/id/OIP.kxLyj5FxIVMT3CYXPFsRYAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Cerveza pilsener en presentación de 12 unidades lata	8	23	11	t	5
+30	Cerveza Golden 6 pack	5.25	35	https://tse1.mm.bing.net/th/id/OIP.S-nN4O7RBgvAfFlplMJYgAHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Cerveza Golden lata 6 unidades	8	23	11	t	5
+19	Cereal Zucaritas Clasico	3.80	35	https://tse3.mm.bing.net/th/id/OIP.5mcVa3kaGxjfCnMfJncXFgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	cereal en presentación de 620 g clasico	10	16	11	t	5
+1	Manzana Roja	0.60	150	https://tse1.mm.bing.net/th/id/OIP.LAlScQZ3K4VPUUJ35dVUgQHaFl?r=0&rs=1&pid=ImgDetMain&o=7&rm=3	Manzana importada desde Estados Unidos.	1	2	11	t	15
 \.
 
 
 --
--- TOC entry 4944 (class 0 OID 42483)
--- Dependencies: 222
+-- TOC entry 3551 (class 0 OID 16421)
+-- Dependencies: 227
 -- Data for Name: suppliers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -760,8 +795,8 @@ COPY public.suppliers (supplier_id, name, last_name, phone, email, address, coun
 
 
 --
--- TOC entry 4942 (class 0 OID 42467)
--- Dependencies: 220
+-- TOC entry 3553 (class 0 OID 16426)
+-- Dependencies: 229
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -772,10 +807,8 @@ COPY public.users (user_id, name, last_name, email, phone, password, country_id,
 44	Alirio	Menjivar	alirioperafancho@mail.com	+505 2345-2312	$2a$10$6QjSZ.haq/BVwDvMJi/Ny.oHopYbQ5RWOOxlxxXiS.5ZkS46Gm5F2	20	CLIENTE	t
 27	Hiziro Hatuke	Wataro	hiziro.wataro@mail.com	+234 456789	$2a$10$6i3KLNsjr/PDQakegBTaFON4tNhD9L7eGdPAwiIG.qCwxiiQnvpbO	12	CLIENTE	t
 31	Josep Albert	MackNail	josepalbert@mail.com	+33 78653-13243	$2a$10$kYiHyHGWYKI9RkiMJAwQC.vS1ViAEbPwJoMHyYUjC2PIQgGux9Btm	10	ADMINISTRADOR	t
-45	Aquile Alexander	Bonaventura	aquilealexander@mail.com	+39 3456124567	$2a$10$bnRX6CtEr5jSvt3o3eyg2OkN/HdtTuag0b44uhogMI7SjJmxS6Bhm	9	SOPORTE	t
 36	Alexander	Milinkovic	alexandermilinkovic@mail.com	+902 57483746 232	$2a$10$SOx6WVpB0uhCPRosXTIazuZvTzpXSydbZ8ranLzb9kKykGKKxu2Ti	19	SOPORTE	t
 46	Emmanuel	Cartagena	emmanuelcarta@mail.com	+57 1267-7689	$2a$10$qIFMulTxN.Q1jMO4hboenuI91SC/yV4qROnoTJEmQQllyGvbHLEia	4	CLIENTE	t
-9	James Alonso	Smith López	smith.james@mail.com	+1 348 345 2345	$2a$10$7i8s6X570FZBnx/m1eFa2uvyt3ipzUJd5lNHKcX1p3YHMMMmOawam	1	SOPORTE	t
 20	Martin Einsten	Jaramillo	martin.einsten@mail.com	+ 29 234 2334-1278	$2a$10$w0TaFZQya0M.nCWT2kIJ8.zhoXpJKFO7VeMEkMYx0oi9VqEpkoQ8e	5	EMPLEADO	t
 1	Martin Antonio	Hernandez Verdugo	elbaby.lindo@mail.com	+504 7734-3421	$2a$10$acXndRoi3rMhEWjf8upfzej8ngYZGJrERr9lThqzG5ONucuNjK9lC	14	CLIENTE	t
 3	Atilio del Carmen	Serrano Hidalgo	atilio.serrano@mail.com	+503 8000-9000	$2a$10$b.7LjFDT1EadyG8kVTGLweibTFjraLMx4wMazl6ai/YxHeGpcGP7W	3	CLIENTE	t
@@ -792,25 +825,30 @@ COPY public.users (user_id, name, last_name, email, phone, password, country_id,
 23	Domenico	Santorini	domenico.santorini@mail.com	+12 4080 345 234	$2a$10$z9kpmhe5YVCMmQCfnm4MheklAJtJ0M4eljTvNfBnVWeHz84iDd7kq	2	CLIENTE	t
 32	Miguel Angel	Bonilla	miguelangelpintor@mail.com	+55 23456 234	$2a$10$EeJ2vZBe4vNH5P8KhlMlVenpjS9jfqwe0TdAEgwCrFk4QuC0WWY0m	15	CLIENTE	t
 11	José Alfredo	López Rivera	administrador@mail.com	+503 7746-1397	$2a$10$Ov6XV5SmfpQepjXWKirHuOzbA9LwwDdPdm.ID3NKLO72wLvVlGomC	3	ADMINISTRADOR	t
-48	Agustin	Perez	agustin.perez48@mail.com	+1 2345678	123456	1	CLIENTE	t
 99	Prueba	Docker	prueba.docker@mail.com	123	123	1	CLIENTE	t
 49	Jimena Alexandre	Butoski	jimenabutoski@mail.com	+7 67456 1234	$2a$10$Eddf4vDOE7xHtUyvIX9tn.ZzTS0d1N28XqLHUlUmc3bMgrJHhbomu	19	SOPORTE	t
 24	Eduardo Francois	Camavinga III	eduardo.camavinga@mail.com	+15 456 78904	$2a$10$vvErZZgREUaw1bCFgtiK5.K9CZfGFsv4U0tWbXfi1c8Cp3RhPCFem	10	CLIENTE	t
+52	Alexander	Perez	alexanderperez@mail.com	+504 2239-0934	$2a$10$Xu3vi9FF.kkKdQAbD4VZ4uegm/3xiQ8tG901RSFaX/qsbi2J0DNbS	14	CLIENTE	t
+45	Aquile Alexander	Bonaventura	aquilealexander@mail.com	+39 345 6124567	$2a$10$qalIQAbLR8k2NXgtHieqregvWSh74zqKqKEnXaGqUvPzTgRTpwLxu	9	SOPORTE	t
+9	James Alonso	Smith López	smith.james@mail.com	+1 348 345 2319	$2a$10$IXKZXARVQ65sCel.ODF10.rs9yJV6Cqq/gI19RQmc9GwvgJDvArj2	1	SOPORTE	t
+88	Marvin Antonio	Dibaggio	marvindibaggio@mail.com	+39 7873 123786	$2a$10$eSr0ofirAZOq2aJjYOOSb..cRrNDuIcT8FHybbQWC/84DLY2CjlCW	9	CLIENTE	t
+89	Macario	Infantino	macarioinfan@mail.com	+41 6789-9045	$2a$10$EMW2J70rK4Z/8AqfBV7c/ePCi6tTF6Q.viDaxkqFplG9PefOQsVUS	23	CLIENTE	t
+48	Agustin	Perez	agustin.perez48@mail.com	+1 2345678	$2a$06$zJ2yRgjWu/wHl/6juYjM7eN5ci0dzV/Q07XP9uLdt7sixSDyPSxw6	1	CLIENTE	f
 \.
 
 
 --
--- TOC entry 4968 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3569 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: auditlogs_audit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.auditlogs_audit_id_seq', 4, true);
+SELECT pg_catalog.setval('public.auditlogs_audit_id_seq', 50, true);
 
 
 --
--- TOC entry 4969 (class 0 OID 0)
--- Dependencies: 223
+-- TOC entry 3570 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -818,26 +856,26 @@ SELECT pg_catalog.setval('public.categories_id_seq', 17, true);
 
 
 --
--- TOC entry 4970 (class 0 OID 0)
--- Dependencies: 217
+-- TOC entry 3571 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: countries_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.countries_id_seq', 22, true);
+SELECT pg_catalog.setval('public.countries_id_seq', 23, true);
 
 
 --
--- TOC entry 4971 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 3572 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: entries_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.entries_id_seq', 36, true);
+SELECT pg_catalog.setval('public.entries_id_seq', 37, true);
 
 
 --
--- TOC entry 4972 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 3573 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: exits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -845,8 +883,8 @@ SELECT pg_catalog.setval('public.exits_id_seq', 12, true);
 
 
 --
--- TOC entry 4973 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 3574 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -854,8 +892,8 @@ SELECT pg_catalog.setval('public.products_id_seq', 30, true);
 
 
 --
--- TOC entry 4974 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 3575 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: suppliers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -863,16 +901,16 @@ SELECT pg_catalog.setval('public.suppliers_id_seq', 24, true);
 
 
 --
--- TOC entry 4975 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 3576 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 51, true);
+SELECT pg_catalog.setval('public.users_id_seq', 89, true);
 
 
 --
--- TOC entry 4769 (class 2606 OID 58670)
+-- TOC entry 3354 (class 2606 OID 16444)
 -- Name: auditlogs auditlogs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -881,7 +919,7 @@ ALTER TABLE ONLY public.auditlogs
 
 
 --
--- TOC entry 4761 (class 2606 OID 58615)
+-- TOC entry 3356 (class 2606 OID 16446)
 -- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -890,7 +928,7 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- TOC entry 4751 (class 2606 OID 58632)
+-- TOC entry 3358 (class 2606 OID 16448)
 -- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -899,7 +937,7 @@ ALTER TABLE ONLY public.countries
 
 
 --
--- TOC entry 4765 (class 2606 OID 58538)
+-- TOC entry 3360 (class 2606 OID 16450)
 -- Name: entries entries_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -908,7 +946,7 @@ ALTER TABLE ONLY public.entries
 
 
 --
--- TOC entry 4767 (class 2606 OID 58545)
+-- TOC entry 3362 (class 2606 OID 16452)
 -- Name: exits exits_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -917,7 +955,7 @@ ALTER TABLE ONLY public.exits
 
 
 --
--- TOC entry 4763 (class 2606 OID 58585)
+-- TOC entry 3364 (class 2606 OID 16454)
 -- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -926,7 +964,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 4757 (class 2606 OID 42697)
+-- TOC entry 3366 (class 2606 OID 16456)
 -- Name: suppliers suppliers_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -935,7 +973,7 @@ ALTER TABLE ONLY public.suppliers
 
 
 --
--- TOC entry 4759 (class 2606 OID 58520)
+-- TOC entry 3368 (class 2606 OID 16458)
 -- Name: suppliers suppliers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -944,7 +982,7 @@ ALTER TABLE ONLY public.suppliers
 
 
 --
--- TOC entry 4753 (class 2606 OID 75062)
+-- TOC entry 3370 (class 2606 OID 16460)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -953,7 +991,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4755 (class 2606 OID 58552)
+-- TOC entry 3372 (class 2606 OID 16462)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -962,7 +1000,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4786 (class 2620 OID 91456)
+-- TOC entry 3383 (class 2620 OID 16463)
 -- Name: categories trg_audit_categories; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -970,7 +1008,7 @@ CREATE TRIGGER trg_audit_categories AFTER INSERT OR DELETE OR UPDATE ON public.c
 
 
 --
--- TOC entry 4780 (class 2620 OID 91452)
+-- TOC entry 3385 (class 2620 OID 16464)
 -- Name: countries trg_audit_countries; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -978,7 +1016,7 @@ CREATE TRIGGER trg_audit_countries AFTER INSERT OR DELETE OR UPDATE ON public.co
 
 
 --
--- TOC entry 4790 (class 2620 OID 91454)
+-- TOC entry 3387 (class 2620 OID 16465)
 -- Name: entries trg_audit_entries; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -986,7 +1024,7 @@ CREATE TRIGGER trg_audit_entries AFTER INSERT OR DELETE OR UPDATE ON public.entr
 
 
 --
--- TOC entry 4792 (class 2620 OID 91455)
+-- TOC entry 3389 (class 2620 OID 16466)
 -- Name: exits trg_audit_exits; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -994,7 +1032,7 @@ CREATE TRIGGER trg_audit_exits AFTER INSERT OR DELETE OR UPDATE ON public.exits 
 
 
 --
--- TOC entry 4788 (class 2620 OID 91450)
+-- TOC entry 3391 (class 2620 OID 16467)
 -- Name: products trg_audit_products; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1002,7 +1040,7 @@ CREATE TRIGGER trg_audit_products AFTER INSERT OR DELETE OR UPDATE ON public.pro
 
 
 --
--- TOC entry 4784 (class 2620 OID 91453)
+-- TOC entry 3393 (class 2620 OID 16468)
 -- Name: suppliers trg_audit_suppliers; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1010,7 +1048,7 @@ CREATE TRIGGER trg_audit_suppliers AFTER INSERT OR DELETE OR UPDATE ON public.su
 
 
 --
--- TOC entry 4782 (class 2620 OID 91449)
+-- TOC entry 3395 (class 2620 OID 16469)
 -- Name: users trg_audit_users; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1018,7 +1056,7 @@ CREATE TRIGGER trg_audit_users AFTER INSERT OR DELETE OR UPDATE ON public.users 
 
 
 --
--- TOC entry 4787 (class 2620 OID 91466)
+-- TOC entry 3384 (class 2620 OID 16470)
 -- Name: categories trg_clean_spaces; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1026,7 +1064,7 @@ CREATE TRIGGER trg_clean_spaces BEFORE INSERT OR UPDATE ON public.categories FOR
 
 
 --
--- TOC entry 4781 (class 2620 OID 91467)
+-- TOC entry 3386 (class 2620 OID 16471)
 -- Name: countries trg_clean_spaces; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1034,7 +1072,7 @@ CREATE TRIGGER trg_clean_spaces BEFORE INSERT OR UPDATE ON public.countries FOR 
 
 
 --
--- TOC entry 4791 (class 2620 OID 91468)
+-- TOC entry 3388 (class 2620 OID 16472)
 -- Name: entries trg_clean_spaces; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1042,7 +1080,7 @@ CREATE TRIGGER trg_clean_spaces BEFORE INSERT OR UPDATE ON public.entries FOR EA
 
 
 --
--- TOC entry 4793 (class 2620 OID 91469)
+-- TOC entry 3390 (class 2620 OID 16473)
 -- Name: exits trg_clean_spaces; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1050,7 +1088,7 @@ CREATE TRIGGER trg_clean_spaces BEFORE INSERT OR UPDATE ON public.exits FOR EACH
 
 
 --
--- TOC entry 4789 (class 2620 OID 91465)
+-- TOC entry 3392 (class 2620 OID 16474)
 -- Name: products trg_clean_spaces; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1058,7 +1096,7 @@ CREATE TRIGGER trg_clean_spaces BEFORE INSERT OR UPDATE ON public.products FOR E
 
 
 --
--- TOC entry 4785 (class 2620 OID 91470)
+-- TOC entry 3394 (class 2620 OID 16475)
 -- Name: suppliers trg_clean_spaces; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1066,7 +1104,7 @@ CREATE TRIGGER trg_clean_spaces BEFORE INSERT OR UPDATE ON public.suppliers FOR 
 
 
 --
--- TOC entry 4783 (class 2620 OID 91471)
+-- TOC entry 3396 (class 2620 OID 16476)
 -- Name: users trg_clean_spaces; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1074,7 +1112,7 @@ CREATE TRIGGER trg_clean_spaces BEFORE INSERT OR UPDATE ON public.users FOR EACH
 
 
 --
--- TOC entry 4772 (class 2606 OID 58616)
+-- TOC entry 3378 (class 2606 OID 16477)
 -- Name: products fk_category; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1083,7 +1121,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 4771 (class 2606 OID 58633)
+-- TOC entry 3381 (class 2606 OID 16482)
 -- Name: suppliers fk_country_supplier; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1092,7 +1130,7 @@ ALTER TABLE ONLY public.suppliers
 
 
 --
--- TOC entry 4770 (class 2606 OID 58638)
+-- TOC entry 3382 (class 2606 OID 16487)
 -- Name: users fk_country_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1101,7 +1139,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4775 (class 2606 OID 58586)
+-- TOC entry 3373 (class 2606 OID 16492)
 -- Name: entries fk_product_entry; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1110,7 +1148,7 @@ ALTER TABLE ONLY public.entries
 
 
 --
--- TOC entry 4778 (class 2606 OID 58591)
+-- TOC entry 3376 (class 2606 OID 16497)
 -- Name: exits fk_product_exit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1119,7 +1157,7 @@ ALTER TABLE ONLY public.exits
 
 
 --
--- TOC entry 4773 (class 2606 OID 58521)
+-- TOC entry 3379 (class 2606 OID 16502)
 -- Name: products fk_supplier; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1128,7 +1166,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 4774 (class 2606 OID 58647)
+-- TOC entry 3380 (class 2606 OID 16507)
 -- Name: products fk_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1137,7 +1175,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- TOC entry 4776 (class 2606 OID 58553)
+-- TOC entry 3374 (class 2606 OID 16512)
 -- Name: entries fk_user_entry; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1146,7 +1184,7 @@ ALTER TABLE ONLY public.entries
 
 
 --
--- TOC entry 4779 (class 2606 OID 58558)
+-- TOC entry 3377 (class 2606 OID 16517)
 -- Name: exits fk_user_exit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1155,7 +1193,7 @@ ALTER TABLE ONLY public.exits
 
 
 --
--- TOC entry 4777 (class 2606 OID 58526)
+-- TOC entry 3375 (class 2606 OID 16522)
 -- Name: entries fkcgyu7y1pidyihfoltdfsktscy; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1163,11 +1201,11 @@ ALTER TABLE ONLY public.entries
     ADD CONSTRAINT fkcgyu7y1pidyihfoltdfsktscy FOREIGN KEY (supplier_id) REFERENCES public.suppliers(supplier_id);
 
 
--- Completed on 2026-06-10 17:53:04
+-- Completed on 2026-06-20 14:06:50
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict vgMJ5vHQrpjMrNvgDnHCmelQPg7uhxtmTB00oa7afh9J9r2sGsR3dkxfwF5ba8m
+\unrestrict 8QFmMVmaNvKAgRW2hETLvyzv9W8cuIF6HjxhglfR7MdYuUZc1S0iRQo10Ik5osC
 

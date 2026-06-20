@@ -12,7 +12,7 @@ services:
       - "5435:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./database/respaldo_freshbasket.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/respaldo_freshbasket:/docker-entrypoint-initdb.d/init.sql
     networks:
       - freshbasket-network
 

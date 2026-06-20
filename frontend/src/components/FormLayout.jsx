@@ -150,7 +150,7 @@ function FormLayout({
 
         try {
             await entity.create.mutateAsync(payload);
-            toast.success(`¡${title.charAt(0).toUpperCase() + title.slice(1)} creado con éxito!`);
+            toast.success(`Se ha creado con exito ${article === "la" ? "la" : "el"} ${title}.`);
             e.target.reset();
         } catch (error) {
             toast.error(`Error al registrar ${article === "la" ? "la" : "el"} ${title} revise los datos ingresados.`);

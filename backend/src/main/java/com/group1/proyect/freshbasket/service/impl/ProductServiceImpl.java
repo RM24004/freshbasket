@@ -136,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(id)
                 .filter(Product::isActive)
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ese ID: " + id));
 
     }
 
